@@ -1,8 +1,21 @@
 *Ein wilder Bot der Seminargruppe CS24-1 erscheint…*
 
-# Development
+# Development Setup
 
-Ganz einfach:
+Es gibt zwei Wege, den Bot lokal auszuführen: Manuell oder über Development Containers (empfohlen).
+
+## Development Container (empfohlen)
+
+1. Stelle sicher, dass du [Docker](https://www.docker.com/get-started/) oder [Podman](https://podman.io/getting-started/installation) installiert hast.
+2. Klone das Repo und öffne das Projekt in [Visual Studio Code](https://code.visualstudio.com/) (oder einem anderen Editor, der [Dev Containers](https://code.visualstudio.com/docs/remote/containers) unterstützt).
+3. Kopiere die `EXAMPLE.env` Datei und nenne sie in `.env` um. Fülle die Werte aus.
+4. Beim öffnen des Projekts sollte VS Code dich fragen, ob du den Ordner in einem Container öffnen möchtest. Bestätige dies. (Sollte die Abfrage nicht erscheinen, öffne die Kommando-Palette mit `Strg+Shift+P` und suche nach `Dev Containers: Reopen in Container`).
+5. Warte, bis der Container gebaut und gestartet ist. Dies kann einige Minuten dauern.
+6. Öffne ein neues Terminal in VS Code und führe `python3 main.py` aus, um den Bot zu starten.
+
+## Manuell
+
+Diese Schritte sind umständlicher und nicht empfohlen.
 
 1. Clone das Repo
 2. Erstelle eine venv mit `python3 -m venv venv` oder dem Tool, dass deine IDE mitbringt.
@@ -12,16 +25,27 @@ Ganz einfach:
 6. Richte die Datenbank ein. Befolge [diese Anleitung](#Datenbank-Einrichtung).
 7. Starte den Bot, indem du die `main.py` Datei mittels `python3 main.py` ausführst.
 
-# Datenbank Einrichtung
+# Datenbank
+
+Der Bot benutzt eine SQLite Datenbank mit [Tortoise ORM](https://tortoise-orm.readthedocs.io/en/latest/) als ORM.
+
+Dafür muss die Datenbank initialisiert werden, bevor der Bot gestartet wird.
+
+## Initialisierung
+
+### Development Container
+
+Wenn du Development Container benutzt, wird die Datenbank beim Start des Containers automatisch eingerichtet. Andernfalls musst du die Datenbank manuell einrichten.
+
+### Manuell
+
 1. Zunächst musst du das Tortoise-CLI tool `aerich` installieren. Führe dazu `python3 -m pip install aerich` aus.
 
-> Der Nachfolgende Schritt sollte **nicht** erneut ausgeführt werden müssen, da bereits Migrationen vorhanden sind!
-2. Sollten keine Migrations in `/migrations` vorhanden sein, führe zunächst `aerich init-db` aus, um die Datenbank zu initialisieren. **Dies muss nur beim ersten Mal gemacht werden.**
+2. Nun benötigst du eine Datenbank. Erstelle dafür eine leere Datei namens `db.sqlite3` im Ordner `data/`.
 
-> Dieser Schritt ist **notwendig**!
-3. Führe `aerich upgrade` aus, um die Datenbank auf die neueste Version zu bringen.
+3. Führe im Projekt-Root `aerich upgrade` aus, um die Datenbank auf die neueste Version zu bringen.
 
-# Änderungen am Datenmodel
+## Änderungen am Datenmodel
 
 Solltest du Änderungen an den Daten vornehmen, die in der Datenbank gespeichert werden, musst du die Datenbankmigrationen aktualisieren.
 
