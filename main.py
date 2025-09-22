@@ -1,30 +1,28 @@
 import logging
-import os
-import typing
-from datetime import datetime
+from typing import Iterator
 from pathlib import Path
 
-from tortoise import Tortoise, run_async
+import discord
 from aerich import Command  # type: ignore
-from dotenv import load_dotenv
-
-import discord.ext.commands
 from discord.ext import commands
+from dotenv import load_dotenv
+from tortoise import Tortoise, run_async  # type: ignore
 
 import tortoiseConfig
 from utils.constants import Constants
+from utils.types import Context
 
 
-def get_extensions() -> typing.List[str]:  # type: ignore
+def get_extensions() -> Iterator[str]:
     files = Path("cogs").rglob("*.py")
     for file in files:
-        yield file.as_posix()[:-3].replace("/", ".")  # type: ignore
+        yield file.as_posix()[:-3].replace("/", ".")
 
 
 def load_extensions(
     bot: commands.Bot,
     logger: logging.Logger,
-    extensions: typing.List[str]
+    extensions: Iterator[str]
 ):
     for ext_file in extensions:
         try:
@@ -37,7 +35,7 @@ def load_extensions(
 def unload_extensions(
     bot: commands.Bot,
     logger: logging.Logger,
-    extensions: typing.List[str]
+    extensions: Iterator[str]
 ):
     for ext_file in extensions:
         try:
@@ -126,14 +124,14 @@ def main():
 
     @bot.command(name="reload")  # type: ignore
     @commands.has_permissions(manage_webhooks=True)
-    async def reload(ctx: commands.Context) -> None:
+    async def reload(ctx: Context) -> None:
         unload_extensions(bot, logger, get_extensions())
         load_extensions(bot, logger, get_extensions())
         await ctx.send("Done")
 
     @bot.command(name="shutdown")  # type: ignore
     @commands.has_permissions(manage_webhooks=True)
-    async def shutdown(ctx) -> None:
+    async def shutdown(ctx: Context) -> None:
         await ctx.message.add_reaction(Constants.REACTIONS.CHECK)
         logger.info("The bot was shut down by %s", ctx.author)
         await bot.close()

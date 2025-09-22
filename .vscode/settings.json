@@ -1,7 +1,10 @@
 {
     "python.analysis.diagnosticSeverityOverrides": {
         "reportOptionalMemberAccess": "none",
-        "reportInvalidTypeForm": false
+        "reportInvalidTypeForm": false,
+        "reportUntypedFunctionDecorator": "none",
+        "reportUnknownMemberType": "none",
+        "reportUnusedFunction": "none",
     },
     "editor.formatOnType": true,
     "editor.formatOnPaste": true,

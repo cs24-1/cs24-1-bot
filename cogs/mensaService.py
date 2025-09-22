@@ -63,7 +63,7 @@ class MensaService(commands.Cog):
             mensaUtils.mensa_day_autocomplete
         )
     )
-    async def get_mensa_plan(self, ctx: ApplicationContext, date: str):
+    async def get_mensa_plan(self, ctx: ApplicationContext, date: str | None):
         current_date: datetime
 
         if date is None:

@@ -15,7 +15,9 @@
         "njpwerner.autodocstring",
         "github.vscode-github-actions",
         "ChristianDein.python-radon",
-        "eeyore.yapf"
+        "eeyore.yapf",
+        "ms-python.mypy-type-checker",
+        "ms-python.isort"
       ]
     }
   },

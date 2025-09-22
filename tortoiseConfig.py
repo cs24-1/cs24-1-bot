@@ -1,6 +1,6 @@
 from utils.constants import Constants
 
-TORTOISE_ORM = {
+TORTOISE_ORM = { # type: ignore
     "connections": {
         "default": f"sqlite://{Constants.FILE_PATHS.DB_FILE}"
     },
