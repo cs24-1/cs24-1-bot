@@ -21,7 +21,7 @@ from bs4 import BeautifulSoup
 from models.mensa.mensaModels import Meal, MealType, Price
 
 from utils.cacheUtils import timed_cache
-from utils.constants import Constants
+from utils.constants import Constants, MensaSelectors
 
 
 @timed_cache(30)
@@ -40,14 +40,17 @@ def get_mensa_plan(date: datetime) -> Iterator[Meal]:
     )
     soup = BeautifulSoup(page.content, "html.parser")
 
-    for meal_element in soup.select(".type--meal"):
-        meal_type_element = meal_element.select_one(".meal-tags span")
-        meal_price_element = meal_element.select_one(".meal-prices span")
+    for meal_element in soup.select(MensaSelectors.MEAL_CONTAINER):
+        meal_type_element = meal_element.select_one(MensaSelectors.MEAL_TYPE)
+        meal_price_element = meal_element.select_one(MensaSelectors.MEAL_PRICE)
 
         if not meal_type_element or not meal_price_element:
             continue
 
-        meal_type = MealType(meal_type_element.text)
+        # bs4 has a bug where it sometimes select the correct div, sometimes the parent div.
+        # So the .text not always returns only the needed text, but sometimes more. To fix this,
+        # we split the text by double spaces and take the first part.
+        meal_type = MealType(meal_type_element.text.split("  ")[0].strip())
         meal_price = Price.get_from_string(meal_price_element.text.strip())
 
         if meal_type is not MealType.PASTA:
@@ -60,7 +63,8 @@ def get_mensa_plan(date: datetime) -> Iterator[Meal]:
                 yield meal
             continue
 
-        for pasta_element in meal_element.select(".meal-subitem"):
+        # TODO: Currently there is no pasta available, so i can only fix this once there is pasta again
+        for pasta_element in meal_element.select(MensaSelectors.PASTA_SUBITEM):
             meal = extract_pasta_meal_data(meal_type, pasta_element, meal_price)
             if meal:
                 yield meal
@@ -71,7 +75,7 @@ def extract_pasta_meal_data(
     pasta_element: bs4.Tag,
     meal_price: Price
 ) -> None | Meal:
-    meal_name_element = pasta_element.select_one("h5")
+    meal_name_element = pasta_element.select_one(MensaSelectors.PASTA_NAME)
 
     if not meal_name_element:
         return None
@@ -89,8 +93,10 @@ def retrieve_standard_meal_data(
     meal_element: bs4.Tag,
     meal_price: Price,
 ) -> Meal | None:
-    meal_name_element = meal_element.select_one("h4")
-    meal_components_element = meal_element.select_one(".meal-components")
+    meal_name_element = meal_element.select_one(MensaSelectors.MEAL_NAME)
+    meal_components_element = meal_element.select_one(
+        MensaSelectors.MEAL_COMPONENTS
+    )
 
     if not meal_name_element:
         return None
@@ -170,9 +176,9 @@ def get_mensa_open_days() -> list[str]:
         list[str]: A list of all open mensa days for the next week.
     """
     current_date = datetime.now()
-    open_days = []
+    open_days: list[str] = []
 
-    for i in range(7):
+    for _ in range(7):
         if check_if_mensa_is_open(current_date):
             open_days.append(current_date.strftime('%d.%m.%Y'))
         current_date += timedelta(days=1)
