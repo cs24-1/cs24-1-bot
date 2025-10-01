@@ -92,8 +92,8 @@ def extract_standard_meal_data(
         MensaSelectors.Normal.MEAL_COMPONENTS
     )
 
-    if not name_element:
-        return None
+    if not name_element or not price_element:
+        return
 
     name = name_element.text
 
