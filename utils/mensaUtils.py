@@ -40,72 +40,68 @@ def get_mensa_plan(date: datetime) -> Iterator[Meal]:
     )
     soup = BeautifulSoup(page.content, "html.parser")
 
-    for meal_element in soup.select(MensaSelectors.MEAL_CONTAINER):
-        meal_type_element = meal_element.select_one(MensaSelectors.MEAL_TYPE)
-        meal_price_element = meal_element.select_one(MensaSelectors.MEAL_PRICE)
+    for meal_element in soup.select(MensaSelectors.Common.MEAL_CONTAINER):
+        type_element = meal_element.select_one(MensaSelectors.Common.MEAL_TYPE)
 
-        if not meal_type_element or not meal_price_element:
+        if not type_element:
             continue
 
         # bs4 has a bug where it sometimes select the correct div, sometimes the parent div.
         # So the .text not always returns only the needed text, but sometimes more. To fix this,
         # we split the text by double spaces and take the first part.
-        meal_type = MealType(meal_type_element.text.split("  ")[0].strip())
-        meal_price = Price.get_from_string(meal_price_element.text.strip())
+        type = MealType(type_element.text.split("  ")[0].strip())
 
-        if meal_type is not MealType.PASTA:
-            meal = retrieve_standard_meal_data(
-                meal_type,
-                meal_element,
-                meal_price
-            )
+        if type is not MealType.PASTA:
+            meal = extract_standard_meal_data(type, meal_element)
             if meal:
                 yield meal
             continue
 
-        # TODO: Currently there is no pasta available, so i can only fix this once there is pasta again
-        for pasta_element in meal_element.select(MensaSelectors.PASTA_SUBITEM):
-            meal = extract_pasta_meal_data(meal_type, pasta_element, meal_price)
-            if meal:
-                yield meal
+        for meal in extract_pasta_meal_data(type, meal_element):
+            yield meal
 
 
 def extract_pasta_meal_data(
     meal_type: MealType,
     pasta_element: bs4.Tag,
-    meal_price: Price
-) -> None | Meal:
-    meal_name_element = pasta_element.select_one(MensaSelectors.PASTA_NAME)
+) -> Iterator[Meal]:
+    name_element = pasta_element.select_one(MensaSelectors.Pasta.NAME)
+    price_element = pasta_element.select_one(MensaSelectors.Pasta.PRICE)
 
-    if not meal_name_element:
+    if not name_element or not price_element:
         return None
 
-    meal_name = meal_name_element.text
-    meal_components = None  # TODO maybe there are components, but i can not find them
-    meal_price = meal_price
+    name = name_element.text
+    price = Price.get_from_string(price_element.text.strip())
 
-    meal = Meal(meal_type, meal_name, meal_components, meal_price)
-    return meal
+    for subitem in pasta_element.select(MensaSelectors.Pasta.SUBITEMS):
+        components_element = subitem.select_one(MensaSelectors.Pasta.COMPONENTS)
+        components = components_element.text.strip(
+        ).split(" ")[0] if components_element else None
+
+        yield Meal(meal_type, name, components, price)
 
 
-def retrieve_standard_meal_data(
+def extract_standard_meal_data(
     meal_type: MealType,
     meal_element: bs4.Tag,
-    meal_price: Price,
 ) -> Meal | None:
-    meal_name_element = meal_element.select_one(MensaSelectors.MEAL_NAME)
-    meal_components_element = meal_element.select_one(
-        MensaSelectors.MEAL_COMPONENTS
+    name_element = meal_element.select_one(MensaSelectors.Normal.MEAL_NAME)
+    price_element = meal_element.select_one(MensaSelectors.Normal.MEAL_PRICE)
+    components_element = meal_element.select_one(
+        MensaSelectors.Normal.MEAL_COMPONENTS
     )
 
-    if not meal_name_element:
+    if not name_element:
         return None
 
-    meal_name = meal_name_element.text
+    name = name_element.text
 
-    meal_components = meal_components_element.text if meal_components_element else None
+    price = Price.get_from_string(price_element.text.strip())
 
-    return Meal(meal_type, meal_name, meal_components, meal_price)
+    components = components_element.text if components_element else None
+
+    return Meal(meal_type, name, components, price)
 
 
 def get_next_mensa_day(current_date: datetime) -> datetime:
