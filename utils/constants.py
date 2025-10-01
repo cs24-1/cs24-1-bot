@@ -37,17 +37,25 @@ class Urls:
 
 
 class MensaSelectors:
-    # --- Common CSS selectors used for all meal types ---
-    # All Selectors are relative to the MEAL_CONTAINER, including the MEAL_CONTAINER itself
-    MEAL_CONTAINER = "main#page-content > div.grid-container > div > div > div:nth-of-type(3) > div"
-    MEAL_TYPE = "div:nth-of-type(1) > div:nth-of-type(1)"
-    MEAL_PRICE = "div:nth-of-type(3) > div:nth-of-type(1)"
-    # Specific selectors for meal details which are not pasta
-    MEAL_NAME = "h4"
-    MEAL_COMPONENTS = "h4 + div"
-    # Specific selector for pasta meal type
-    PASTA_SUBITEM = ".meal-subitem"
-    PASTA_NAME = "h5"
+
+    class Common:
+        # --- Common CSS selectors used for all meal types ---
+        # All Selectors are relative to the MEAL_CONTAINER, including the MEAL_CONTAINER itself
+        MEAL_CONTAINER = "main#page-content > div.grid-container > div > div > div:nth-of-type(3) > div"
+        MEAL_TYPE = "div:nth-of-type(1) > div:nth-of-type(1)"
+
+    class Normal:
+        # Specific selectors for meal details which are not pasta
+        MEAL_PRICE = "div:nth-of-type(3) > div:nth-of-type(1)"
+        MEAL_NAME = "h4"
+        MEAL_COMPONENTS = "h4 + div"
+
+    class Pasta:
+        # Specific selector for pasta meal type
+        PRICE = "div:nth-of-type(2) > div:nth-of-type(1)"
+        SUBITEMS = "div[hidden] > div"
+        NAME = "h4"
+        COMPONENTS = "h5"
 
 
 class AI:
