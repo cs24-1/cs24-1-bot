@@ -33,29 +33,7 @@ class FilePaths:
 
 
 class Urls:
-    MENSAPLAN = "https://www.studentenwerk-leipzig.de/mensen-cafeterien/speiseplan/?location=140&date="
-
-
-class MensaSelectors:
-
-    class Common:
-        # --- Common CSS selectors used for all meal types ---
-        # All Selectors are relative to the MEAL_CONTAINER, including the MEAL_CONTAINER itself
-        MEAL_CONTAINER = "main#page-content > div.grid-container > div > div > div:nth-of-type(3) > div"
-        MEAL_TYPE = "div:nth-of-type(1) > div:nth-of-type(1)"
-
-    class Normal:
-        # Specific selectors for meal details which are not pasta
-        MEAL_PRICE = "div:nth-of-type(3) > div:nth-of-type(1)"
-        MEAL_NAME = "h4"
-        MEAL_COMPONENTS = "h4 + div"
-
-    class Pasta:
-        # Specific selector for pasta meal type
-        PRICE = "div:nth-of-type(2) > div:nth-of-type(1)"
-        SUBITEMS = "div[hidden] > div"
-        NAME = "h4"
-        COMPONENTS = "h5"
+    OPENMENSA_API = "https://openmensa.org/api/v2/canteens/140/days/{date}/meals"
 
 
 class AI:

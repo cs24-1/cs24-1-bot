@@ -1,7 +1,7 @@
 """
-This module provides utility functions for fetching and processing the mensa plan.
+This module provides utility functions for fetching and processing the mensa plan using the OpenMensa API.
 Functions:
-    get_mensa_plan(date: datetime) -> list[Meal]:
+    get_mensa_plan(date: datetime) -> Iterator[Meal]:
     get_next_mensa_day(current_date: datetime) -> datetime:
     get_last_mensa_day(current_date: datetime) -> datetime:
     check_if_mensa_is_open(current_date: datetime) -> bool:
@@ -15,19 +15,17 @@ from typing import Iterator
 import discord
 
 import requests
-import bs4
-from bs4 import BeautifulSoup
 
 from models.mensa.mensaModels import Meal, MealType, Price
 
 from utils.cacheUtils import timed_cache
-from utils.constants import Constants, MensaSelectors
+from utils.constants import Constants
 
 
 @timed_cache(30)
 def get_mensa_plan(date: datetime) -> Iterator[Meal]:
     """
-    Fetches the mensa plan for a given date.
+    Fetches the mensa plan for a given date using the OpenMensa API.
 
     Args:
         date (datetime): The date for which to fetch the mensa plan.
@@ -35,73 +33,42 @@ def get_mensa_plan(date: datetime) -> Iterator[Meal]:
     Returns:
         iter: An iterator of Meal objects representing the meals available on the given date.
     """
-    page = requests.get(
-        f"{Constants.URLS.MENSAPLAN}{date.strftime('%Y-%m-%d')}"
-    )
-    soup = BeautifulSoup(page.content, "html.parser")
-
-    for meal_element in soup.select(MensaSelectors.Common.MEAL_CONTAINER):
-        type_element = meal_element.select_one(MensaSelectors.Common.MEAL_TYPE)
-
-        if not type_element:
+    url = Constants.URLS.OPENMENSA_API.format(date=date.strftime('%Y-%m-%d'))
+    response = requests.get(url)
+    
+    if response.status_code != 200:
+        return
+    
+    meals_data = response.json()
+    
+    for meal_data in meals_data:
+        # Extract meal information from API response
+        category = meal_data.get('category', '')
+        name = meal_data.get('name', '')
+        notes = meal_data.get('notes', [])
+        prices = meal_data.get('prices', {})
+        
+        # Get student price (fallback to employees, then others)
+        price_value = prices.get('students') or prices.get('employees') or prices.get('others')
+        
+        if not name or not category or price_value is None:
             continue
-
-        # bs4 has a bug where it sometimes select the correct div, sometimes the parent div.
-        # So the .text not always returns only the needed text, but sometimes more. To fix this,
-        # we split the text by double spaces and take the first part.
-        type = MealType(type_element.text.split("  ")[0].strip())
-
-        if type is not MealType.PASTA:
-            meal = extract_standard_meal_data(type, meal_element)
-            if meal:
-                yield meal
+        
+        # Map API category to MealType enum
+        try:
+            meal_type = MealType(category)
+        except ValueError:
+            # Skip meals with unknown categories
             continue
-
-        for meal in extract_pasta_meal_data(type, meal_element):
-            yield meal
-
-
-def extract_pasta_meal_data(
-    meal_type: MealType,
-    pasta_element: bs4.Tag,
-) -> Iterator[Meal]:
-    name_element = pasta_element.select_one(MensaSelectors.Pasta.NAME)
-    price_element = pasta_element.select_one(MensaSelectors.Pasta.PRICE)
-
-    if not name_element or not price_element:
-        return None
-
-    name = name_element.text
-    price = Price.get_from_string(price_element.text.strip())
-
-    for subitem in pasta_element.select(MensaSelectors.Pasta.SUBITEMS):
-        components_element = subitem.select_one(MensaSelectors.Pasta.COMPONENTS)
-        components = components_element.text.strip(
-        ).split(" ")[0] if components_element else None
-
+        
+        # Create Price object
+        price = Price(price_value)
+        
+        # Join notes as components
+        components = ', '.join(notes) if notes else None
+        
         yield Meal(meal_type, name, components, price)
 
-
-def extract_standard_meal_data(
-    meal_type: MealType,
-    meal_element: bs4.Tag,
-) -> Meal | None:
-    name_element = meal_element.select_one(MensaSelectors.Normal.MEAL_NAME)
-    price_element = meal_element.select_one(MensaSelectors.Normal.MEAL_PRICE)
-    components_element = meal_element.select_one(
-        MensaSelectors.Normal.MEAL_COMPONENTS
-    )
-
-    if not name_element or not price_element:
-        return
-
-    name = name_element.text
-
-    price = Price.get_from_string(price_element.text.strip())
-
-    components = components_element.text if components_element else None
-
-    return Meal(meal_type, name, components, price)
 
 
 def get_next_mensa_day(current_date: datetime) -> datetime:
