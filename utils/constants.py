@@ -33,7 +33,7 @@ class FilePaths:
 
 
 class Urls:
-    OPENMENSA_API = "https://openmensa.org/api/v2/canteens/140/days/{date}/meals"
+    OPENMENSA_API = "https://openmensa.org/api/v2/canteens/69/days/{date}/meals"
 
 
 class AI:
