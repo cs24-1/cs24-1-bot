@@ -1,6 +1,5 @@
 import logging
 from datetime import datetime, time
-from typing import Iterator
 
 from discord import ApplicationContext
 from discord.ext import commands, tasks
@@ -41,22 +40,23 @@ class MensaService(commands.Cog):
         if not mensaUtils.check_if_mensa_is_open(current_date):
             return
 
-        meals: Iterator[Meal] = mensaUtils.get_mensa_plan(current_date)
+        meals: list[Meal] = mensaUtils.get_mensa_plan(current_date)
 
         await channel.send(
-            f"## Mensaplan vom {current_date.strftime('%d.%m.%Y')} \n ({current_date.strftime('%A')})",
+            mensaUtils.get_mensa_message_title(current_date),
             embeds=[meal.create_embed() for meal in meals]
         )
 
         self.logger.info("Sent daily Mensa message")
 
     @commands.slash_command(
-        name='mensa',
+        name="mensa",
         description="Sieh dir die heutige Mensa-Auswahl an",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
     )
     @discord.option(
         name="date",
+        description="Datum für den Mensaplan (Format: DD.MM.YYYY)",
         type=discord.SlashCommandOptionType.string,
         required=False,
         autocomplete=discord.utils.basic_autocomplete(
@@ -64,24 +64,27 @@ class MensaService(commands.Cog):
         )
     )
     async def get_mensa_plan(self, ctx: ApplicationContext, date: str | None):
-        current_date: datetime
+        current_date = self._get_next_mensa_day(date)
 
-        if date is None:
-            current_date = datetime.now()
-        else:
-            current_date = datetime.strptime(date, "%d.%m.%Y")
-            if not mensaUtils.check_if_mensa_is_open(current_date):
-                current_date = mensaUtils.get_next_mensa_day(current_date)
-
-        meals: Iterator[Meal] = mensaUtils.get_mensa_plan(current_date)
-
-        weekday_german = mensaUtils.format_weekday_in_german(current_date)
+        meals: list[Meal] = mensaUtils.get_mensa_plan(current_date)
 
         await ctx.respond(
-            f"## Mensaplan von {weekday_german}, {current_date.strftime('%d.%m.%Y')}",
+            mensaUtils.get_mensa_message_title(current_date),
             embeds=[meal.create_embed() for meal in meals],
             view=MensaView(current_date)
         )
+
+    def _get_next_mensa_day(self, date: str | None) -> datetime:
+        if date is None:
+            current_date = datetime.now()
+        else:
+            parsed_date = datetime.strptime(date, "%d.%m.%Y")
+            current_date = max(parsed_date, datetime.now())
+
+        if not mensaUtils.check_if_mensa_is_open(current_date):
+            current_date = mensaUtils.get_next_mensa_day(current_date)
+
+        return current_date
 
 
 def setup(bot: discord.Bot):

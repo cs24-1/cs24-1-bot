@@ -41,7 +41,7 @@ class MensaView(discord.ui.View):
         meals: list[Meal] = get_mensa_plan(self.current_date)
 
         await interaction.response.edit_message(
-            content=f"## Mensaplan vom {self.current_date.strftime('%d.%m.%Y')}",
+            content=mensaUtils.get_mensa_message_title(self.current_date),
             embeds=[meal.create_embed() for meal in meals],
             view=MensaView(self.current_date)
         )
@@ -58,6 +58,7 @@ class MensaView(discord.ui.View):
         meals: list[Meal] = get_mensa_plan(self.current_date)
 
         await interaction.response.edit_message(
-            content=f"## Mensaplan vom {self.current_date.strftime('%d.%m.%Y')}",
+            content=mensaUtils.get_mensa_message_title(self.current_date),
             embeds=[meal.create_embed() for meal in meals],
-            view=MensaView(self.current_date))
+            view=MensaView(self.current_date)
+        )

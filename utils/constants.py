@@ -32,8 +32,48 @@ class FilePaths:
     DB_FILE = "data/db.sqlite3"
 
 
-class Urls:
+class Mensa:
     OPENMENSA_API = "https://openmensa.org/api/v2/canteens/69/days/{date}/meals"
+    ALLERGENS = {
+        "glutenhaltiges getreide",
+        "krebstiere",
+        "eier",
+        "fisch",
+        "erdnüsse",
+        "soja",
+        "milch/ milchzucker",
+        "schalenfrüchte/ nüsse",
+        "sellerie",
+        "senf",
+        "sesam",
+        "sulfit/ schwefeldioxid",
+        "lupine",
+        "weichtiere",
+        "insekten",
+        "mandeln",
+        "haselnüsse",
+        "walnüsse",
+        "cashewnüsse",
+        "pekannüsse",
+        "paranüsse",
+        "pistazien",
+        "macadamianüsse",
+        "weizen",
+        "roggen",
+        "gerste",
+        "hafer",
+        "dinkel",
+        "kamut",
+        "konservierungsstoff",
+        "antioxidationsmittel",
+        "phosphat",
+    }
+    UNNECCESSARY_NOTES = {
+        "vegetarisch",
+        "geflügel",
+        "schwein",
+        "vegan",
+    }
 
 
 class AI:
@@ -46,8 +86,9 @@ class Constants:
     CHANNEL_IDS = ChannelIds
     SERVER_IDS = ServerIds
     REACTIONS = Reactions
-    URLS = Urls
+    URLS = Mensa
     FILE_PATHS = FilePaths
     AI = AI
+    MENSA = Mensa
     # --- ADDITIONAL CONSTANTS ---
     SYSTIMEZONE = datetime.now().astimezone().tzinfo
