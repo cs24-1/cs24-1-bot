@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Iterator
 
 import discord.ui
 
@@ -18,28 +17,28 @@ class MensaView(discord.ui.View):
         if mensaUtils.check_if_mensa_is_open(
             mensaUtils.get_last_mensa_day(self.current_date)
         ):
-            self.last_day.disabled = False
+            self.last_day.disabled = False  # type: ignore
         else:
-            self.last_day.disabled = True
+            self.last_day.disabled = True  # type: ignore
 
         # disable next_day button if tomorrow the mensa is closed
         if mensaUtils.check_if_mensa_is_open(
             mensaUtils.get_next_mensa_day(self.current_date)
         ):
-            self.next_day.disabled = False
+            self.next_day.disabled = False  # type: ignore
         else:
-            self.next_day.disabled = True
+            self.next_day.disabled = True  # type: ignore
 
     @discord.ui.button(emoji="⬅️")
     async def last_day(
         self,
-        button: discord.ui.Button,
+        button: discord.ui.Button["MensaView"],
         interaction: discord.Interaction
     ):
         last_date = mensaUtils.get_last_mensa_day(self.current_date)
         self.current_date = last_date
 
-        meals: Iterator[Meal] = get_mensa_plan(self.current_date)
+        meals: list[Meal] = get_mensa_plan(self.current_date)
 
         await interaction.response.edit_message(
             content=f"## Mensaplan vom {self.current_date.strftime('%d.%m.%Y')}",
@@ -50,13 +49,13 @@ class MensaView(discord.ui.View):
     @discord.ui.button(emoji="➡️")
     async def next_day(
         self,
-        button: discord.ui.Button,
+        button: discord.ui.Button["MensaView"],
         interaction: discord.Interaction
     ):
         next_date = mensaUtils.get_next_mensa_day(self.current_date)
         self.current_date = next_date
 
-        meals: Iterator[Meal] = get_mensa_plan(self.current_date)
+        meals: list[Meal] = get_mensa_plan(self.current_date)
 
         await interaction.response.edit_message(
             content=f"## Mensaplan vom {self.current_date.strftime('%d.%m.%Y')}",
