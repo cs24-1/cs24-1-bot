@@ -4,7 +4,8 @@ This repository contains a Discord bot for the CS24-1 seminar group. Follow thes
 
 ## Language and Communication
 
-- All documentation, comments, and commit messages should be in **German** when appropriate, as this is a German seminar group project
+- All documentation, comments, and commit messages should be in **English**
+- Exception: The README.md is in German as this is a German seminar group project
 - User-facing messages and bot commands use German language
 - Technical code elements (variable names, function names) follow English conventions
 
@@ -15,7 +16,6 @@ This is a Discord bot built with:
 - **Tortoise ORM** with SQLite for database management
 - **OpenAI API** for code translation features
 - **PIL** and **EasyOCR** for meme processing
-- **BeautifulSoup** for web scraping (Mensa menu)
 
 ### Key Features
 1. **AI Service**: Code translation using OpenAI API with daily usage limits
