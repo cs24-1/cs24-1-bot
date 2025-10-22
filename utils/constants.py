@@ -32,30 +32,48 @@ class FilePaths:
     DB_FILE = "data/db.sqlite3"
 
 
-class Urls:
-    MENSAPLAN = "https://www.studentenwerk-leipzig.de/mensen-cafeterien/speiseplan/?location=140&date="
-
-
-class MensaSelectors:
-
-    class Common:
-        # --- Common CSS selectors used for all meal types ---
-        # All Selectors are relative to the MEAL_CONTAINER, including the MEAL_CONTAINER itself
-        MEAL_CONTAINER = "main#page-content > div.grid-container > div > div > div:nth-of-type(3) > div"
-        MEAL_TYPE = "div:nth-of-type(1) > div:nth-of-type(1)"
-
-    class Normal:
-        # Specific selectors for meal details which are not pasta
-        MEAL_PRICE = "div:nth-of-type(3) > div:nth-of-type(1)"
-        MEAL_NAME = "h4"
-        MEAL_COMPONENTS = "h4 + div"
-
-    class Pasta:
-        # Specific selector for pasta meal type
-        PRICE = "div:nth-of-type(2) > div:nth-of-type(1)"
-        SUBITEMS = "div[hidden] > div"
-        NAME = "h4"
-        COMPONENTS = "h5"
+class Mensa:
+    OPENMENSA_API = "https://openmensa.org/api/v2/canteens/69/days/{date}/meals"
+    ALLERGENS = {
+        "glutenhaltiges getreide",
+        "krebstiere",
+        "eier",
+        "fisch",
+        "erdnüsse",
+        "soja",
+        "milch/ milchzucker",
+        "schalenfrüchte/ nüsse",
+        "sellerie",
+        "senf",
+        "sesam",
+        "sulfit/ schwefeldioxid",
+        "lupine",
+        "weichtiere",
+        "insekten",
+        "mandeln",
+        "haselnüsse",
+        "walnüsse",
+        "cashewnüsse",
+        "pekannüsse",
+        "paranüsse",
+        "pistazien",
+        "macadamianüsse",
+        "weizen",
+        "roggen",
+        "gerste",
+        "hafer",
+        "dinkel",
+        "kamut",
+        "konservierungsstoff",
+        "antioxidationsmittel",
+        "phosphat",
+    }
+    UNNECCESSARY_NOTES = {
+        "vegetarisch",
+        "geflügel",
+        "schwein",
+        "vegan",
+    }
 
 
 class AI:
@@ -68,8 +86,9 @@ class Constants:
     CHANNEL_IDS = ChannelIds
     SERVER_IDS = ServerIds
     REACTIONS = Reactions
-    URLS = Urls
+    URLS = Mensa
     FILE_PATHS = FilePaths
     AI = AI
+    MENSA = Mensa
     # --- ADDITIONAL CONSTANTS ---
     SYSTIMEZONE = datetime.now().astimezone().tzinfo

@@ -1,7 +1,7 @@
 """
-This module provides utility functions for fetching and processing the mensa plan.
+This module provides utility functions for fetching and processing the mensa plan using the OpenMensa API.
 Functions:
-    get_mensa_plan(date: datetime) -> list[Meal]:
+    get_mensa_plan(date: datetime) -> Iterator[Meal]:
     get_next_mensa_day(current_date: datetime) -> datetime:
     get_last_mensa_day(current_date: datetime) -> datetime:
     check_if_mensa_is_open(current_date: datetime) -> bool:
@@ -10,24 +10,23 @@ Functions:
 """
 
 from datetime import datetime, timedelta
-from typing import Iterator
+from typing import Any, Iterator
 
 import discord
 
 import requests
-import bs4
-from bs4 import BeautifulSoup
 
 from models.mensa.mensaModels import Meal, MealType, Price
 
-from utils.cacheUtils import timed_cache
-from utils.constants import Constants, MensaSelectors
+from utils.constants import Constants
+
+from cachetools import TTLCache, cached
 
 
-@timed_cache(30)
-def get_mensa_plan(date: datetime) -> Iterator[Meal]:
+@cached(cache=TTLCache(maxsize=7, ttl=600))  # type: ignore
+def get_mensa_plan(date: datetime) -> list[Meal]:
     """
-    Fetches the mensa plan for a given date.
+    Fetches the mensa plan for a given date using the OpenMensa API.
 
     Args:
         date (datetime): The date for which to fetch the mensa plan.
@@ -35,73 +34,110 @@ def get_mensa_plan(date: datetime) -> Iterator[Meal]:
     Returns:
         iter: An iterator of Meal objects representing the meals available on the given date.
     """
-    page = requests.get(
-        f"{Constants.URLS.MENSAPLAN}{date.strftime('%Y-%m-%d')}"
-    )
-    soup = BeautifulSoup(page.content, "html.parser")
+    url = Constants.URLS.OPENMENSA_API.format(date=date.strftime("%Y-%m-%d"))
+    response = requests.get(url)
 
-    for meal_element in soup.select(MensaSelectors.Common.MEAL_CONTAINER):
-        type_element = meal_element.select_one(MensaSelectors.Common.MEAL_TYPE)
+    if response.status_code != 200:
+        return []
 
-        if not type_element:
-            continue
+    meals_data: list[dict[str, Any]] = response.json()
 
-        # bs4 has a bug where it sometimes select the correct div, sometimes the parent div.
-        # So the .text not always returns only the needed text, but sometimes more. To fix this,
-        # we split the text by double spaces and take the first part.
-        type = MealType(type_element.text.split("  ")[0].strip())
+    if meals_data[0].get("category", "") == MealType.PASTA.value:
+        return list(extract_pasta_meals(meals_data))
 
-        if type is not MealType.PASTA:
-            meal = extract_standard_meal_data(type, meal_element)
-            if meal:
-                yield meal
-            continue
-
-        for meal in extract_pasta_meal_data(type, meal_element):
-            yield meal
+    return list(extract_normal_meals(meals_data))
 
 
-def extract_pasta_meal_data(
-    meal_type: MealType,
-    pasta_element: bs4.Tag,
-) -> Iterator[Meal]:
-    name_element = pasta_element.select_one(MensaSelectors.Pasta.NAME)
-    price_element = pasta_element.select_one(MensaSelectors.Pasta.PRICE)
+def extract_pasta_meals(meals_data: list[dict[str, Any]]) -> Iterator[Meal]:
+    """
+    Extracts pasta meals from the provided meals data.
 
-    if not name_element or not price_element:
-        return None
+    Args:
+        meals_data (list[dict[str, Any]]): The list of meal data dictionaries.
+    Returns:
+        Iterator[Meal]: An iterator of Meal objects representing the pasta meals.
+    """
+    base_meal: Meal | None = None
+    cheese_meal: Meal | None = None
+    sauce_meals: list[Meal] = []
 
-    name = name_element.text
-    price = Price.get_from_string(price_element.text.strip())
+    for meal in extract_normal_meals(meals_data):
 
-    for subitem in pasta_element.select(MensaSelectors.Pasta.SUBITEMS):
-        components_element = subitem.select_one(MensaSelectors.Pasta.COMPONENTS)
-        components = components_element.text.strip(
-        ).split(" ")[0] if components_element else None
+        if "nudel" in meal.mealName.lower():
+            base_meal = meal
+        elif "soße" in meal.mealName.lower():
+            sauce_meals.append(meal)
+        else:
+            cheese_meal = meal
 
-        yield Meal(meal_type, name, components, price)
-
-
-def extract_standard_meal_data(
-    meal_type: MealType,
-    meal_element: bs4.Tag,
-) -> Meal | None:
-    name_element = meal_element.select_one(MensaSelectors.Normal.MEAL_NAME)
-    price_element = meal_element.select_one(MensaSelectors.Normal.MEAL_PRICE)
-    components_element = meal_element.select_one(
-        MensaSelectors.Normal.MEAL_COMPONENTS
-    )
-
-    if not name_element or not price_element:
+    if base_meal is None or cheese_meal is None or len(sauce_meals) < 2:
         return
 
-    name = name_element.text
+    for sauce_meal in sauce_meals:
+        name = f"{base_meal.mealName} • {cheese_meal.mealName} • {sauce_meal.mealName}"
+        components = sauce_meal.mealComponents.union(
+            base_meal.mealComponents
+        ).union(cheese_meal.mealComponents)
+        allergens = sauce_meal.mealAllergens.union(
+            base_meal.mealAllergens,
+        ).union(
+            cheese_meal.mealAllergens,
+        )
+        price = max(
+            base_meal.mealPrice,
+            cheese_meal.mealPrice,
+            sauce_meal.mealPrice,
+        )
 
-    price = Price.get_from_string(price_element.text.strip())
+        yield Meal(MealType.PASTA, name, components, price, allergens)
 
-    components = components_element.text if components_element else None
 
-    return Meal(meal_type, name, components, price)
+def extract_normal_meals(meals_data: list[dict[str, Any]]) -> Iterator[Meal]:
+    """
+    Extracts normal meals from the provided meals data.
+
+    Args:
+        meals_data (list[dict[str, Any]]): The list of meal data dictionaries.
+    Returns:
+        Iterator[Meal]: An iterator of Meal objects representing the normal meals.
+    """
+    for meal_data in meals_data:
+        category: str = meal_data.get("category", "")
+        name: str = meal_data.get("name", "")
+        notes: list[str] = meal_data.get("notes", [])
+        prices: dict[str, float] = meal_data.get("prices", {})
+
+        student_price = prices.get("students")
+
+        if not name or not category or student_price is None:
+            continue
+
+        try:
+            meal_type = MealType(category)
+        except ValueError:
+            continue
+
+        price = Price(student_price)
+
+        components, allergens = extract_components_and_allergens(notes)
+
+        yield Meal(meal_type, name, components, price, allergens)
+
+
+def extract_components_and_allergens(
+    notes: list[str]
+) -> tuple[set[str],
+           set[str]]:
+    components: set[str] = set()
+    allergens: set[str] = set()
+    for note in notes:
+        if note.strip().lower() in Constants.MENSA.UNNECCESSARY_NOTES:
+            continue
+        if note.strip().lower() in Constants.MENSA.ALLERGENS:
+            allergens.add(note)
+            continue
+        components.add(note)
+    return components, allergens
 
 
 def get_next_mensa_day(current_date: datetime) -> datetime:
@@ -164,6 +200,7 @@ def check_if_mensa_is_open(current_date: datetime) -> bool:
     return True
 
 
+@cached(cache=TTLCache(maxsize=1, ttl=600))  # type: ignore
 def get_mensa_open_days() -> list[str]:
     """
     Returns a list of all open mensa days for the next week.
@@ -176,7 +213,7 @@ def get_mensa_open_days() -> list[str]:
 
     for _ in range(7):
         if check_if_mensa_is_open(current_date):
-            open_days.append(current_date.strftime('%d.%m.%Y'))
+            open_days.append(current_date.strftime("%d.%m.%Y"))
         current_date += timedelta(days=1)
 
     return open_days
@@ -184,7 +221,7 @@ def get_mensa_open_days() -> list[str]:
 
 def format_weekday_in_german(date: datetime) -> str:
     """
-    Converts a given date's weekday to its German equivalent.
+    Converts a given date"s weekday to its German equivalent.
 
     Args:
         date (datetime): The date object from which to extract the weekday.
@@ -192,15 +229,15 @@ def format_weekday_in_german(date: datetime) -> str:
     Returns:
         str: The German name of the weekday corresponding to the given date.
     """
-    weekday = date.strftime('%A')
+    weekday = date.strftime("%A")
     return {
-        'Monday': 'Montag',
-        'Tuesday': 'Dienstag',
-        'Wednesday': 'Mittwoch',
-        'Thursday': 'Donnerstag',
-        'Friday': 'Freitag',
-        'Saturday': 'Samstag',
-        'Sunday': 'Sonntag',
+        "Monday": "Montag",
+        "Tuesday": "Dienstag",
+        "Wednesday": "Mittwoch",
+        "Thursday": "Donnerstag",
+        "Friday": "Freitag",
+        "Saturday": "Samstag",
+        "Sunday": "Sonntag",
     }.get(weekday,
           weekday)
 
@@ -216,3 +253,17 @@ async def mensa_day_autocomplete(ctx: discord.AutocompleteContext) -> list[str]:
         list[str]: A list of all open mensa days for the next week.
     """
     return [day for day in get_mensa_open_days() if day.startswith(ctx.value)]
+
+
+def get_mensa_message_title(date: datetime) -> str:
+    """
+    Returns a message title used for sending the mensa message.
+
+    Args:
+        date (datetime): The date to use.
+
+    Returns:
+        str: The mensa message title.
+    """
+    weekday_german = format_weekday_in_german(date)
+    return f"## Mensaplan von {weekday_german}, {date.strftime('%d.%m.%Y')}"
