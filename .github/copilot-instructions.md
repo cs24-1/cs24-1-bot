@@ -233,6 +233,16 @@ line_length = 80
 2. Check type hints with mypy
 3. Test bot functionality in development environment
 4. Verify database migrations if models changed
+5. Use radon to check code complexity if making significant changes
+
+### VS Code Extensions (Auto-configured in Dev Container)
+- `ms-python.python`: Python language support
+- `ms-python.mypy-type-checker`: Type checking
+- `eeyore.yapf`: Code formatting
+- `ms-python.isort`: Import sorting
+- `ChristianDein.python-radon`: Code complexity analysis
+- `njpwerner.autodocstring`: Docstring generation
+- `github.vscode-github-actions`: GitHub Actions support
 
 ## Dependencies
 
@@ -255,6 +265,13 @@ This project uses Dev Containers for consistent development environment:
 - Configuration in `.devcontainer/`
 - Dockerfile for both development and production
 - Automatic database initialization on container start
+- VS Code extensions auto-configured: Python, mypy, yapf, isort, radon
+
+### Production Deployment
+- Multi-platform Docker images (linux/amd64, linux/arm64)
+- Automatic deployment on push to `main` branch
+- Deployed to GitHub Container Registry (ghcr.io)
+- Timezone: Europe/Berlin
 
 ## Common Patterns
 
