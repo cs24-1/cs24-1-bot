@@ -55,7 +55,7 @@ class QuotesSlash(commands.Cog):
                 message_id = url.split("/")[-1]
             
                 if int(guild_id) != Constants.SERVER_IDS.CUR_SERVER:
-                    return await ctx.respond("❌ Kann nur Nachrichten aus diesem Server zitieren.")
+                    return await ctx.respond("❌ Kann nur Nachrichten aus diesem Server zitieren.", ephemeral=True)
                 
                 channel: TextChannel = await self.bot.fetch_channel(int(channel_id))
                 message = await channel.fetch_message(int(message_id))
