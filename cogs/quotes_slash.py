@@ -15,6 +15,10 @@ QUOTE_CHANNEL_ID = int(os.getenv("QUOTE_CHANNEL_ID"))
 
 
 class QuotesSlash(commands.Cog):
+    """
+    Cog providing a slash command to quote one or more messages by URL and post them
+    to the designated quote channel. Includes event listeners for bot readiness.
+    """
     def __init__(self, bot: commands.Bot, logger: Logger):
         self.bot: commands.Bot = bot
         self.logger: Logger = logger
