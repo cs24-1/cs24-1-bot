@@ -49,7 +49,7 @@ class QuotesContext(commands.Cog):
     async def quote_message_context(self, ctx: ApplicationContext, message: Message):
         """Fügt eine Nachricht zur persönlichen Quote-Liste hinzu (läuft automatisch ab)."""
         user_id = ctx.author.id
-        now = datetime.utcnow()
+        now = utcnow()
 
         # Alte abgelaufene löschen
         expired = [uid for uid, data in collected_quotes.items() if data["expires"] < now]
@@ -119,7 +119,7 @@ class QuotesContext(commands.Cog):
     # ---------------------------------------------------------
     async def cleanup_expired_quotes(self):
         while True:
-            now = datetime.utcnow()
+            now = utcnow()
             expired = [uid for uid, data in collected_quotes.items() if data["expires"] < now]
             for uid in expired:
                 del collected_quotes[uid]
