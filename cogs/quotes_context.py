@@ -15,6 +15,8 @@ load_dotenv()
 
 QUOTE_CHANNEL_ID = int(os.getenv("QUOTE_CHANNEL_ID"))
 # This does not need a Database because quotes only need to be kept temporarily (in RAM)
+# collected_quotes structure:
+# { user_id (int): { "messages": [Message, ...], "expires": datetime } }
 collected_quotes = {}
 EXPIRATION_MINUTES = 10
 
