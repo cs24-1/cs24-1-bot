@@ -1595,7 +1595,7 @@
         "kind": 2,
         "importPath": "utils.quoteUtils",
         "description": "utils.quoteUtils",
-        "peekOfCode": "def build_quote_embed(messages, author_name=None):\n    embed = Embed(color=Color.blurple())\n    for msg in messages:\n        content = msg.content[:1024] if msg.content else \"[- kein Text -]\"\n        embed.add_field(\n            name=f\"~ {msg.author.display_name}\",\n            value=f\"“{content}”\\n[Originalnachricht]({msg.jump_url})\",\n            inline=False\n        )\n    if author_name:",
+        "peekOfCode": "def build_quote_embed(messages, author_name=None):\n    \"\"\"Create a Discord Embed that presents one or more messages as quoted entries.\n    Parameters\n    ----------\n    messages : Iterable[discord.Message]\n        An iterable of message objects to include in the embed. Each message must\n        provide at least the following attributes:\n        - content: the text content of the message (str or falsy for empty)\n        - author.display_name: display name of the message author (str)\n        - jump_url: a URL linking to the original message (str)",
         "detail": "utils.quoteUtils",
         "documentation": {}
     },

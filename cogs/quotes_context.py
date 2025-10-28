@@ -97,6 +97,15 @@ class QuotesContext(commands.Cog):
 
     # ---------------------------------------------------------
     async def cleanup_expired_quotes(self):
+        """
+        Periodically remove expired entries from the module-level collected_quotes mapping.
+
+        This coroutine runs forever as a background task. Every iteration it:
+        - obtains the current UTC time via utcnow(),
+        - finds all keys in collected_quotes whose data["expires"] is before the current time,
+        - deletes those keys from collected_quotes,
+        - then sleeps for 60 seconds before repeating.
+        """
         while True:
             now = utcnow()
             expired = [uid for uid, data in collected_quotes.items() if data["expires"] < now]
