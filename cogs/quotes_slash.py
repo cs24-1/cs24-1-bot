@@ -5,8 +5,7 @@ from dotenv import load_dotenv
 from utils.quoteUtils import build_quote_embed
 from utils.constants import Constants
 
-from discord import ApplicationContext, slash_command, TextChannel, Message, Embed, Color, NotFound, Forbidden, HTTPException
-from discord.utils import utcnow
+from discord import ApplicationContext, slash_command, TextChannel, Message, NotFound, Forbidden, HTTPException
 from discord.ext import commands
 
 load_dotenv()
