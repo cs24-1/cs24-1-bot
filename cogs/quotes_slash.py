@@ -46,27 +46,50 @@ class QuotesSlash(commands.Cog):
         found_messages: list[Message] = []
 
         for url in input_messages:
-            if url is None:
+            if not url or not url.strip():
                 continue
-            
-            if len(url.split("/")) < 3:
-                continue
-            
+
+            url = url.strip()
+            parts = [p for p in url.split("/") if p]
+
             try:
-                guild_id = url.split("/")[-3]
-                channel_id = url.split("/")[-2]
-                message_id = url.split("/")[-1]
-            
+                # https://discord.com/channels/<guild>/<channel>/<message>
+                if "channels" in parts:
+                    idx = parts.index("channels")
+                    guild_id = parts[idx + 1]
+                    channel_id = parts[idx + 2]
+                    message_id = parts[idx + 3]
+                else:
+                    # Fallback: take last three path segments
+                    if len(parts) < 3:
+                        raise IndexError("URL has fewer than 3 segments")
+                    guild_id = parts[-3]
+                    channel_id = parts[-2]
+                    message_id = parts[-1]
+            except (IndexError, ValueError) as ex:
+                self.logger.warning("Invalid message URL '%s': %s", url, ex)
+                continue
+
+            try:
                 if int(guild_id) != Constants.SERVER_IDS.CUR_SERVER:
-                    return await ctx.respond("❌ Kann nur Nachrichten aus diesem Server zitieren.", ephemeral=True)
-                
-                channel: TextChannel = await self.bot.fetch_channel(int(channel_id))
+                    return await ctx.respond(
+                    "❌ Kann nur Nachrichten aus diesem "
+                    "Server zitieren.",
+                    ephemeral=True
+                    )
+
+                channel: TextChannel = await self.bot.fetch_channel(
+                    int(channel_id)
+                )
                 message = await channel.fetch_message(int(message_id))
                 found_messages.append(message)
-            except (NotFound, Forbidden, HTTPException) as e:  
-                self.logger.warning(  
-                    f"Failed to quote message from URL '{url}': {type(e).__name__} - {e}"  
-                )  
+            except (NotFound, Forbidden, HTTPException) as e:
+                self.logger.warning(
+                    "Failed to quote message from URL '%s': %s - %s",
+                    url,
+                    type(e).__name__,
+                    e
+                )
             
         if not found_messages:
             return await ctx.respond("⚠️ Keine gültigen Nachrichten gefunden.", ephemeral=True)
