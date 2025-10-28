@@ -34,6 +34,7 @@ class FilePaths:
 
 class Mensa:
     OPENMENSA_API = "https://openmensa.org/api/v2/canteens/69/days/{date}/meals"
+    NOODLE_NAMES = {"nudel", "spirelli", "spaghetti"}
     ALLERGENS = {
         "glutenhaltiges getreide",
         "krebstiere",

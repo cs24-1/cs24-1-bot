@@ -63,9 +63,11 @@ def extract_pasta_meals(meals_data: list[dict[str, Any]]) -> Iterator[Meal]:
 
     for meal in extract_normal_meals(meals_data):
 
-        if "nudel" in meal.mealName.lower():
+        meal_name = meal.mealName.lower()
+
+        if any(noodle in meal_name for noodle in Constants.MENSA.NOODLE_NAMES):
             base_meal = meal
-        elif "soße" in meal.mealName.lower():
+        elif "soße" in meal_name:
             sauce_meals.append(meal)
         else:
             cheese_meal = meal
