@@ -13,7 +13,13 @@ from discord.ext import commands
 
 load_dotenv()
 
-QUOTE_CHANNEL_ID = int(os.getenv("QUOTE_CHANNEL_ID"))
+quote_channel_id_str = os.getenv("QUOTE_CHANNEL_ID")
+if quote_channel_id_str is None:
+    raise RuntimeError("Environment variable QUOTE_CHANNEL_ID is not set. Please set it in your .env file or environment.")
+try:
+    QUOTE_CHANNEL_ID = int(quote_channel_id_str)
+except ValueError:
+    raise RuntimeError(f"Environment variable QUOTE_CHANNEL_ID ('{quote_channel_id_str}') is not a valid integer.")
 # This does not need a database because quotes only need to be kept temporarily (in RAM)
 # collected_quotes structure:
 # { user_id (int): { "messages": [Message, ...], "expires": datetime } }
