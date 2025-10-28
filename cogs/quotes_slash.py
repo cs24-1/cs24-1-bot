@@ -49,6 +49,9 @@ class QuotesSlash(commands.Cog):
             if url is None:
                 continue
             
+            if len(url.split("/")) < 3:
+                continue
+            
             try:
                 guild_id = url.split("/")[-3]
                 channel_id = url.split("/")[-2]
