@@ -63,9 +63,10 @@ class QuotesSlash(commands.Cog):
                 channel: TextChannel = await self.bot.fetch_channel(int(channel_id))
                 message = await channel.fetch_message(int(message_id))
                 found_messages.append(message)
-            except (NotFound, Forbidden, HTTPException) as error:
-                self.logger.error(error)
-                continue
+            except (NotFound, Forbidden, HTTPException) as e:  
+                self.logger.warning(  
+                    f"Failed to quote message from URL '{url}': {type(e).__name__} - {e}"  
+                )  
             
         if not found_messages:
             return await ctx.respond("⚠️ Keine gültigen Nachrichten gefunden.", ephemeral=True)

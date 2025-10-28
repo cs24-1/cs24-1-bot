@@ -1,0 +1,1674 @@
+[
+    {
+        "label": "time",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "time",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timedelta",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "logging",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "logging",
+        "description": "logging",
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
+        "label": "Logger",
+        "importPath": "logging",
+        "description": "logging",
+        "isExtraImport": true,
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
+        "label": "Logger",
+        "importPath": "logging",
+        "description": "logging",
+        "isExtraImport": true,
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
+        "label": "Logger",
+        "importPath": "logging",
+        "description": "logging",
+        "isExtraImport": true,
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
+        "label": "Logger",
+        "importPath": "logging",
+        "description": "logging",
+        "isExtraImport": true,
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
+        "label": "discord",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "discord",
+        "description": "discord",
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "ApplicationContext",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "ApplicationContext",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "ApplicationContext",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "message_command",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "user_command",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "ApplicationContext",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "Message",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "Color",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "Embed",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "Forbidden",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "ApplicationContext",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "slash_command",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "TextChannel",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "Message",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "Embed",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "Color",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "NotFound",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "Forbidden",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "HTTPException",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "Embed",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "Color",
+        "importPath": "discord",
+        "description": "discord",
+        "isExtraImport": true,
+        "detail": "discord",
+        "documentation": {}
+    },
+    {
+        "label": "commands",
+        "importPath": "discord.ext",
+        "description": "discord.ext",
+        "isExtraImport": true,
+        "detail": "discord.ext",
+        "documentation": {}
+    },
+    {
+        "label": "tasks",
+        "importPath": "discord.ext",
+        "description": "discord.ext",
+        "isExtraImport": true,
+        "detail": "discord.ext",
+        "documentation": {}
+    },
+    {
+        "label": "commands",
+        "importPath": "discord.ext",
+        "description": "discord.ext",
+        "isExtraImport": true,
+        "detail": "discord.ext",
+        "documentation": {}
+    },
+    {
+        "label": "tasks",
+        "importPath": "discord.ext",
+        "description": "discord.ext",
+        "isExtraImport": true,
+        "detail": "discord.ext",
+        "documentation": {}
+    },
+    {
+        "label": "commands",
+        "importPath": "discord.ext",
+        "description": "discord.ext",
+        "isExtraImport": true,
+        "detail": "discord.ext",
+        "documentation": {}
+    },
+    {
+        "label": "tasks",
+        "importPath": "discord.ext",
+        "description": "discord.ext",
+        "isExtraImport": true,
+        "detail": "discord.ext",
+        "documentation": {}
+    },
+    {
+        "label": "commands",
+        "importPath": "discord.ext",
+        "description": "discord.ext",
+        "isExtraImport": true,
+        "detail": "discord.ext",
+        "documentation": {}
+    },
+    {
+        "label": "commands",
+        "importPath": "discord.ext",
+        "description": "discord.ext",
+        "isExtraImport": true,
+        "detail": "discord.ext",
+        "documentation": {}
+    },
+    {
+        "label": "commands",
+        "importPath": "discord.ext",
+        "description": "discord.ext",
+        "isExtraImport": true,
+        "detail": "discord.ext",
+        "documentation": {}
+    },
+    {
+        "label": "commands",
+        "importPath": "discord.ext",
+        "description": "discord.ext",
+        "isExtraImport": true,
+        "detail": "discord.ext",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "importPath": "models.database.userData",
+        "description": "models.database.userData",
+        "isExtraImport": true,
+        "detail": "models.database.userData",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "importPath": "models.database.userData",
+        "description": "models.database.userData",
+        "isExtraImport": true,
+        "detail": "models.database.userData",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "importPath": "models.database.userData",
+        "description": "models.database.userData",
+        "isExtraImport": true,
+        "detail": "models.database.userData",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "importPath": "models.database.userData",
+        "description": "models.database.userData",
+        "isExtraImport": true,
+        "detail": "models.database.userData",
+        "documentation": {}
+    },
+    {
+        "label": "ai",
+        "importPath": "utils.ai",
+        "description": "utils.ai",
+        "isExtraImport": true,
+        "detail": "utils.ai",
+        "documentation": {}
+    },
+    {
+        "label": "system_data",
+        "importPath": "utils.ai",
+        "description": "utils.ai",
+        "isExtraImport": true,
+        "detail": "utils.ai",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "isExtraImport": true,
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "isExtraImport": true,
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "isExtraImport": true,
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "isExtraImport": true,
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "isExtraImport": true,
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "isExtraImport": true,
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "isExtraImport": true,
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "isExtraImport": true,
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "isExtraImport": true,
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "isExtraImport": true,
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "isExtraImport": true,
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "isExtraImport": true,
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "isExtraImport": true,
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "memeUtils",
+        "importPath": "utils.memeUtils",
+        "description": "utils.memeUtils",
+        "isExtraImport": true,
+        "detail": "utils.memeUtils",
+        "documentation": {}
+    },
+    {
+        "label": "ocrUtils",
+        "importPath": "utils.memeUtils",
+        "description": "utils.memeUtils",
+        "isExtraImport": true,
+        "detail": "utils.memeUtils",
+        "documentation": {}
+    },
+    {
+        "label": "Meal",
+        "importPath": "models.mensa.mensaModels",
+        "description": "models.mensa.mensaModels",
+        "isExtraImport": true,
+        "detail": "models.mensa.mensaModels",
+        "documentation": {}
+    },
+    {
+        "label": "Meal",
+        "importPath": "models.mensa.mensaModels",
+        "description": "models.mensa.mensaModels",
+        "isExtraImport": true,
+        "detail": "models.mensa.mensaModels",
+        "documentation": {}
+    },
+    {
+        "label": "Meal",
+        "importPath": "models.mensa.mensaModels",
+        "description": "models.mensa.mensaModels",
+        "isExtraImport": true,
+        "detail": "models.mensa.mensaModels",
+        "documentation": {}
+    },
+    {
+        "label": "MealType",
+        "importPath": "models.mensa.mensaModels",
+        "description": "models.mensa.mensaModels",
+        "isExtraImport": true,
+        "detail": "models.mensa.mensaModels",
+        "documentation": {}
+    },
+    {
+        "label": "Price",
+        "importPath": "models.mensa.mensaModels",
+        "description": "models.mensa.mensaModels",
+        "isExtraImport": true,
+        "detail": "models.mensa.mensaModels",
+        "documentation": {}
+    },
+    {
+        "label": "MensaView",
+        "importPath": "models.mensa.mensaView",
+        "description": "models.mensa.mensaView",
+        "isExtraImport": true,
+        "detail": "models.mensa.mensaView",
+        "documentation": {}
+    },
+    {
+        "label": "mensaUtils",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "mensaUtils",
+        "importPath": "utils",
+        "description": "utils",
+        "isExtraImport": true,
+        "detail": "utils",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "asyncio",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "asyncio",
+        "description": "asyncio",
+        "detail": "asyncio",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "build_quote_embed",
+        "importPath": "utils.quoteUtils",
+        "description": "utils.quoteUtils",
+        "isExtraImport": true,
+        "detail": "utils.quoteUtils",
+        "documentation": {}
+    },
+    {
+        "label": "build_quote_embed",
+        "importPath": "utils.quoteUtils",
+        "description": "utils.quoteUtils",
+        "isExtraImport": true,
+        "detail": "utils.quoteUtils",
+        "documentation": {}
+    },
+    {
+        "label": "utcnow",
+        "importPath": "discord.utils",
+        "description": "discord.utils",
+        "isExtraImport": true,
+        "detail": "discord.utils",
+        "documentation": {}
+    },
+    {
+        "label": "utcnow",
+        "importPath": "discord.utils",
+        "description": "discord.utils",
+        "isExtraImport": true,
+        "detail": "discord.utils",
+        "documentation": {}
+    },
+    {
+        "label": "utcnow",
+        "importPath": "discord.utils",
+        "description": "discord.utils",
+        "isExtraImport": true,
+        "detail": "discord.utils",
+        "documentation": {}
+    },
+    {
+        "label": "BaseDBAsyncClient",
+        "importPath": "tortoise",
+        "description": "tortoise",
+        "isExtraImport": true,
+        "detail": "tortoise",
+        "documentation": {}
+    },
+    {
+        "label": "BaseDBAsyncClient",
+        "importPath": "tortoise",
+        "description": "tortoise",
+        "isExtraImport": true,
+        "detail": "tortoise",
+        "documentation": {}
+    },
+    {
+        "label": "fields",
+        "importPath": "tortoise",
+        "description": "tortoise",
+        "isExtraImport": true,
+        "detail": "tortoise",
+        "documentation": {}
+    },
+    {
+        "label": "Model",
+        "importPath": "tortoise",
+        "description": "tortoise",
+        "isExtraImport": true,
+        "detail": "tortoise",
+        "documentation": {}
+    },
+    {
+        "label": "Model",
+        "importPath": "tortoise",
+        "description": "tortoise",
+        "isExtraImport": true,
+        "detail": "tortoise",
+        "documentation": {}
+    },
+    {
+        "label": "fields",
+        "importPath": "tortoise",
+        "description": "tortoise",
+        "isExtraImport": true,
+        "detail": "tortoise",
+        "documentation": {}
+    },
+    {
+        "label": "Model",
+        "importPath": "tortoise",
+        "description": "tortoise",
+        "isExtraImport": true,
+        "detail": "tortoise",
+        "documentation": {}
+    },
+    {
+        "label": "fields",
+        "importPath": "tortoise",
+        "description": "tortoise",
+        "isExtraImport": true,
+        "detail": "tortoise",
+        "documentation": {}
+    },
+    {
+        "label": "Tortoise",
+        "importPath": "tortoise",
+        "description": "tortoise",
+        "isExtraImport": true,
+        "detail": "tortoise",
+        "documentation": {}
+    },
+    {
+        "label": "run_async",
+        "importPath": "tortoise",
+        "description": "tortoise",
+        "isExtraImport": true,
+        "detail": "tortoise",
+        "documentation": {}
+    },
+    {
+        "label": "dataclasses",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "dataclass",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "dataclass",
+        "importPath": "dataclasses",
+        "description": "dataclasses",
+        "isExtraImport": true,
+        "detail": "dataclasses",
+        "documentation": {}
+    },
+    {
+        "label": "BaseModel",
+        "importPath": "models.database.baseModel",
+        "description": "models.database.baseModel",
+        "isExtraImport": true,
+        "detail": "models.database.baseModel",
+        "documentation": {}
+    },
+    {
+        "label": "BaseModel",
+        "importPath": "models.database.baseModel",
+        "description": "models.database.baseModel",
+        "isExtraImport": true,
+        "detail": "models.database.baseModel",
+        "documentation": {}
+    },
+    {
+        "label": "BaseModel",
+        "importPath": "models.database.baseModel",
+        "description": "models.database.baseModel",
+        "isExtraImport": true,
+        "detail": "models.database.baseModel",
+        "documentation": {}
+    },
+    {
+        "label": "Enum",
+        "importPath": "enum",
+        "description": "enum",
+        "isExtraImport": true,
+        "detail": "enum",
+        "documentation": {}
+    },
+    {
+        "label": "Enum",
+        "importPath": "enum",
+        "description": "enum",
+        "isExtraImport": true,
+        "detail": "enum",
+        "documentation": {}
+    },
+    {
+        "label": "TYPE_CHECKING",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "TYPE_CHECKING",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Tuple",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Any",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Iterator",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "Iterator",
+        "importPath": "typing",
+        "description": "typing",
+        "isExtraImport": true,
+        "detail": "typing",
+        "documentation": {}
+    },
+    {
+        "label": "discord.ui",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "discord.ui",
+        "description": "discord.ui",
+        "detail": "discord.ui",
+        "documentation": {}
+    },
+    {
+        "label": "get_mensa_plan",
+        "importPath": "utils.mensaUtils",
+        "description": "utils.mensaUtils",
+        "isExtraImport": true,
+        "detail": "utils.mensaUtils",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "json",
+        "description": "json",
+        "detail": "json",
+        "documentation": {}
+    },
+    {
+        "label": "NotFoundError",
+        "importPath": "openai",
+        "description": "openai",
+        "isExtraImport": true,
+        "detail": "openai",
+        "documentation": {}
+    },
+    {
+        "label": "OpenAI",
+        "importPath": "openai",
+        "description": "openai",
+        "isExtraImport": true,
+        "detail": "openai",
+        "documentation": {}
+    },
+    {
+        "label": "CodeTranslateResponse",
+        "importPath": "models.ai.response",
+        "description": "models.ai.response",
+        "isExtraImport": true,
+        "detail": "models.ai.response",
+        "documentation": {}
+    },
+    {
+        "label": "random",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "random",
+        "description": "random",
+        "detail": "random",
+        "documentation": {}
+    },
+    {
+        "label": "Image",
+        "importPath": "PIL",
+        "description": "PIL",
+        "isExtraImport": true,
+        "detail": "PIL",
+        "documentation": {}
+    },
+    {
+        "label": "ImageSequence",
+        "importPath": "PIL",
+        "description": "PIL",
+        "isExtraImport": true,
+        "detail": "PIL",
+        "documentation": {}
+    },
+    {
+        "label": "Image",
+        "importPath": "PIL",
+        "description": "PIL",
+        "isExtraImport": true,
+        "detail": "PIL",
+        "documentation": {}
+    },
+    {
+        "label": "ImageSequence",
+        "importPath": "PIL",
+        "description": "PIL",
+        "isExtraImport": true,
+        "detail": "PIL",
+        "documentation": {}
+    },
+    {
+        "label": "ImageFile",
+        "importPath": "PIL",
+        "description": "PIL",
+        "isExtraImport": true,
+        "detail": "PIL",
+        "documentation": {}
+    },
+    {
+        "label": "ImageSequence",
+        "importPath": "PIL",
+        "description": "PIL",
+        "isExtraImport": true,
+        "detail": "PIL",
+        "documentation": {}
+    },
+    {
+        "label": "ImageFile",
+        "importPath": "PIL",
+        "description": "PIL",
+        "isExtraImport": true,
+        "detail": "PIL",
+        "documentation": {}
+    },
+    {
+        "label": "BytesIO",
+        "importPath": "io",
+        "description": "io",
+        "isExtraImport": true,
+        "detail": "io",
+        "documentation": {}
+    },
+    {
+        "label": "BytesIO",
+        "importPath": "io",
+        "description": "io",
+        "isExtraImport": true,
+        "detail": "io",
+        "documentation": {}
+    },
+    {
+        "label": "uuid",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "uuid",
+        "description": "uuid",
+        "detail": "uuid",
+        "documentation": {}
+    },
+    {
+        "label": "fuzz",
+        "importPath": "thefuzz",
+        "description": "thefuzz",
+        "isExtraImport": true,
+        "detail": "thefuzz",
+        "documentation": {}
+    },
+    {
+        "label": "Meme",
+        "importPath": "models.database.memeData",
+        "description": "models.database.memeData",
+        "isExtraImport": true,
+        "detail": "models.database.memeData",
+        "documentation": {}
+    },
+    {
+        "label": "MemeFormat",
+        "importPath": "models.database.memeData",
+        "description": "models.database.memeData",
+        "isExtraImport": true,
+        "detail": "models.database.memeData",
+        "documentation": {}
+    },
+    {
+        "label": "bannerize_meme_image",
+        "importPath": "utils.memeUtils.memeBannerUtils",
+        "description": "utils.memeUtils.memeBannerUtils",
+        "isExtraImport": true,
+        "detail": "utils.memeUtils.memeBannerUtils",
+        "documentation": {}
+    },
+    {
+        "label": "easyocr",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "easyocr",
+        "description": "easyocr",
+        "detail": "easyocr",
+        "documentation": {}
+    },
+    {
+        "label": "numpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "numpy",
+        "description": "numpy",
+        "detail": "numpy",
+        "documentation": {}
+    },
+    {
+        "label": "requests",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "requests",
+        "description": "requests",
+        "detail": "requests",
+        "documentation": {}
+    },
+    {
+        "label": "TTLCache",
+        "importPath": "cachetools",
+        "description": "cachetools",
+        "isExtraImport": true,
+        "detail": "cachetools",
+        "documentation": {}
+    },
+    {
+        "label": "cached",
+        "importPath": "cachetools",
+        "description": "cachetools",
+        "isExtraImport": true,
+        "detail": "cachetools",
+        "documentation": {}
+    },
+    {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "Command",
+        "importPath": "aerich",
+        "description": "aerich",
+        "isExtraImport": true,
+        "detail": "aerich",
+        "documentation": {}
+    },
+    {
+        "label": "tortoiseConfig",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "tortoiseConfig",
+        "description": "tortoiseConfig",
+        "detail": "tortoiseConfig",
+        "documentation": {}
+    },
+    {
+        "label": "Context",
+        "importPath": "utils.types",
+        "description": "utils.types",
+        "isExtraImport": true,
+        "detail": "utils.types",
+        "documentation": {}
+    },
+    {
+        "label": "AIService",
+        "kind": 6,
+        "importPath": "cogs.aiService",
+        "description": "cogs.aiService",
+        "peekOfCode": "class AIService(commands.Cog):\n    \"\"\"\n    A Discord Cog for using the OpenAI API to translate code.\n    \"\"\"\n    def __init__(self, bot: discord.Bot, logger: logging.Logger) -> None:\n        self.logger = logger\n        self.bot = bot\n        self.ai = ai.AIUtils()\n        self.reset_ai_usage.start()\n    @tasks.loop(time=time(hour=0, minute=5, tzinfo=Constants.SYSTIMEZONE))",
+        "detail": "cogs.aiService",
+        "documentation": {}
+    },
+    {
+        "label": "setup",
+        "kind": 2,
+        "importPath": "cogs.aiService",
+        "description": "cogs.aiService",
+        "peekOfCode": "def setup(bot: discord.Bot):\n    logger = logging.getLogger(\"bot\")\n    bot.add_cog(AIService(bot, logger))",
+        "detail": "cogs.aiService",
+        "documentation": {}
+    },
+    {
+        "label": "MemeService",
+        "kind": 6,
+        "importPath": "cogs.memeService",
+        "description": "cogs.memeService",
+        "peekOfCode": "class MemeService(commands.Cog):\n    \"\"\"\n    A Discord Cog for getting memes and changing the bots banner.\n    \"\"\"\n    def __init__(self, bot: discord.Bot, logger: logging.Logger) -> None:\n        self.logger = logger\n        self.bot = bot\n    @commands.Cog.listener()\n    async def on_ready(self):\n        \"\"\"",
+        "detail": "cogs.memeService",
+        "documentation": {}
+    },
+    {
+        "label": "setup",
+        "kind": 2,
+        "importPath": "cogs.memeService",
+        "description": "cogs.memeService",
+        "peekOfCode": "def setup(bot: discord.Bot):\n    logger = logging.getLogger(\"bot\")\n    bot.add_cog(MemeService(bot, logger))",
+        "detail": "cogs.memeService",
+        "documentation": {}
+    },
+    {
+        "label": "MensaService",
+        "kind": 6,
+        "importPath": "cogs.mensaService",
+        "description": "cogs.mensaService",
+        "peekOfCode": "class MensaService(commands.Cog):\n    \"\"\"\n    A Discord Cog for managing Mensa-related commands and tasks.\n    \"\"\"\n    def __init__(self, bot: discord.Bot, logger: logging.Logger) -> None:\n        self.bot = bot\n        self.logger = logger\n    @commands.Cog.listener(\"on_ready\")\n    async def on_ready(self):\n        self.send_daily_mensa_message.start()",
+        "detail": "cogs.mensaService",
+        "documentation": {}
+    },
+    {
+        "label": "setup",
+        "kind": 2,
+        "importPath": "cogs.mensaService",
+        "description": "cogs.mensaService",
+        "peekOfCode": "def setup(bot: discord.Bot):\n    logger = logging.getLogger(\"bot\")\n    bot.add_cog(MensaService(bot, logger))",
+        "detail": "cogs.mensaService",
+        "documentation": {}
+    },
+    {
+        "label": "QuotesContext",
+        "kind": 6,
+        "importPath": "cogs.quotes_context",
+        "description": "cogs.quotes_context",
+        "peekOfCode": "class QuotesContext(commands.Cog):\n    def __init__(self, bot: commands.Bot, logger: Logger):\n        self.bot: commands.Bot = bot\n        self.logger: Logger = logger\n    @message_command(name=\"Quote Message\", guild_ids=[Constants.SERVER_IDS.CUR_SERVER])\n    async def quote_message_context(self, ctx: ApplicationContext, message: Message):\n        \"\"\"Fügt eine Nachricht zur persönlichen Quote-Liste hinzu (läuft automatisch ab).\"\"\"\n        user_id = ctx.author.id\n        now = utcnow()\n        # Alte abgelaufene löschen",
+        "detail": "cogs.quotes_context",
+        "documentation": {}
+    },
+    {
+        "label": "setup",
+        "kind": 2,
+        "importPath": "cogs.quotes_context",
+        "description": "cogs.quotes_context",
+        "peekOfCode": "def setup(bot):\n    bot.add_cog(QuotesContext(bot, bot.logger))",
+        "detail": "cogs.quotes_context",
+        "documentation": {}
+    },
+    {
+        "label": "QUOTE_CHANNEL_ID",
+        "kind": 5,
+        "importPath": "cogs.quotes_context",
+        "description": "cogs.quotes_context",
+        "peekOfCode": "QUOTE_CHANNEL_ID = int(os.getenv(\"QUOTE_CHANNEL_ID\"))\n# This does not need a Database because quotes only need to be kept temporarily (in RAM)\ncollected_quotes = {}\nEXPIRATION_MINUTES = 10\nclass QuotesContext(commands.Cog):\n    def __init__(self, bot: commands.Bot, logger: Logger):\n        self.bot: commands.Bot = bot\n        self.logger: Logger = logger\n    @message_command(name=\"Quote Message\", guild_ids=[Constants.SERVER_IDS.CUR_SERVER])\n    async def quote_message_context(self, ctx: ApplicationContext, message: Message):",
+        "detail": "cogs.quotes_context",
+        "documentation": {}
+    },
+    {
+        "label": "collected_quotes",
+        "kind": 5,
+        "importPath": "cogs.quotes_context",
+        "description": "cogs.quotes_context",
+        "peekOfCode": "collected_quotes = {}\nEXPIRATION_MINUTES = 10\nclass QuotesContext(commands.Cog):\n    def __init__(self, bot: commands.Bot, logger: Logger):\n        self.bot: commands.Bot = bot\n        self.logger: Logger = logger\n    @message_command(name=\"Quote Message\", guild_ids=[Constants.SERVER_IDS.CUR_SERVER])\n    async def quote_message_context(self, ctx: ApplicationContext, message: Message):\n        \"\"\"Fügt eine Nachricht zur persönlichen Quote-Liste hinzu (läuft automatisch ab).\"\"\"\n        user_id = ctx.author.id",
+        "detail": "cogs.quotes_context",
+        "documentation": {}
+    },
+    {
+        "label": "EXPIRATION_MINUTES",
+        "kind": 5,
+        "importPath": "cogs.quotes_context",
+        "description": "cogs.quotes_context",
+        "peekOfCode": "EXPIRATION_MINUTES = 10\nclass QuotesContext(commands.Cog):\n    def __init__(self, bot: commands.Bot, logger: Logger):\n        self.bot: commands.Bot = bot\n        self.logger: Logger = logger\n    @message_command(name=\"Quote Message\", guild_ids=[Constants.SERVER_IDS.CUR_SERVER])\n    async def quote_message_context(self, ctx: ApplicationContext, message: Message):\n        \"\"\"Fügt eine Nachricht zur persönlichen Quote-Liste hinzu (läuft automatisch ab).\"\"\"\n        user_id = ctx.author.id\n        now = utcnow()",
+        "detail": "cogs.quotes_context",
+        "documentation": {}
+    },
+    {
+        "label": "QuotesSlash",
+        "kind": 6,
+        "importPath": "cogs.quotes_slash",
+        "description": "cogs.quotes_slash",
+        "peekOfCode": "class QuotesSlash(commands.Cog):\n    def __init__(self, bot: commands.Bot, logger: Logger):\n        self.bot: commands.Bot = bot\n        self.logger: Logger = logger\n    @slash_command(\n        name=\"quote\",\n        description=\"Zitiert eine oder mehrere Nachrichten anhand ihrer URLs.\",\n        guild_ids=[Constants.SERVER_IDS.CUR_SERVER]\n    )\n    async def quote(",
+        "detail": "cogs.quotes_slash",
+        "documentation": {}
+    },
+    {
+        "label": "setup",
+        "kind": 2,
+        "importPath": "cogs.quotes_slash",
+        "description": "cogs.quotes_slash",
+        "peekOfCode": "def setup(bot):\n    bot.add_cog(QuotesSlash(bot, bot.logger))",
+        "detail": "cogs.quotes_slash",
+        "documentation": {}
+    },
+    {
+        "label": "QUOTE_CHANNEL_ID",
+        "kind": 5,
+        "importPath": "cogs.quotes_slash",
+        "description": "cogs.quotes_slash",
+        "peekOfCode": "QUOTE_CHANNEL_ID = int(os.getenv(\"QUOTE_CHANNEL_ID\"))\nclass QuotesSlash(commands.Cog):\n    def __init__(self, bot: commands.Bot, logger: Logger):\n        self.bot: commands.Bot = bot\n        self.logger: Logger = logger\n    @slash_command(\n        name=\"quote\",\n        description=\"Zitiert eine oder mehrere Nachrichten anhand ihrer URLs.\",\n        guild_ids=[Constants.SERVER_IDS.CUR_SERVER]\n    )",
+        "detail": "cogs.quotes_slash",
+        "documentation": {}
+    },
+    {
+        "label": "CodeTranslateResponse",
+        "kind": 6,
+        "importPath": "models.ai.response",
+        "description": "models.ai.response",
+        "peekOfCode": "class CodeTranslateResponse:\n    detected_language: str\n    translated_language: str\n    translated_code: list[str]\n    humorous_comment: str\n    tokens_used: int\n    async def create_embed(\n        self,\n        author: discord.User | discord.Member,\n        remaining_usage: int",
+        "detail": "models.ai.response",
+        "documentation": {}
+    },
+    {
+        "label": "get_usage",
+        "kind": 2,
+        "importPath": "models.ai.response",
+        "description": "models.ai.response",
+        "peekOfCode": "def get_usage(remaining_usage: int) -> str:\n    \"\"\"\n    Get the emoji and text for the remaining usage of the AI.\n    :param remaining_usage: The remaining usage of the AI.\n    :returns: The remaining usage message.\n    \"\"\"\n    if remaining_usage > 2:\n        return f\"🟢 (noch {remaining_usage})\"\n    elif remaining_usage > 0:\n        return f\"🟡 (noch {remaining_usage})\"",
+        "detail": "models.ai.response",
+        "documentation": {}
+    },
+    {
+        "label": "AIMetadata",
+        "kind": 6,
+        "importPath": "models.database.aiData",
+        "description": "models.database.aiData",
+        "peekOfCode": "class AIMetadata(BaseModel):\n    \"\"\"\n    A class representing metadata for the AI service.\n    \"\"\"\n    usage_today = fields.IntField(\n        description=\"The number of requests used today\",\n        default=0\n    )\n    user: fields.OneToOneRelation[\"User\"] = fields.OneToOneField(\n        \"models.User\",",
+        "detail": "models.database.aiData",
+        "documentation": {}
+    },
+    {
+        "label": "BaseModel",
+        "kind": 6,
+        "importPath": "models.database.baseModel",
+        "description": "models.database.baseModel",
+        "peekOfCode": "class BaseModel(Model):\n    class Meta:\n        abstract = True",
+        "detail": "models.database.baseModel",
+        "documentation": {}
+    },
+    {
+        "label": "MemeFormat",
+        "kind": 6,
+        "importPath": "models.database.memeData",
+        "description": "models.database.memeData",
+        "peekOfCode": "class MemeFormat(Enum):\n    \"\"\"Enum representing the format of the meme image.\"\"\"\n    PNG = \"png\"\n    GIF = \"gif\"\nclass Meme(BaseModel):\n    \"\"\"\n    A class representing a meme image.\n    \"\"\"\n    uuid = fields.UUIDField(pk=True, description=\"The UUID of the meme image\")\n    format = fields.CharEnumField(",
+        "detail": "models.database.memeData",
+        "documentation": {}
+    },
+    {
+        "label": "Meme",
+        "kind": 6,
+        "importPath": "models.database.memeData",
+        "description": "models.database.memeData",
+        "peekOfCode": "class Meme(BaseModel):\n    \"\"\"\n    A class representing a meme image.\n    \"\"\"\n    uuid = fields.UUIDField(pk=True, description=\"The UUID of the meme image\")\n    format = fields.CharEnumField(\n        MemeFormat,\n        max_length=3,\n        description=\"The format of the meme image\"\n    )",
+        "detail": "models.database.memeData",
+        "documentation": {}
+    },
+    {
+        "label": "User",
+        "kind": 6,
+        "importPath": "models.database.userData",
+        "description": "models.database.userData",
+        "peekOfCode": "class User(BaseModel):\n    id = fields.IntField(pk=True, description=\"The ID of the user on Discord\")\n    global_name = fields.CharField(\n        max_length=255,\n        description=\"The name of the user on Discord\"\n    )\n    display_name = fields.CharField(\n        max_length=255,\n        description=\"The display name of the user on the Server\"\n    )  # Maybe outdated because it is not updated onevery message",
+        "detail": "models.database.userData",
+        "documentation": {}
+    },
+    {
+        "label": "MealType",
+        "kind": 6,
+        "importPath": "models.mensa.mensaModels",
+        "description": "models.mensa.mensaModels",
+        "peekOfCode": "class MealType(Enum):\n    VEGAN = \"Veganes Gericht\"\n    VEGETARIAN = \"Vegetarisches Gericht\"\n    MEAT = \"Fleischgericht\"\n    FISH = \"Fischgericht\"\n    PASTA = \"Pastateller\"\n@dataclass\nclass Price:\n    value: float\n    def __str__(self):",
+        "detail": "models.mensa.mensaModels",
+        "documentation": {}
+    },
+    {
+        "label": "Price",
+        "kind": 6,
+        "importPath": "models.mensa.mensaModels",
+        "description": "models.mensa.mensaModels",
+        "peekOfCode": "class Price:\n    value: float\n    def __str__(self):\n        return f\"{f'{self.value:.2f}'.replace('.',',')} €\"\n    def __eq__(self, other: object) -> bool:\n        if isinstance(other, Price):\n            return self.value == other.value\n        return False\n    def __lt__(self, other: object) -> bool:\n        if isinstance(other, Price):",
+        "detail": "models.mensa.mensaModels",
+        "documentation": {}
+    },
+    {
+        "label": "Meal",
+        "kind": 6,
+        "importPath": "models.mensa.mensaModels",
+        "description": "models.mensa.mensaModels",
+        "peekOfCode": "class Meal:\n    mealType: MealType\n    mealName: str\n    mealComponents: set[str]\n    mealPrice: Price\n    mealAllergens: set[str]\n    def create_embed(self) -> discord.Embed:\n        joined_meal_components = \", \".join(sorted(self.mealComponents))\n        joined_allergens = \", \".join(sorted(self.mealAllergens))\n        footer = f\"{self.mealPrice}\"",
+        "detail": "models.mensa.mensaModels",
+        "documentation": {}
+    },
+    {
+        "label": "MensaView",
+        "kind": 6,
+        "importPath": "models.mensa.mensaView",
+        "description": "models.mensa.mensaView",
+        "peekOfCode": "class MensaView(discord.ui.View):\n    def __init__(self, current_date: datetime):\n        super().__init__()\n        self.current_date = current_date\n        # disable last_day button if yesterday the mensa was closed\n        if mensaUtils.check_if_mensa_is_open(\n            mensaUtils.get_last_mensa_day(self.current_date)\n        ):\n            self.last_day.disabled = False  # type: ignore\n        else:",
+        "detail": "models.mensa.mensaView",
+        "documentation": {}
+    },
+    {
+        "label": "AIUtils",
+        "kind": 6,
+        "importPath": "utils.ai.ai",
+        "description": "utils.ai.ai",
+        "peekOfCode": "class AIUtils:\n    def __init__(self):\n        self.client = OpenAI(api_key=Constants.SECRETS.OPENAI_TOKEN)\n    def code_translate(self, language: str, code: str) -> CodeTranslateResponse:\n        response = self.client.chat.completions.create(\n            model=Constants.AI.OPENAI_MODEL,\n            messages=[\n                {\"role\": \"system\", \"content\": system_data.code_translate_system_message},\n                {\"role\": \"user\", \"content\": f\"{{\\\"code\\\": \\\"{code}\\\", \\\"language\\\": \\\"{language}\\\"}}\"}\n            ],",
+        "detail": "utils.ai.ai",
+        "documentation": {}
+    },
+    {
+        "label": "code_translate_system_message",
+        "kind": 5,
+        "importPath": "utils.ai.system_data",
+        "description": "utils.ai.system_data",
+        "peekOfCode": "code_translate_system_message = \"\"\"\n**You are \"Code Polyglot Deluxe,\" a multilingual source code translator with a flair for humor.**  \n#### **Your Goals (in order of importance):**  \n1. Translate **every element** of the provided code—keywords, comments, function names—into the requested language or dialect while maintaining functionality.  \n2. Inject culturally relevant humor that enhances the translation without disrupting code readability.  \n3. Ensure the translated code is formatted according to the original language's standard style.  \n#### **Rules:**  \n- Always translate thoroughly and creatively. Even punctuation can be adjusted if it fits the dialect.  \n- Preserve functionality: the code must run as intended.\n- Handle poor formatting by fixing it before translation.",
+        "detail": "utils.ai.system_data",
+        "documentation": {}
+    },
+    {
+        "label": "code_translate_response_format",
+        "kind": 5,
+        "importPath": "utils.ai.system_data",
+        "description": "utils.ai.system_data",
+        "peekOfCode": "code_translate_response_format = {\n    \"type\": \"json_schema\",\n    \"json_schema\": {\n        \"name\": \"code_translation\",\n        \"strict\": True,\n        \"schema\": {\n            \"type\":\n            \"object\",\n            \"properties\": {\n                \"detected_language\": {",
+        "detail": "utils.ai.system_data",
+        "documentation": {}
+    },
+    {
+        "label": "bannerize_meme_image",
+        "kind": 2,
+        "importPath": "utils.memeUtils.memeBannerUtils",
+        "description": "utils.memeUtils.memeBannerUtils",
+        "peekOfCode": "def bannerize_meme_image(image_data: bytes, is_gif: bool) -> bytes:\n    \"\"\"\n    Converts a meme image to a Discord banner format.\n    \"\"\"\n    image_stream = BytesIO(image_data)\n    img = Image.open(image_stream)\n    # Define the target size for the Discord banner\n    target_width, target_height = 960, 339\n    # Create a random color for the banner background\n    random_color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), 255)",
+        "detail": "utils.memeUtils.memeBannerUtils",
+        "documentation": {}
+    },
+    {
+        "label": "create_banner_from_image",
+        "kind": 2,
+        "importPath": "utils.memeUtils.memeBannerUtils",
+        "description": "utils.memeUtils.memeBannerUtils",
+        "peekOfCode": "def create_banner_from_image(frame: Image.Image, color: tuple, target_height: int, target_width: int):\n    # Calculate the aspect ratio of the target size\n    target_aspect_ratio = target_width / target_height\n    # Calculate the aspect ratio of the original image\n    original_aspect_ratio = frame.width / frame.height\n    if original_aspect_ratio > target_aspect_ratio:\n        # Resize based on width\n        new_width = target_width\n        new_height = int(new_width / original_aspect_ratio)\n    else:",
+        "detail": "utils.memeUtils.memeBannerUtils",
+        "documentation": {}
+    },
+    {
+        "label": "save_meme_image_file",
+        "kind": 2,
+        "importPath": "utils.memeUtils.memeUtils",
+        "description": "utils.memeUtils.memeUtils",
+        "peekOfCode": "def save_meme_image_file(img: ImageFile, path: str) -> None:\n    if img.format == \"GIF\":\n        frames = [frame.copy() for frame in ImageSequence.Iterator(img)]\n        frames[0].save(path, save_all=True, append_images=frames[1:], loop=0, format='GIF')\n    else:\n        img.save(path)\nasync def save_meme_metadata(\n    meme_uuid: str, meme_format: MemeFormat, content: str, author: User, message: str, date: datetime) -> None:\n    \"\"\"\n    Saves metadata about the meme image to a CSV file.",
+        "detail": "utils.memeUtils.memeUtils",
+        "documentation": {}
+    },
+    {
+        "label": "get_text_from_image",
+        "kind": 2,
+        "importPath": "utils.memeUtils.ocrUtils",
+        "description": "utils.memeUtils.ocrUtils",
+        "peekOfCode": "def get_text_from_image(logger: Logger, image_file: ImageFile) -> str:\n    if image_file.format == \"GIF\":\n        image = ImageSequence.Iterator(image_file)[0].copy()\n    else:\n        image = image_file.copy()\n    # Convert PIL image to NumPy array\n    np_arr = np.array(image)\n    logger.info(\"Starting OCR\")\n    reader = easyocr.Reader([\"de\", \"en\"], model_storage_directory=Constants.FILE_PATHS.OCR_DATA_FOLDER)\n    result = reader.readtext(np_arr)",
+        "detail": "utils.memeUtils.ocrUtils",
+        "documentation": {}
+    },
+    {
+        "label": "Secrects",
+        "kind": 6,
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "peekOfCode": "class Secrects:\n    DISCORD_TOKEN = str(os.getenv(\"DISCORD_TOKEN\"))  # type: ignore\n    OPENAI_TOKEN = str(os.getenv(\"OPENAI_TOKEN\"))  # type: ignore\nclass ChannelIds:\n    MENSA_CHANNEL = int(os.getenv(\"MENSA_CHANNEL\"))  # type: ignore\n    MEME_CHANNEL = int(os.getenv(\"MEME_CHANNEL\"))  # type: ignore\nclass ServerIds:\n    CUR_SERVER = int(os.getenv(\"CUR_SERVER\"))  # type: ignore\nclass Reactions:\n    CHECK = \"✅\"",
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "ChannelIds",
+        "kind": 6,
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "peekOfCode": "class ChannelIds:\n    MENSA_CHANNEL = int(os.getenv(\"MENSA_CHANNEL\"))  # type: ignore\n    MEME_CHANNEL = int(os.getenv(\"MEME_CHANNEL\"))  # type: ignore\nclass ServerIds:\n    CUR_SERVER = int(os.getenv(\"CUR_SERVER\"))  # type: ignore\nclass Reactions:\n    CHECK = \"✅\"\n    CROSS = \"❌\"\nclass FilePaths:\n    RAW_MEME_FOLDER = \"data/memes/raw\"",
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "ServerIds",
+        "kind": 6,
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "peekOfCode": "class ServerIds:\n    CUR_SERVER = int(os.getenv(\"CUR_SERVER\"))  # type: ignore\nclass Reactions:\n    CHECK = \"✅\"\n    CROSS = \"❌\"\nclass FilePaths:\n    RAW_MEME_FOLDER = \"data/memes/raw\"\n    BANNERIZED_MEME_FOLDER = \"data/memes/bannerized\"\n    OCR_DATA_FOLDER = \"data/ocr\"\n    DB_FILE = \"data/db.sqlite3\"",
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Reactions",
+        "kind": 6,
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "peekOfCode": "class Reactions:\n    CHECK = \"✅\"\n    CROSS = \"❌\"\nclass FilePaths:\n    RAW_MEME_FOLDER = \"data/memes/raw\"\n    BANNERIZED_MEME_FOLDER = \"data/memes/bannerized\"\n    OCR_DATA_FOLDER = \"data/ocr\"\n    DB_FILE = \"data/db.sqlite3\"\nclass Mensa:\n    OPENMENSA_API = \"https://openmensa.org/api/v2/canteens/69/days/{date}/meals\"",
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "FilePaths",
+        "kind": 6,
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "peekOfCode": "class FilePaths:\n    RAW_MEME_FOLDER = \"data/memes/raw\"\n    BANNERIZED_MEME_FOLDER = \"data/memes/bannerized\"\n    OCR_DATA_FOLDER = \"data/ocr\"\n    DB_FILE = \"data/db.sqlite3\"\nclass Mensa:\n    OPENMENSA_API = \"https://openmensa.org/api/v2/canteens/69/days/{date}/meals\"\n    ALLERGENS = {\n        \"glutenhaltiges getreide\",\n        \"krebstiere\",",
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Mensa",
+        "kind": 6,
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "peekOfCode": "class Mensa:\n    OPENMENSA_API = \"https://openmensa.org/api/v2/canteens/69/days/{date}/meals\"\n    ALLERGENS = {\n        \"glutenhaltiges getreide\",\n        \"krebstiere\",\n        \"eier\",\n        \"fisch\",\n        \"erdnüsse\",\n        \"soja\",\n        \"milch/ milchzucker\",",
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "AI",
+        "kind": 6,
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "peekOfCode": "class AI:\n    OPENAI_MODEL = \"gpt-4o-mini\"\n    MAX_TRANSLATE_REQUESTS_PER_DAY = 5\nclass Constants:\n    SECRETS = Secrects\n    CHANNEL_IDS = ChannelIds\n    SERVER_IDS = ServerIds\n    REACTIONS = Reactions\n    URLS = Mensa\n    FILE_PATHS = FilePaths",
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "Constants",
+        "kind": 6,
+        "importPath": "utils.constants",
+        "description": "utils.constants",
+        "peekOfCode": "class Constants:\n    SECRETS = Secrects\n    CHANNEL_IDS = ChannelIds\n    SERVER_IDS = ServerIds\n    REACTIONS = Reactions\n    URLS = Mensa\n    FILE_PATHS = FilePaths\n    AI = AI\n    MENSA = Mensa\n    # --- ADDITIONAL CONSTANTS ---",
+        "detail": "utils.constants",
+        "documentation": {}
+    },
+    {
+        "label": "get_mensa_plan",
+        "kind": 2,
+        "importPath": "utils.mensaUtils",
+        "description": "utils.mensaUtils",
+        "peekOfCode": "def get_mensa_plan(date: datetime) -> list[Meal]:\n    \"\"\"\n    Fetches the mensa plan for a given date using the OpenMensa API.\n    Args:\n        date (datetime): The date for which to fetch the mensa plan.\n    Returns:\n        iter: An iterator of Meal objects representing the meals available on the given date.\n    \"\"\"\n    url = Constants.URLS.OPENMENSA_API.format(date=date.strftime(\"%Y-%m-%d\"))\n    response = requests.get(url)",
+        "detail": "utils.mensaUtils",
+        "documentation": {}
+    },
+    {
+        "label": "extract_pasta_meals",
+        "kind": 2,
+        "importPath": "utils.mensaUtils",
+        "description": "utils.mensaUtils",
+        "peekOfCode": "def extract_pasta_meals(meals_data: list[dict[str, Any]]) -> Iterator[Meal]:\n    \"\"\"\n    Extracts pasta meals from the provided meals data.\n    Args:\n        meals_data (list[dict[str, Any]]): The list of meal data dictionaries.\n    Returns:\n        Iterator[Meal]: An iterator of Meal objects representing the pasta meals.\n    \"\"\"\n    base_meal: Meal | None = None\n    cheese_meal: Meal | None = None",
+        "detail": "utils.mensaUtils",
+        "documentation": {}
+    },
+    {
+        "label": "extract_normal_meals",
+        "kind": 2,
+        "importPath": "utils.mensaUtils",
+        "description": "utils.mensaUtils",
+        "peekOfCode": "def extract_normal_meals(meals_data: list[dict[str, Any]]) -> Iterator[Meal]:\n    \"\"\"\n    Extracts normal meals from the provided meals data.\n    Args:\n        meals_data (list[dict[str, Any]]): The list of meal data dictionaries.\n    Returns:\n        Iterator[Meal]: An iterator of Meal objects representing the normal meals.\n    \"\"\"\n    for meal_data in meals_data:\n        category: str = meal_data.get(\"category\", \"\")",
+        "detail": "utils.mensaUtils",
+        "documentation": {}
+    },
+    {
+        "label": "extract_components_and_allergens",
+        "kind": 2,
+        "importPath": "utils.mensaUtils",
+        "description": "utils.mensaUtils",
+        "peekOfCode": "def extract_components_and_allergens(\n    notes: list[str]\n) -> tuple[set[str],\n           set[str]]:\n    components: set[str] = set()\n    allergens: set[str] = set()\n    for note in notes:\n        if note.strip().lower() in Constants.MENSA.UNNECCESSARY_NOTES:\n            continue\n        if note.strip().lower() in Constants.MENSA.ALLERGENS:",
+        "detail": "utils.mensaUtils",
+        "documentation": {}
+    },
+    {
+        "label": "get_next_mensa_day",
+        "kind": 2,
+        "importPath": "utils.mensaUtils",
+        "description": "utils.mensaUtils",
+        "peekOfCode": "def get_next_mensa_day(current_date: datetime) -> datetime:\n    \"\"\"\n    Calculates the next open mensa day based on the current date.\n    Args:\n        current_date (datetime): The current date.\n    Returns:\n        datetime: The next open mensa day.\n    \"\"\"\n    # Mensa is closed on weekends\n    if current_date.weekday() == 4:",
+        "detail": "utils.mensaUtils",
+        "documentation": {}
+    },
+    {
+        "label": "get_last_mensa_day",
+        "kind": 2,
+        "importPath": "utils.mensaUtils",
+        "description": "utils.mensaUtils",
+        "peekOfCode": "def get_last_mensa_day(current_date: datetime) -> datetime:\n    \"\"\"\n    Calculates the last open mensa day based on the current date.\n    Args:\n        current_date (datetime): The current date.\n    Returns:\n        datetime: The last open mensa day.\n    \"\"\"\n    # Mensa is closed on weekends\n    if current_date.weekday() == 0:",
+        "detail": "utils.mensaUtils",
+        "documentation": {}
+    },
+    {
+        "label": "check_if_mensa_is_open",
+        "kind": 2,
+        "importPath": "utils.mensaUtils",
+        "description": "utils.mensaUtils",
+        "peekOfCode": "def check_if_mensa_is_open(current_date: datetime) -> bool:\n    \"\"\"\n    Checks if the mensa is open on the given date.\n    Args:\n        current_date (datetime): The date to check.\n    Returns:\n        bool: True if the mensa is open, False otherwise.\n    \"\"\"\n    if current_date.weekday() >= 5:\n        return False",
+        "detail": "utils.mensaUtils",
+        "documentation": {}
+    },
+    {
+        "label": "get_mensa_open_days",
+        "kind": 2,
+        "importPath": "utils.mensaUtils",
+        "description": "utils.mensaUtils",
+        "peekOfCode": "def get_mensa_open_days() -> list[str]:\n    \"\"\"\n    Returns a list of all open mensa days for the next week.\n    Returns:\n        list[str]: A list of all open mensa days for the next week.\n    \"\"\"\n    current_date = datetime.now()\n    open_days: list[str] = []\n    for _ in range(7):\n        if check_if_mensa_is_open(current_date):",
+        "detail": "utils.mensaUtils",
+        "documentation": {}
+    },
+    {
+        "label": "format_weekday_in_german",
+        "kind": 2,
+        "importPath": "utils.mensaUtils",
+        "description": "utils.mensaUtils",
+        "peekOfCode": "def format_weekday_in_german(date: datetime) -> str:\n    \"\"\"\n    Converts a given date\"s weekday to its German equivalent.\n    Args:\n        date (datetime): The date object from which to extract the weekday.\n    Returns:\n        str: The German name of the weekday corresponding to the given date.\n    \"\"\"\n    weekday = date.strftime(\"%A\")\n    return {",
+        "detail": "utils.mensaUtils",
+        "documentation": {}
+    },
+    {
+        "label": "get_mensa_message_title",
+        "kind": 2,
+        "importPath": "utils.mensaUtils",
+        "description": "utils.mensaUtils",
+        "peekOfCode": "def get_mensa_message_title(date: datetime) -> str:\n    \"\"\"\n    Returns a message title used for sending the mensa message.\n    Args:\n        date (datetime): The date to use.\n    Returns:\n        str: The mensa message title.\n    \"\"\"\n    weekday_german = format_weekday_in_german(date)\n    return f\"## Mensaplan von {weekday_german}, {date.strftime('%d.%m.%Y')}\"",
+        "detail": "utils.mensaUtils",
+        "documentation": {}
+    },
+    {
+        "label": "build_quote_embed",
+        "kind": 2,
+        "importPath": "utils.quoteUtils",
+        "description": "utils.quoteUtils",
+        "peekOfCode": "def build_quote_embed(messages, author_name=None):\n    embed = Embed(color=Color.blurple())\n    for msg in messages:\n        content = msg.content[:1024] if msg.content else \"[- kein Text -]\"\n        embed.add_field(\n            name=f\"~ {msg.author.display_name}\",\n            value=f\"“{content}”\\n[Originalnachricht]({msg.jump_url})\",\n            inline=False\n        )\n    if author_name:",
+        "detail": "utils.quoteUtils",
+        "documentation": {}
+    },
+    {
+        "label": "Context",
+        "kind": 5,
+        "importPath": "utils.types",
+        "description": "utils.types",
+        "peekOfCode": "Context = commands.Context[commands.Bot]",
+        "detail": "utils.types",
+        "documentation": {}
+    },
+    {
+        "label": "get_extensions",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def get_extensions() -> Iterator[str]:\n    files = Path(\"cogs\").rglob(\"*.py\")\n    for file in files:\n        yield file.as_posix()[:-3].replace(\"/\", \".\")\ndef load_extensions(\n    bot: commands.Bot,\n    logger: logging.Logger,\n    extensions: Iterator[str]\n):\n    for ext_file in extensions:",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "load_extensions",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def load_extensions(\n    bot: commands.Bot,\n    logger: logging.Logger,\n    extensions: Iterator[str]\n):\n    for ext_file in extensions:\n        try:\n            bot.load_extension(ext_file)\n            logger.info(\"Loaded %s\", ext_file)\n        except Exception as ex:",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "unload_extensions",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def unload_extensions(\n    bot: commands.Bot,\n    logger: logging.Logger,\n    extensions: Iterator[str]\n):\n    for ext_file in extensions:\n        try:\n            bot.unload_extension(ext_file)\n            logger.info(\"Unloaded %s\", ext_file)\n        except Exception as ex:",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "setup_discord_logger",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def setup_discord_logger():\n    logger = logging.getLogger('discord')\n    logger.setLevel(logging.INFO)\n    handler = logging.FileHandler(\n        filename='discord.log',\n        encoding='utf-8',\n        mode='w'\n    )\n    handler.setFormatter(\n        logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s')",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "setup_bot_logger",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def setup_bot_logger():\n    logger = logging.getLogger('bot')\n    logger.setLevel(logging.INFO)\n    handler = logging.FileHandler(\n        filename='bot.log',\n        encoding='utf-8',\n        mode='w'\n    )\n    handler.setFormatter(\n        logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s')",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def main():\n    setup_discord_logger()\n    setup_bot_logger()\n    run_async(init_database())\n    logger = logging.getLogger(\"bot\")\n    intents = discord.Intents.all()\n    bot = commands.Bot(\n        command_prefix=\"$\",\n        intents=intents,\n        case_insensitive=True,",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "TORTOISE_ORM",
+        "kind": 5,
+        "importPath": "tortoiseConfig",
+        "description": "tortoiseConfig",
+        "peekOfCode": "TORTOISE_ORM = { # type: ignore\n    \"connections\": {\n        \"default\": f\"sqlite://{Constants.FILE_PATHS.DB_FILE}\"\n    },\n    \"apps\": {\n        \"models\": {\n            \"models\": [\n                \"models.database.userData\",\n                \"models.database.memeData\",\n                \"models.database.aiData\",",
+        "detail": "tortoiseConfig",
+        "documentation": {}
+    }
+]
