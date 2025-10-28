@@ -1,10 +1,10 @@
 import os
 import asyncio
 from logging import Logger
-from pathlib import Path
-from datetime import datetime, timedelta
-
+from datetime import timedelta
 from dotenv import load_dotenv
+
+from utils.quoteUtils import build_quote_embed
 from utils.constants import Constants
 
 from discord import message_command, user_command, ApplicationContext, Message, User, Color, Embed, Forbidden
@@ -13,8 +13,8 @@ from discord.ext import commands
 
 load_dotenv()
 
-QUOTE_CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
-
+QUOTE_CHANNEL_ID = int(os.getenv("QUOTE_CHANNEL_ID"))
+# This does not need a Database because quotes only need to be kept temporarily (in RAM)
 collected_quotes = {}
 EXPIRATION_MINUTES = 10
 
@@ -24,27 +24,6 @@ class QuotesContext(commands.Cog):
         self.bot: commands.Bot = bot
         self.logger: Logger = logger
 
-    # ---------------------------------------------------------
-    # Einheitliches Embed
-    # ---------------------------------------------------------
-    def build_quote_embed(self, messages, author_name=None):
-        embed = Embed(color=Color.blurple())
-
-        for msg in messages:
-            content = msg.content[:1024] if msg.content else "[- kein Text -]"
-            embed.add_field(
-                name=f"~ {msg.author.display_name}",
-                value=f'“{content}”\n[Originalnachricht]({msg.jump_url})',
-                inline=False
-            )
-
-        if author_name:
-            embed.set_footer(text=f"Eingereicht von {author_name}")
-
-        embed.timestamp = utcnow()
-        return embed
-
-    # ---------------------------------------------------------
     @message_command(name="Quote Message", guild_ids=[Constants.SERVER_IDS.CUR_SERVER])
     async def quote_message_context(self, ctx: ApplicationContext, message: Message):
         """Fügt eine Nachricht zur persönlichen Quote-Liste hinzu (läuft automatisch ab)."""
@@ -106,7 +85,7 @@ class QuotesContext(commands.Cog):
         except asyncio.TimeoutError:
             comment = None
 
-        embed = self.build_quote_embed(data["messages"], ctx.author.display_name)
+        embed = build_quote_embed(data["messages"], ctx.author.display_name)
 
         # Kommentar steht jetzt **über** dem Embed
         if comment:

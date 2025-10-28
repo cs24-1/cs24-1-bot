@@ -1,36 +1,23 @@
 import os
-from pathlib import Path
 from logging import Logger
 from dotenv import load_dotenv
+
+from utils.quoteUtils import build_quote_embed
 from utils.constants import Constants
 
-from discord import ApplicationContext, slash_command, Channel, Message, Embed, Color, NotFound, Forbidden, HTTPException
+from discord import ApplicationContext, slash_command, TextChannel, Message, Embed, Color, NotFound, Forbidden, HTTPException
 from discord.utils import utcnow
 from discord.ext import commands
 
 load_dotenv()
 
-QUOTE_CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
+QUOTE_CHANNEL_ID = int(os.getenv("QUOTE_CHANNEL_ID"))
 
 
 class QuotesSlash(commands.Cog):
     def __init__(self, bot: commands.Bot, logger: Logger):
         self.bot: commands.Bot = bot
         self.logger: Logger = logger
-
-    def build_quote_embed(self, messages, author_name=None):
-        embed = Embed(color=Color.blurple())
-        for msg in messages:
-            content = msg.content[:1024] if msg.content else "[- kein Text -]"
-            embed.add_field(
-                name=f"~ {msg.author.display_name}",
-                value=f"“{content}”\n[Originalnachricht]({msg.jump_url})",
-                inline=False
-            )
-        if author_name:
-            embed.set_footer(text=f"Eingereicht von {author_name}")
-        embed.timestamp = utcnow()
-        return embed
 
     @slash_command(
         name="quote",
@@ -62,15 +49,15 @@ class QuotesSlash(commands.Cog):
             if url is None:
                 continue
             
-            guild_id = url.split("/")[-3]
-            channel_id = url.split("/")[-2]
-            message_id = url.split("/")[-1]
-            
-            if int(guild_id) != Constants.SERVER_IDS.CUR_SERVER:
-                return await ctx.respond("❌ Kann nur Nachrichten aus diesem Server zitieren.")
-            
             try:
-                channel: Channel = await self.bot.fetch_channel(int(channel_id))
+                guild_id = url.split("/")[-3]
+                channel_id = url.split("/")[-2]
+                message_id = url.split("/")[-1]
+            
+                if int(guild_id) != Constants.SERVER_IDS.CUR_SERVER:
+                    return await ctx.respond("❌ Kann nur Nachrichten aus diesem Server zitieren.")
+                
+                channel: TextChannel = await self.bot.fetch_channel(int(channel_id))
                 message = await channel.fetch_message(int(message_id))
                 found_messages.append(message)
             except (NotFound, Forbidden, HTTPException):
@@ -80,7 +67,7 @@ class QuotesSlash(commands.Cog):
             return await ctx.respond("⚠️ Keine gültigen Nachrichten gefunden.", ephemeral=True)
             
 
-        embed = self.build_quote_embed(found_messages, ctx.author.display_name)
+        embed = build_quote_embed(found_messages, ctx.author.display_name)
 
         if comment:
             await quote_channel.send(content=f"💬 {comment}", embed=embed)
