@@ -40,8 +40,8 @@ class QuotesSlash(commands.Cog):
             return
         
         input_messages: list[str] = [message_1, message_2, message_3, message_4, message_5]
-        if not any(input_messages):
-            return await ctx.respond("⚠️ Gib mindestens eine Nachrichten-URL an.", ephemeral=True)
+        if not any(url and url.strip() for url in input_messages):
+            return await ctx.respond("⚠️ Gib mindestens eine gültige Nachrichten-URL an.", ephemeral=True)
         
         found_messages: list[Message] = []
 
