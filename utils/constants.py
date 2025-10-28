@@ -81,6 +81,13 @@ class AI:
     MAX_TRANSLATE_REQUESTS_PER_DAY = 5
 
 
+class ReactionLearning:
+    MIN_COUNT_THRESHOLD = 2  # Minimum times a reaction must be seen before suggesting it
+    MAX_SUGGESTIONS_PER_MESSAGE = 3  # Maximum number of reactions to auto-suggest
+    SIMILARITY_THRESHOLD = 0.6  # Minimum similarity score (0-1) to suggest a reaction
+    MESSAGE_LENGTH_MIN = 5  # Minimum message length to learn from (avoid very short messages)
+
+
 class Constants:
     SECRETS = Secrects
     CHANNEL_IDS = ChannelIds
@@ -90,5 +97,6 @@ class Constants:
     FILE_PATHS = FilePaths
     AI = AI
     MENSA = Mensa
+    REACTION_LEARNING = ReactionLearning
     # --- ADDITIONAL CONSTANTS ---
     SYSTIMEZONE = datetime.now().astimezone().tzinfo

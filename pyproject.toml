@@ -16,4 +16,3 @@ split_before_named_assigns = true
 
 [tool.mypy]
 check_untyped_defs = true
-line_length = 80
