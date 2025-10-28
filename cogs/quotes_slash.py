@@ -10,7 +10,10 @@ from discord.ext import commands
 
 load_dotenv()
 
-QUOTE_CHANNEL_ID = int(os.getenv("QUOTE_CHANNEL_ID"))
+quote_channel_id_str = os.getenv("QUOTE_CHANNEL_ID")
+if quote_channel_id_str is None:
+    raise RuntimeError("Environment variable QUOTE_CHANNEL_ID is not set. Please set it to the Discord channel ID for quotes.")
+QUOTE_CHANNEL_ID = int(quote_channel_id_str)
 
 
 class QuotesSlash(commands.Cog):
