@@ -108,7 +108,7 @@ class QuotesContext(commands.Cog):
         """
         while True:
             now = utcnow()
-            expired = [uid for uid, data in collected_quotes.items() if data["expires"] < now]
+            expired = [uid for uid, data in list(collected_quotes.items()) if data["expires"] < now]
             for uid in expired:
                 del collected_quotes[uid]
             await asyncio.sleep(60)
