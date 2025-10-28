@@ -61,4 +61,5 @@ class ReactionLearning(BaseModel):
 
         :returns: A description of the learned pattern.
         """
-        return f"Reaction '{self.reaction}' for message pattern (count: {self.count})"
+        return (f"Reaction '{self.reaction}' for message pattern "
+                f"(count: {self.count})")
