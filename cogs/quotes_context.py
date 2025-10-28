@@ -1,33 +1,37 @@
-import discord
-from discord.ext import commands
-from pathlib import Path
-from dotenv import load_dotenv
 import os
 import asyncio
+from logging import Logger
+from pathlib import Path
 from datetime import datetime, timedelta
 
-env_path = Path(__file__).resolve().parent.parent / ".env"
-load_dotenv(dotenv_path=env_path)
+from dotenv import load_dotenv
+from utils.constants import Constants
 
-GUILD_ID = int(os.getenv("GUILD_ID"))
+from discord import commands, message_command, user_command, ApplicationContext, Message, User, Color, Embed, Forbidden
+from discord.utils import utcnow
+from discord.ext import commands
+
+load_dotenv()
+
 QUOTE_CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
 
 collected_quotes = {}
 EXPIRATION_MINUTES = 10
 
 
-class quotes_context(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+class QuotesContext(commands.Cog):
+    def __init__(self, bot: commands.Bot, logger: Logger):
+        self.bot: commands.Bot = bot
+        self.logger: Logger = logger
 
     # ---------------------------------------------------------
     # Einheitliches Embed
     # ---------------------------------------------------------
     def build_quote_embed(self, messages, author_name=None):
-        embed = discord.Embed(color=discord.Color.blurple())
+        embed = Embed(color=Color.blurple())
 
         for msg in messages:
-            content = msg.content[:1024] if msg.content else "[– kein Text –]"
+            content = msg.content[:1024] if msg.content else "[- kein Text -]"
             embed.add_field(
                 name=f"~ {msg.author.display_name}",
                 value=f'“{content}”\n[Originalnachricht]({msg.jump_url})',
@@ -37,12 +41,12 @@ class quotes_context(commands.Cog):
         if author_name:
             embed.set_footer(text=f"Eingereicht von {author_name}")
 
-        embed.timestamp = discord.utils.utcnow()
+        embed.timestamp = utcnow()
         return embed
 
     # ---------------------------------------------------------
-    @discord.message_command(name="Quote Message", guild_ids=[GUILD_ID])
-    async def quote_message_context(self, ctx: discord.ApplicationContext, message: discord.Message):
+    @message_command(name="Quote Message", guild_ids=[Constants.SERVER_IDS.CUR_SERVER])
+    async def quote_message_context(self, ctx: ApplicationContext, message: Message):
         """Fügt eine Nachricht zur persönlichen Quote-Liste hinzu (läuft automatisch ab)."""
         user_id = ctx.author.id
         now = datetime.utcnow()
@@ -66,8 +70,8 @@ class quotes_context(commands.Cog):
         )
 
     # ---------------------------------------------------------
-    @discord.user_command(name="Send Saved Quotes", guild_ids=[GUILD_ID])
-    async def send_saved_quotes_context(self, ctx: discord.ApplicationContext, user: discord.User):
+    @user_command(name="Send Saved Quotes", guild_ids=[Constants.SERVER_IDS.CUR_SERVER])
+    async def send_saved_quotes_context(self, ctx: ApplicationContext, user: User):
         """Sendet die gespeicherten Quotes des angegebenen Users."""
         if user.id != ctx.author.id:
             await ctx.respond("❌ Du kannst nur deine eigenen gespeicherten Zitate senden.", ephemeral=True)
@@ -97,7 +101,7 @@ class quotes_context(commands.Cog):
             comment = None if msg.content.lower() == "skip" else msg.content
             try:
                 await msg.delete(delay=1)  # automatisch löschen
-            except discord.Forbidden:
+            except Forbidden:
                 pass
         except asyncio.TimeoutError:
             comment = None
@@ -123,9 +127,9 @@ class quotes_context(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("📦 Cog 'QuotesContext' ready.")
+        self.logger.info("📦 Cog 'QuotesContext' ready.")
         self.bot.loop.create_task(self.cleanup_expired_quotes())
 
 
 def setup(bot):
-    bot.add_cog(quotes_context(bot))
+    bot.add_cog(QuotesContext(bot))

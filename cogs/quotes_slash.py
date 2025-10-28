@@ -1,8 +1,10 @@
 import os
 from pathlib import Path
+from logging import Logger
 from dotenv import load_dotenv
+from utils.constants import Constants
 
-from discord import slash_command, ApplicationContext, Color, Embed, NotFound, Forbidden, HTTPException
+import discord
 from discord.utils import utcnow
 from discord.ext import commands
 
@@ -11,9 +13,10 @@ load_dotenv()
 QUOTE_CHANNEL_ID = int(os.getenv("CHANNEL_ID"))
 
 
-class quotes_slash(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+class QuotesSlash(commands.Cog):
+    def __init__(self, bot: commands.Bot, logger: Logger):
+        self.bot: commands.Bot = bot
+        self.logger: Logger = logger
 
     def build_quote_embed(self, messages, author_name=None):
         embed = Embed(color=Color.blurple())
@@ -31,7 +34,8 @@ class quotes_slash(commands.Cog):
 
     @slash_command(
         name="quote",
-        description="Zitiert eine oder mehrere Nachrichten anhand ihrer IDs.",
+        description="Zitiert eine oder mehrere Nachrichten anhand ihrer URLs.",
+        guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
     )
     async def quote(
         self,
@@ -47,22 +51,29 @@ class quotes_slash(commands.Cog):
         if not quote_channel:
             await ctx.respond("❌ Quote-Channel nicht gefunden.", ephemeral=True)
             return
+        
+        input_messages: list[str] = [message_1, message_2, message_3, message_4, message_5]
+        if not input_messages:
+            return await ctx.respond("⚠️ Gib mindestens eine Nachrichten-URL an.", ephemeral=True)
+        
+        found_messages: list[Message] = []
 
-        message_ids = [m for m in [message_1, message_2, message_3, message_4, message_5] if m]
-        if not message_ids:
-            await ctx.respond("⚠️ Gib mindestens eine Nachrichten-ID an.", ephemeral=True)
-            return
-
-        found_messages = []
-        for mid in message_ids:
-            for ch in ctx.guild.text_channels:
-                try:
-                    msg = await ch.fetch_message(int(mid))
-                    found_messages.append(msg)
-                    break
-                except (NotFound, Forbidden, HTTPException):
-                    continue
-
+        for url in input_messages:
+            guild_id = url.split("/")[-3]
+            channel_id = url.split("/")[-2]
+            message_id = url.split("/")[-1]
+            
+            if guild_id != Constants.SERVER_IDS.CUR_SERVER:
+                return await ctx.respond("Can't quote messages that are not from this guild")
+            
+            try:
+                channel: Channel = await self.bot.fetch_channel(int(channel_id))
+                message = channel.fetch_message(int(message_id))
+                found_messages.append(message)
+                break
+            except (NotFound, Forbidden, HTTPException):
+                continue
+            
         if not found_messages:
             await ctx.respond("⚠️ Keine gültigen Nachrichten gefunden.", ephemeral=True)
             return
@@ -78,8 +89,8 @@ class quotes_slash(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("📦 Cog 'QuotesSlash' ready.")
+        self.logger.info("📦 Cog 'QuotesSlash' ready.")
 
 
 def setup(bot):
-    bot.add_cog(quotes_slash(bot))
+    bot.add_cog(QuotesSlash(bot))
