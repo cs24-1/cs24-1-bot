@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from dotenv import load_dotenv
 from utils.constants import Constants
 
-from discord import commands, message_command, user_command, ApplicationContext, Message, User, Color, Embed, Forbidden
+from discord import message_command, user_command, ApplicationContext, Message, User, Color, Embed, Forbidden
 from discord.utils import utcnow
 from discord.ext import commands
 
@@ -132,4 +132,4 @@ class QuotesContext(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(QuotesContext(bot))
+    bot.add_cog(QuotesContext(bot, bot.logger))

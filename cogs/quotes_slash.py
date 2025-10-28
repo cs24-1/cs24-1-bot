@@ -4,7 +4,7 @@ from logging import Logger
 from dotenv import load_dotenv
 from utils.constants import Constants
 
-import discord
+from discord import ApplicationContext, slash_command, Channel, Message, Embed, Color, NotFound, Forbidden, HTTPException
 from discord.utils import utcnow
 from discord.ext import commands
 
@@ -53,30 +53,32 @@ class QuotesSlash(commands.Cog):
             return
         
         input_messages: list[str] = [message_1, message_2, message_3, message_4, message_5]
-        if not input_messages:
+        if not any(input_messages):
             return await ctx.respond("⚠️ Gib mindestens eine Nachrichten-URL an.", ephemeral=True)
         
         found_messages: list[Message] = []
 
         for url in input_messages:
+            if url is None:
+                continue
+            
             guild_id = url.split("/")[-3]
             channel_id = url.split("/")[-2]
             message_id = url.split("/")[-1]
             
-            if guild_id != Constants.SERVER_IDS.CUR_SERVER:
-                return await ctx.respond("Can't quote messages that are not from this guild")
+            if int(guild_id) != Constants.SERVER_IDS.CUR_SERVER:
+                return await ctx.respond("❌ Kann nur Nachrichten aus diesem Server zitieren.")
             
             try:
                 channel: Channel = await self.bot.fetch_channel(int(channel_id))
-                message = channel.fetch_message(int(message_id))
+                message = await channel.fetch_message(int(message_id))
                 found_messages.append(message)
-                break
             except (NotFound, Forbidden, HTTPException):
-                continue
+                pass
             
         if not found_messages:
-            await ctx.respond("⚠️ Keine gültigen Nachrichten gefunden.", ephemeral=True)
-            return
+            return await ctx.respond("⚠️ Keine gültigen Nachrichten gefunden.", ephemeral=True)
+            
 
         embed = self.build_quote_embed(found_messages, ctx.author.display_name)
 
@@ -93,4 +95,4 @@ class QuotesSlash(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(QuotesSlash(bot))
+    bot.add_cog(QuotesSlash(bot, bot.logger))
