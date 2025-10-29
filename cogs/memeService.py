@@ -72,7 +72,7 @@ class MemeService(commands.Cog):
         type=discord.SlashCommandOptionType.string,
         required=False
     )
-    async def meme(self, ctx: ApplicationContext, search: str):
+    async def meme(self, ctx: ApplicationContext, search: str | None = None):
         """
         Searches for a meme matching the search term and sends it in an embed.
         """
