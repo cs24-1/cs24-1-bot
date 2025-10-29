@@ -26,7 +26,7 @@ class QuoteService(commands.Cog):
 
     @commands.Cog.listener("on_ready")
     async def on_ready(self):
-        self.logger.info("MensaService started successfully")
+        self.logger.info("QuoteService started successfully")
 
     @discord.slash_command(
         name="quote",

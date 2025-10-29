@@ -18,7 +18,7 @@ def build_quote_embed(
     
 
     Args:
-        messages (Iterable[discord.Message]): The messages to include in the embed.
+        messages (list[discord.Message]): The messages to include in the embed.
         author_name (str, optional): The name of the author submitting the quotes. Defaults to None.
 
     Returns:
