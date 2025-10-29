@@ -72,12 +72,17 @@ class QuoteService(commands.Cog):
         await ctx.respond(
             f"📌 Nachricht von **{message.author.display_name}** gespeichert!\n"
             f"({len(self.quote_cache[user_id])} gesammelt - verfällt in {self.quote_cache.ttl // 60} Minuten)\n\n"
-            f"**Tipp:** nutze den Befehl `/post_quote`, um deine gesammelten Nachrichten zu zitieren.",
+            f"**Tipp:** nutze den Befehl `/quotes post`, um deine gesammelten Nachrichten zu zitieren.",
             ephemeral=True
         )
 
-    @discord.slash_command(
-        name="post_quote",
+    quotes = discord.SlashCommandGroup(
+        name="quotes",
+        description="Verwalte deine gespeicherten Zitate."
+    )
+
+    @quotes.command(
+        name="post",
         description="Postet alle gesammelten Nachrichten als Quote.",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
     )
@@ -102,6 +107,19 @@ class QuoteService(commands.Cog):
         await self._send_quote_embed(ctx, quotes, comment)
 
         self.quote_cache.pop(user_id)
+
+    @quotes.command(
+        name="clear",
+        description="Löscht alle gespeicherten Nachrichten.",
+        guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
+    )
+    async def clear_quotes(self, ctx: ApplicationContext):
+        user_id = ctx.author.id
+        self.quote_cache.pop(user_id, None)
+        await ctx.respond(
+            "✅ Alle gespeicherten Nachrichten wurden gelöscht.",
+            ephemeral=True
+        )
 
     async def _send_quote_embed(
         self,
