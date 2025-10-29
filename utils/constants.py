@@ -14,6 +14,7 @@ class Secrects:
 class ChannelIds:
     MENSA_CHANNEL = int(os.getenv("MENSA_CHANNEL"))  # type: ignore
     MEME_CHANNEL = int(os.getenv("MEME_CHANNEL"))  # type: ignore
+    QUOTE_CHANNEL = int(os.getenv("QUOTE_CHANNEL"))  # type: ignore
 
 
 class ServerIds:
