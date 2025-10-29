@@ -20,7 +20,3 @@ RUN pip install --no-cache-dir -r development.requirements.txt
 # Install main requirements
 COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Initialize data directory
-RUN mkdir ./data
-RUN touch ./data/db.sqlite3
