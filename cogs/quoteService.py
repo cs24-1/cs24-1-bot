@@ -44,6 +44,9 @@ class QuoteService(commands.Cog):
         message_5: discord.Message | None,
         comment: str | None = None,
     ):
+        """
+        Quotes up to five messages specified by their URLs or IDs.
+        """
         messages: list[discord.Message] = [message_1]
         for msg in [message_2, message_3, message_4, message_5]:
             if msg is not None:
@@ -114,6 +117,9 @@ class QuoteService(commands.Cog):
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
     )
     async def clear_quotes(self, ctx: ApplicationContext):
+        """
+        Clears all stored messages for the user.
+        """
         user_id = ctx.author.id
         self.quote_cache.pop(user_id, None)
         await ctx.respond(
