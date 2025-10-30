@@ -52,7 +52,7 @@ class QuoteService(commands.Cog):
             if msg is not None:
                 messages.append(msg)
 
-        await self._send_quote_embed(ctx, messages, comment)
+        await self._store_and_send_quote(ctx, messages, comment)
 
     @discord.message_command(
         name="Nachricht zu Quote hinzufügen",
@@ -107,7 +107,7 @@ class QuoteService(commands.Cog):
             )
             return
 
-        await self._send_quote_embed(ctx, quotes, comment)
+        await self._store_and_send_quote(ctx, quotes, comment)
 
         self.quote_cache.pop(user_id)
 
@@ -127,26 +127,15 @@ class QuoteService(commands.Cog):
             ephemeral=True
         )
 
-    async def _send_quote_embed(
+    async def _store_and_send_quote(
         self,
         ctx: ApplicationContext,
         messages: list[discord.Message],
         comment: str | None,
     ):
-        quote_channel: discord.TextChannel | None = ctx.guild.get_channel(
-            Constants.CHANNEL_IDS.QUOTE_CHANNEL
-        )
+        await quoteUtils.store_quote_in_db(ctx, messages, comment)
 
-        if not quote_channel:
-            await ctx.respond("❌ Quote-Channel nicht gefunden.", ephemeral=True)
-            return
-
-        embed = quoteUtils.build_quote_embed(messages, ctx.author.display_name)
-
-        if comment:
-            await quote_channel.send(content=f"💬 {comment}", embed=embed)
-        else:
-            await quote_channel.send(embed=embed)
+        await quoteUtils.send_embed(ctx, messages, comment)
 
         await ctx.respond(
             f"✅ {len(messages)} Quote{'s' if len(messages) > 1 else ''} gepostet!",
