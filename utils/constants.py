@@ -90,6 +90,11 @@ class Mensa:
     }
 
 
+class QuoteWeights:
+    TEXT_WEIGHT = 0.7
+    USER_WEIGHT = 0.3
+
+
 class AI:
     OPENAI_MODEL = "gpt-4o-mini"
     MAX_TRANSLATE_REQUESTS_PER_DAY = 5
@@ -104,5 +109,6 @@ class Constants:
     FILE_PATHS = FilePaths
     AI = AI
     MENSA = Mensa
+    QUOTE_WEIGHTS = QuoteWeights
     # --- ADDITIONAL CONSTANTS ---
     SYSTIMEZONE = datetime.now().astimezone().tzinfo

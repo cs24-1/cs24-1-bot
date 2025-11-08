@@ -28,13 +28,18 @@ class QuoteService(commands.Cog):
     async def on_ready(self):
         self.logger.info("QuoteService started successfully")
 
-    @discord.slash_command(
+    quote = discord.SlashCommandGroup(
         name="quote",
+        description="Verwalte Zitate."
+    )
+
+    @quote.command(
+        name="create",
         description=
         "Zitiert eine bis maximal fünf Nachrichten anhand ihrer URLs oder IDs.",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER],
     )
-    async def quote(
+    async def create_quote(
         self,
         ctx: ApplicationContext,
         message_1: discord.Message,
@@ -52,7 +57,7 @@ class QuoteService(commands.Cog):
             if msg is not None:
                 messages.append(msg)
 
-        await self._send_quote_embed(ctx, messages, comment)
+        await self._store_and_send_quote(ctx, messages, comment)
 
     @discord.message_command(
         name="Nachricht zu Quote hinzufügen",
@@ -79,12 +84,7 @@ class QuoteService(commands.Cog):
             ephemeral=True
         )
 
-    quotes = discord.SlashCommandGroup(
-        name="quotes",
-        description="Verwalte deine gespeicherten Zitate."
-    )
-
-    @quotes.command(
+    @quote.command(
         name="post",
         description="Postet alle gesammelten Nachrichten als Quote.",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
@@ -107,11 +107,11 @@ class QuoteService(commands.Cog):
             )
             return
 
-        await self._send_quote_embed(ctx, quotes, comment)
+        await self._store_and_send_quote(ctx, quotes, comment)
 
         self.quote_cache.pop(user_id)
 
-    @quotes.command(
+    @quote.command(
         name="clear",
         description="Löscht alle gespeicherten Nachrichten.",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
@@ -127,26 +127,56 @@ class QuoteService(commands.Cog):
             ephemeral=True
         )
 
-    async def _send_quote_embed(
+    @quote.command(
+        name="search",
+        description="Suche nach einem Zitat",
+        guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
+    )
+    @discord.option(
+        "search_term",
+        type=discord.SlashCommandOptionType.string,
+        required=False
+    )
+    @discord.option(
+        "search_user",
+        type=discord.SlashCommandOptionType.string,
+        required=False
+    )
+    async def search_quote(
+        self,
+        ctx: ApplicationContext,
+        search_term: str | None = None,
+        search_user: str | None = None,
+    ):
+        """
+        Searches for a quote matching the search term and user and sends it in an embed.
+        """
+        if search_term is None and search_user is None:
+            quote = await quoteUtils.get_random_quote()
+        else:
+            quotes = await quoteUtils.search_quotes(search_term, search_user, 1)
+
+            if len(quotes) == 0:
+                await ctx.respond(
+                    f"Kein Zitat für die Suche `{search_term}` und den Namen `{search_user}` gefunden!"
+                )
+                return
+
+            quote = quotes[0]
+
+        embed = await quote.create_embed(search_term, search_user)
+
+        await ctx.respond(embed=embed)
+
+    async def _store_and_send_quote(
         self,
         ctx: ApplicationContext,
         messages: list[discord.Message],
         comment: str | None,
     ):
-        quote_channel: discord.TextChannel | None = ctx.guild.get_channel(
-            Constants.CHANNEL_IDS.QUOTE_CHANNEL
-        )
+        await quoteUtils.store_quote_in_db(ctx, messages, comment)
 
-        if not quote_channel:
-            await ctx.respond("❌ Quote-Channel nicht gefunden.", ephemeral=True)
-            return
-
-        embed = quoteUtils.build_quote_embed(messages, ctx.author.display_name)
-
-        if comment:
-            await quote_channel.send(content=f"💬 {comment}", embed=embed)
-        else:
-            await quote_channel.send(embed=embed)
+        await quoteUtils.send_embed(ctx, messages, comment)
 
         await ctx.respond(
             f"✅ {len(messages)} Quote{'s' if len(messages) > 1 else ''} gepostet!",
