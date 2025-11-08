@@ -4,6 +4,7 @@ from discord import ApplicationContext, Embed, Color
 import discord
 from discord.utils import utcnow
 from thefuzz import fuzz  # type: ignore
+from tortoise.expressions import Q
 
 from models.database.quoteData import QuoteMessage, Quote
 from models.database.userData import User
@@ -142,6 +143,8 @@ async def search_quotes(
 
     If only one is given, it will not care about the other. If both are given, this is an AND.
 
+    Uses Q objects for database-level filtering to improve performance on large datasets.
+
     Args:
         search_term (str | None): The search term.
         user_name (str | None): The author / reporter to search.
@@ -150,7 +153,34 @@ async def search_quotes(
     Returns:
         list[Quote]: The matching results.
     """
-    quotes = await Quote.all().prefetch_related(
+    # Build Q object filters for database-level filtering
+    query = Quote.all()
+
+    if search_term is not None and user_name is not None:
+        # Both filters: AND condition
+        text_filter = (
+            Q(comment__icontains=search_term)
+            | Q(messages__content__icontains=search_term)
+        )
+        user_filter = (
+            Q(reporter__display_name__icontains=user_name)
+            | Q(messages__author__display_name__icontains=user_name)
+        )
+        query = query.filter(text_filter & user_filter)
+    elif search_term is not None:
+        # Only text search
+        query = query.filter(
+            Q(comment__icontains=search_term)
+            | Q(messages__content__icontains=search_term)
+        )
+    elif user_name is not None:
+        # Only user search
+        query = query.filter(
+            Q(reporter__display_name__icontains=user_name)
+            | Q(messages__author__display_name__icontains=user_name)
+        )
+
+    quotes = await query.distinct().prefetch_related(
         "messages",
         "messages__author",
         "reporter"
