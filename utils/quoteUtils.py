@@ -107,9 +107,9 @@ async def send_embed(
     embed = build_quote_embed(messages, ctx.author.display_name)
 
     if comment:
-        await ctx.send(content=f"💬 {comment}", embed=embed)
+        await quote_channel.send(content=f"💬 {comment}", embed=embed)
     else:
-        await ctx.send(embed=embed)
+        await quote_channel.send(embed=embed)
 
 
 async def get_random_quote() -> Quote:
@@ -138,7 +138,7 @@ async def search_quotes(
     num: int
 ) -> list[Quote]:
     """
-    Searches for a quotes containing the search term or the given user.
+    Searches for quotes containing the search term or the given user.
 
     If only one is given, it will not care about the other. If both are given, this is an AND.
 

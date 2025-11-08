@@ -146,25 +146,25 @@ class QuoteService(commands.Cog):
         self,
         ctx: ApplicationContext,
         search_term: str | None = None,
-        user_name: str | None = None,
+        search_user: str | None = None,
     ):
         """
         Searches for a quote matching the search term and user and sends it in an embed.
         """
-        if search_term is None and user_name is None:
+        if search_term is None and search_user is None:
             quote = await quoteUtils.get_random_quote()
         else:
-            quotes = await quoteUtils.search_quotes(search_term, user_name, 1)
+            quotes = await quoteUtils.search_quotes(search_term, search_user, 1)
 
             if len(quotes) == 0:
                 await ctx.respond(
-                    f"Kein Zitat für die Suche `{search_term}` und den Namen `{user_name}` gefunden!"
+                    f"Kein Zitat für die Suche `{search_term}` und den Namen `{search_user}` gefunden!"
                 )
                 return
 
             quote = quotes[0]
 
-        embed = await quote.create_embed(search_term, user_name)
+        embed = await quote.create_embed(search_term, search_user)
 
         await ctx.respond(embed=embed)
 
