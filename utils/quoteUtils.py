@@ -192,24 +192,24 @@ def rank_quote(
     average of the two sub-scores. If only one is provided that sub-score is
     returned. Handles missing fields and limits input length for performance.
     """
-    concatinated_text = quote.comment if quote.comment else ""
+    concatenated_text = quote.comment if quote.comment else ""
     for msg in quote.messages:
-        concatinated_text += "\n" + msg.content
-    concatinated_text = concatinated_text.strip()[:2000]
+        concatenated_text += "\n" + msg.content
+    concatenated_text = concatenated_text.strip()[:2000]
 
-    concatinated_users = quote.reporter.display_name
+    concatenated_users = quote.reporter.display_name
     for msg in quote.messages:
-        concatinated_users += "," + msg.author.display_name
-    concatinated_users = concatinated_users.strip()[:1000]
+        concatenated_users += "," + msg.author.display_name
+    concatenated_users = concatenated_users.strip()[:1000]
 
     text_score: int = 0
     user_score: int = 0
 
     if search_term:
-        text_score = fuzz.token_set_ratio(search_term, concatinated_text)
+        text_score = fuzz.token_set_ratio(search_term, concatenated_text)
 
     if user_name:
-        user_score = fuzz.token_set_ratio(user_name, concatinated_users)
+        user_score = fuzz.token_set_ratio(user_name, concatenated_users)
 
     if text_score == 0:
         return user_score
