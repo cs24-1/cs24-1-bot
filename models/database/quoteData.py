@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+import discord
 from tortoise import fields
 
 from models.database.baseModel import BaseModel
@@ -59,3 +60,57 @@ class Quote(BaseModel):
         null=True,
         description="An optional comment added by the reporter"
     )
+
+    async def create_embed(
+        self,
+        search_term: str | None,
+        user_name: str | None
+    ) -> discord.Embed:
+        """
+        Create a Discord embed for the quote.
+
+        :param search: The search term to highlight in the embed, if any.
+        :param user_name: The user name to highlight in the embed, if any.
+        :returns: The created embed.
+        """
+        await self.fetch_related("reporter", "messages", "messages__author")
+
+        embed = discord.Embed(
+            description=f"*{self.comment}*" if self.comment else None,
+            timestamp=self.date_reported
+        )
+        embed.set_footer(
+            text=
+            f"von @{self.reporter.display_name} ({self.reporter.global_name})"
+        )
+
+        for msg in self.messages:
+            content = msg.content[:1024] if msg.content else "[- kein Text -]"
+            embed.add_field(
+                name=f"~ {msg.author.display_name}",
+                value=f"“{content}”",
+                inline=False
+            )
+
+        if search_term is not None or user_name is not None:
+            embed.set_author(
+                name=self._create_search_string(search_term,
+                                                user_name)
+            )
+
+        return embed
+
+    def _create_search_string(
+        self,
+        search_term: str | None,
+        user_name: str | None
+    ) -> str | None:
+        search_parts: list[str] = []
+        if search_term is not None:
+            search_parts.append(search_term)
+        if user_name is not None:
+            search_parts.append(user_name)
+
+        if len(search_parts) == 0:
+            return None
+        return "🔍 " + ", ".join(search_parts)

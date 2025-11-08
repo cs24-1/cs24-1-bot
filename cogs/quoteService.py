@@ -28,13 +28,18 @@ class QuoteService(commands.Cog):
     async def on_ready(self):
         self.logger.info("QuoteService started successfully")
 
-    @discord.slash_command(
+    quote = discord.SlashCommandGroup(
         name="quote",
+        description="Verwalte Zitate."
+    )
+
+    @quote.command(
+        name="create",
         description=
         "Zitiert eine bis maximal fünf Nachrichten anhand ihrer URLs oder IDs.",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER],
     )
-    async def quote(
+    async def create_quote(
         self,
         ctx: ApplicationContext,
         message_1: discord.Message,
@@ -79,12 +84,7 @@ class QuoteService(commands.Cog):
             ephemeral=True
         )
 
-    quotes = discord.SlashCommandGroup(
-        name="quotes",
-        description="Verwalte deine gespeicherten Zitate."
-    )
-
-    @quotes.command(
+    @quote.command(
         name="post",
         description="Postet alle gesammelten Nachrichten als Quote.",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
@@ -111,7 +111,7 @@ class QuoteService(commands.Cog):
 
         self.quote_cache.pop(user_id)
 
-    @quotes.command(
+    @quote.command(
         name="clear",
         description="Löscht alle gespeicherten Nachrichten.",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
@@ -126,6 +126,47 @@ class QuoteService(commands.Cog):
             "✅ Alle gespeicherten Nachrichten wurden gelöscht.",
             ephemeral=True
         )
+
+    @quote.command(
+        name="search",
+        description="Suche nach einem Zitat",
+        guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
+    )
+    @discord.option(
+        "search_term",
+        type=discord.SlashCommandOptionType.string,
+        required=False
+    )
+    @discord.option(
+        "search_user",
+        type=discord.SlashCommandOptionType.string,
+        required=False
+    )
+    async def search_quote(
+        self,
+        ctx: ApplicationContext,
+        search_term: str | None = None,
+        user_name: str | None = None,
+    ):
+        """
+        Searches for a quote matching the search term and user and sends it in an embed.
+        """
+        if search_term is None and user_name is None:
+            quote = await quoteUtils.get_random_quote()
+        else:
+            quotes = await quoteUtils.search_quotes(search_term, user_name, 1)
+
+            if len(quotes) == 0:
+                await ctx.respond(
+                    f"Kein Zitat für die Suche `{search_term}` und den Namen `{user_name}` gefunden!"
+                )
+                return
+
+            quote = quotes[0]
+
+        embed = await quote.create_embed(search_term, user_name)
+
+        await ctx.respond(embed=embed)
 
     async def _store_and_send_quote(
         self,

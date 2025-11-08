@@ -1,6 +1,9 @@
+import random
+
 from discord import ApplicationContext, Embed, Color
 import discord
 from discord.utils import utcnow
+from thefuzz import fuzz  # type: ignore
 
 from models.database.quoteData import QuoteMessage, Quote
 from models.database.userData import User
@@ -107,3 +110,113 @@ async def send_embed(
         await ctx.send(content=f"💬 {comment}", embed=embed)
     else:
         await ctx.send(embed=embed)
+
+
+async def get_random_quote() -> Quote:
+    """
+    Returns a random quote from the database.
+
+    Raises:
+        ValueError: If no quotes are found in the database.
+
+    Returns:
+        Quote: A random quote from the database.
+    """
+    quotes = await Quote.all()
+
+    if len(quotes) == 0:
+        raise ValueError("No quotes found in the database.")
+
+    random_quote: Quote = random.choice(quotes)
+
+    return random_quote
+
+
+async def search_quotes(
+    search_term: str | None,
+    user_name: str | None,
+    num: int
+) -> list[Quote]:
+    """
+    Searches for a quotes containing the search term or the given user.
+
+    If only one is given, it will not care about the other. If both are given, this is an AND.
+
+    Args:
+        search_term (str | None): The search term.
+        user_name (str | None): The author / reporter to search.
+        num (int): How many matching results should be returned.
+
+    Returns:
+        list[Quote]: The matching results.
+    """
+    quotes = await Quote.all().prefetch_related(
+        "messages",
+        "messages__author",
+        "reporter"
+    )
+
+    ranked_quotes = [
+        (
+            rank_quote(
+                quote,
+                search_term,
+                user_name,
+            ),
+            quote,
+        ) for quote in quotes
+    ]
+
+    filtered_quotes = [
+        (
+            score,
+            quote,
+        ) for score, quote in ranked_quotes if score > 50
+    ]
+
+    if len(filtered_quotes) == 0:
+        return []
+
+    return random.choices([quote for _, quote in filtered_quotes], k=num)
+
+
+def rank_quote(
+    quote: Quote,
+    search_term: str | None,
+    user_name: str | None
+) -> int:
+    """
+    Rank a quote and return a normalized 0-100 score.
+
+    If both search_term and user_name are provided the result is a weighted
+    average of the two sub-scores. If only one is provided that sub-score is
+    returned. Handles missing fields and limits input length for performance.
+    """
+    concatinated_text = quote.comment if quote.comment else ""
+    for msg in quote.messages:
+        concatinated_text += "\n" + msg.content
+    concatinated_text = concatinated_text.strip()[:2000]
+
+    concatinated_users = quote.reporter.display_name
+    for msg in quote.messages:
+        concatinated_users += "," + msg.author.display_name
+    concatinated_users = concatinated_users.strip()[:1000]
+
+    text_score: int = 0
+    user_score: int = 0
+
+    if search_term:
+        text_score = fuzz.token_set_ratio(search_term, concatinated_text)
+
+    if user_name:
+        user_score = fuzz.token_set_ratio(user_name, concatinated_users)
+
+    if text_score == 0:
+        return user_score
+
+    if user_score == 0:
+        return text_score
+
+    # weighted average, stays in 0-100 range
+    final = text_score * Constants.QUOTE_WEIGHTS.TEXT_WEIGHT + user_score * Constants.QUOTE_WEIGHTS.USER_WEIGHT
+    return int(round(final))
