@@ -6,7 +6,7 @@ from logging import Logger
 from typing import Tuple
 
 import discord
-from PIL import Image, ImageSequence, ImageFile
+from PIL import Image, ImageSequence
 from io import BytesIO
 from thefuzz import fuzz
 
@@ -15,6 +15,12 @@ from models.database.userData import User
 from utils.constants import Constants
 from utils.memeUtils import ocrUtils
 from utils.memeUtils.memeBannerUtils import bannerize_meme_image
+
+
+def _ensure_parent_dir(path: str) -> None:
+    directory = os.path.dirname(path)
+    if directory and not os.path.exists(directory):
+        os.makedirs(directory, exist_ok = True)
 
 
 async def save_meme_image(
@@ -45,10 +51,17 @@ async def save_meme_image(
     await save_meme_metadata(meme_uuid, MemeFormat(extension), ocr_content, author, message, date)
 
 
-def save_meme_image_file(img: ImageFile, path: str) -> None:
+def save_meme_image_file(img: Image.Image, path: str) -> None:
+    _ensure_parent_dir(path)
     if img.format == "GIF":
         frames = [frame.copy() for frame in ImageSequence.Iterator(img)]
-        frames[0].save(path, save_all=True, append_images=frames[1:], loop=0, format='GIF')
+        frames[0].save(
+            path,
+            save_all = True,
+            append_images = frames[1:],
+            loop = 0,
+            format = 'GIF'
+        )
     else:
         img.save(path)
 
