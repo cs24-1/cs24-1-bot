@@ -15,6 +15,7 @@ class ChannelIds:
     MENSA_CHANNEL = int(os.getenv("MENSA_CHANNEL"))  # type: ignore
     MEME_CHANNEL = int(os.getenv("MEME_CHANNEL"))  # type: ignore
     QUOTE_CHANNEL = int(os.getenv("QUOTE_CHANNEL"))  # type: ignore
+    TIMETABLE_CHANNEL = int(os.getenv("TIMETABLE_CHANNEL"))  # type: ignore
 
 
 class ServerIds:
@@ -90,6 +91,20 @@ class Mensa:
     }
 
 
+class DateConstants:
+    HOLIDAYS = {
+        datetime(2025, 1, 1).date(),    # Neujahr 
+        datetime(2025, 4, 18).date(),   # Karfreitag
+        datetime(2025, 4, 21).date(),   # Ostermontag
+        datetime(2025, 5, 1).date(),    # Tag der Arbeit
+        datetime(2025, 5, 29).date(),   # Christi Himm
+        datetime(2025, 6, 9).date(),    # Pfingstmontag
+        datetime(2025, 10, 3).date(),   # Tag der Deutschen Einheit
+        datetime(2025, 12, 25).date(),  # 1. Weihnachtstag
+        datetime(2025, 12, 26).date(),  # 2. Weihnachtstag
+    }
+
+
 class QuoteWeights:
     TEXT_WEIGHT = 0.7
     USER_WEIGHT = 0.3
@@ -110,5 +125,6 @@ class Constants:
     AI = AI
     MENSA = Mensa
     QUOTE_WEIGHTS = QuoteWeights
+    DATES = DateConstants
     # --- ADDITIONAL CONSTANTS ---
     SYSTIMEZONE = datetime.now().astimezone().tzinfo
