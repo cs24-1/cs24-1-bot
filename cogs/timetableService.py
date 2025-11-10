@@ -5,10 +5,11 @@ import discord
 from discord import ApplicationContext
 from discord.ext import commands, tasks  # tasks for @tasks.loop decorator
 import os
-import pytz
+import pytz  # type: ignore
 import requests
 
 # from utils import timetableUtils
+from utils import timetableUtils
 from utils.constants import Constants
 
 
@@ -31,7 +32,7 @@ class Timetable(commands.Cog):
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
     )
     @discord.option(
-        "argument",
+        name="argument",
         description="`today`, `tomorrow`, Oder eine Zahl (1-30). Standard ist 7",
         required=False,
         default="7"
@@ -80,7 +81,7 @@ class Timetable(commands.Cog):
                     return
                 plan = timetableUtils.get_timetable(days=days)
             else:
-                plan = f"❌ Invalid argument: {argument or " - "}. Use 'today', 'tomorrow', or a number (1–30)."
+                plan = f"❌ Invalid argument: {argument or ' - '}. Use 'today', 'tomorrow', or a number (1-30)."
 
             await self.send_long_message(ctx, plan)
 
@@ -141,7 +142,7 @@ class Timetable(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("📦 Cog 'Timetable' ready.")
+        print("TimetableService started successfully")
 
 
 def setup(bot: discord.Bot):
