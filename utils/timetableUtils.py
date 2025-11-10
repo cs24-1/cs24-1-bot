@@ -1,82 +1,25 @@
 from datetime import datetime, timedelta, timezone
-import os
-from pathlib import Path
 from typing import Any
 import warnings
 from utils.constants import Constants
-import pytz
 import requests
 from requests import RequestException
 from urllib3.exceptions import InsecureRequestWarning
 
 
-def get_timetable(days):
-    """Fetch and format the timetable from Campus Dual self-service system.
-
-    This function retrieves class schedules from the Campus Dual API and formats them
-    into a readable Discord message. It handles time zone conversion and groups entries by date.
+def _calc_time_window(days: int) -> tuple[datetime, datetime]:
+    """Return (start_date, period_end) window based on given days.
 
     Args:
-        days (int): Number of days to fetch the schedule for:
-            - 0: Today's schedule only
-            - 1: Tomorrow's schedule only
-            - n > 1: Schedule for the next n days
-
-    Returns:
-        str: A formatted string containing the timetable with:
-            - 📅 Date headers (Day of week, DD.MM.YYYY)
-            - 📚 Class descriptions
-            - 🕒 Start and end times (24h format)
-            - 🏫 Room numbers
-            Entries are displayed in two columns for better readability.
-            Returns an info message if no schedule is found.
-
-    Environment Variables:
-        CAMPUS_USER: Campus Dual user ID
-        CAMPUS_HASH: Campus Dual authentication hash
+        days (int):
+            0 -> today 00:00 to tomorrow 00:00
+            1 -> tomorrow 00:00 to day-after-tomorrow 00:00
+            >1 -> today 00:00 to (today + days) 00:00
     """
-    url = f"https://selfservice.campus-dual.de/room/json?userid={Constants.SECRETS.CAMPUS_USER}&hash={Constants.SECRETS.CAMPUS_HASH}"
-
-    # Ignore SSL certificate warnings (unsafe, temporary only)
-    warnings.simplefilter("ignore", InsecureRequestWarning)
-
-    try:
-        # SSL verification disabled and timeout added
-        response = requests.get(
-            url,
-            verify=False,
-            timeout=30
-        )  # 30 second timeout, TODO: implement cache
-
-        if response.status_code != 200:
-            return f"❌ Fehler beim Abrufen des Stundenplans. Fehlercode: {response.status_code}"
-
-        data = response.json()
-
-        # Campus Dual returns HTTP 200 with 'null' JSON when auth fails (ich kann nicht mehr)
-        if data is None:
-            return (
-                "❌ Leere Antwort vom Server. "
-                "Mögliche Ursache: ungültiger CAMPUS_USER oder CAMPUS_HASH."
-            )
-    except RequestException as entry:
-        # further errorhandling: all possible network-/connection errors
-        return f"❌ Fehler beim Abrufen des Stundenplans: {str(entry)}"
-    except ValueError:
-        return "❌ Ungültige JSON-Antwort des Servers."
-    except Exception as entry:
-        return f"❌ [YIKES] Unbehandelter Fehler: {entry.with_traceback}"
-
-    entries: list[dict[str,
-                       Any]
-                  ] = data if isinstance(data,
-                                         list) else data.get("entries",
-                                                             [])
 
     now = datetime.now(tz=Constants.SYSTIMEZONE)
     today_midnight = now.replace(hour=0, minute=0, second=0, microsecond=0)
 
-    # 1) Set time window
     if days == 0:
         start_date = today_midnight
         period_end = today_midnight + timedelta(days=1)
@@ -87,39 +30,14 @@ def get_timetable(days):
         start_date = today_midnight
         period_end = today_midnight + timedelta(days=days)
 
-    # 2) Filter (Timestamp → UTC → Berlin)
-    filtered_entries = []
-    for entry in entries:
-        start_dt = datetime.fromtimestamp(entry["start"],
-                                          tz=timezone.utc).astimezone(
-                                              Constants.SYSTIMEZONE
-                                          )
-        if start_date <= start_dt < period_end:
-            filtered_entries.append(entry)
+    return start_date, period_end
 
-    if not filtered_entries:
-        if days == 0:
-            return "ℹ️ Kein Stundenplan für heute gefunden."
-        elif days == 1:
-            return "ℹ️ Kein Stundenplan für morgen gefunden."
-        return f"ℹ️ Kein Stundenplan für die nächsten {days} Tage gefunden."
 
-    output = f"📅 **Stundenplan für {'heute' if days == 0 else 'morgen' if days == 1 else 'die nächsten ' + str(days) + ' Tage'}**\n\n"
+def _format_entries(grouped_days: dict) -> str:
+    """Format grouped timtetable entries into multi-line string."""
 
-    # Group by date
-    days_grouped = {}
-    for entry in filtered_entries:
-        start_dt = datetime.fromtimestamp(entry["start"])
-        date = start_dt.strftime(
-            "%A, %d.%m.%Y"
-        )  # Date format "Monday, 29.04.2025", TODO: translate
-
-        if date not in days_grouped:
-            days_grouped[date] = []
-
-        days_grouped[date].append(entry)
-
-    for date, entries in days_grouped.items():
+    output = ""
+    for date, entries in grouped_days.items():
         output += f"📌 **{date}**:\n"
         for i, entry in enumerate(entries):
             start_dt = datetime.fromtimestamp(entry["start"],
@@ -136,9 +54,110 @@ def get_timetable(days):
 
             output += f"📚 {entry['description']}\n"
             output += f"🕒 {start}–{end}\n"
-            output += f"🏫 Raum: {entry['room']}\n"
+            output += f"🏫 Ort: {entry['room']}\n"
             output += f"\n"
 
         output += "\n"
-
     return output.strip()
+
+
+def _fetch_timetable_entries() -> list[dict[str, Any]] | str:
+    """Fetch raw timetable JSON entries or return an error message."""
+    url = (
+        "https://selfservice.campus-dual.de/room/json?userid="
+        f"{Constants.SECRETS.CAMPUS_USER}&hash="
+        f"{Constants.SECRETS.CAMPUS_HASH}"
+    )
+    warnings.simplefilter("ignore", InsecureRequestWarning)
+    try:
+        response = requests.get(url, verify=False, timeout=30)
+        if response.status_code != 200:
+            return (
+                "❌ Fehler beim Abrufen des Stundenplans. Fehlercode: "
+                f"{response.status_code}"
+            )
+        data = response.json()
+
+        # Campus Dual returns HTTP 200 with 'null' JSON when auth fails (ich kann nicht mehr)
+        if data is None:
+            return (
+                "❌ Leere Antwort vom Server. "
+                "Mögliche Ursache: ungültiger CAMPUS_USER oder CAMPUS_HASH."
+            )
+    except RequestException as ex:
+        return f"❌ Fehler beim Abrufen des Stundenplans: {ex}"
+    except ValueError:
+        return "❌ Ungültige JSON-Antwort des Servers."
+    except Exception as ex:
+        return f"❌ [YIKES] Unbehandelter Fehler: {ex}"
+    entries: list[dict[
+        str,
+        Any]] = (data if isinstance(data,
+                                    list) else data.get("entries",
+                                                        []))
+    return entries
+
+
+def _filter_entries_for_window(
+    entries: list[dict[str,
+                       Any]],
+    start_date: datetime,
+    period_end: datetime
+) -> list[dict[str,
+               Any]]:
+    """Return entries whose start timestamp lies within [start_date, period_end)."""
+    return [
+        entry for entry in entries if
+        start_date <= datetime.fromtimestamp(entry["start"], tz=timezone.utc).
+        astimezone(Constants.SYSTIMEZONE) < period_end
+    ]
+
+
+def _group_entries_by_date(
+    entries: list[dict[str,
+                       Any]]
+) -> dict[str,
+          list[dict[str,
+                    Any]]]:
+    """Group entries by localized date string."""
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for e in entries:
+        start_dt = datetime.fromtimestamp(e["start"],
+                                          tz=timezone.utc).astimezone(
+                                              Constants.SYSTIMEZONE
+                                          )
+        date_key = start_dt.strftime("%A, %d.%m.%Y")
+        grouped.setdefault(date_key, []).append(e)
+    return grouped
+
+
+def _empty_message(days: int) -> str:
+    if days == 0:
+        return "ℹ️ Kein Stundenplan für heute gefunden."
+    if days == 1:
+        return "ℹ️ Kein Stundenplan für morgen gefunden."
+    return f"ℹ️ Kein Stundenplan für die nächsten {days} Tage gefunden."
+
+
+def _header(days: int) -> str:
+    scope = (
+        "heute"
+        if days == 0 else "morgen" if days == 1 else f"die nächsten {days} Tage"
+    )
+    return f"📅 **Stundenplan für {scope}**\n\n"
+
+
+def get_timetable(days: int):
+    """Return formatted timetable string for given day range."""
+    raw = _fetch_timetable_entries()
+    if isinstance(raw, str):
+        return raw  # error message
+
+    start_date, period_end = _calc_time_window(days)
+    filtered = _filter_entries_for_window(raw, start_date, period_end)
+    if not filtered:
+        return _empty_message(days)
+
+    grouped = _group_entries_by_date(filtered)
+    body = _header(days) + _format_entries(grouped)
+    return body
