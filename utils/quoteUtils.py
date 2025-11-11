@@ -36,7 +36,7 @@ def build_quote_embed(
         content = msg.content[:1024] if msg.content else "[- kein Text -]"
         embed.add_field(
             name=f"~ {msg.author.display_name}",
-            value=f"“{content}”\n[Originalnachricht]({msg.jump_url})",
+            value=f'"{content}"\n[Originalnachricht]({msg.jump_url})',
             inline=False
         )
     if author_name:
@@ -171,7 +171,8 @@ async def search_quotes(
         (
             score,
             quote,
-        ) for score, quote in ranked_quotes if score > 50
+        ) for score,
+        quote in ranked_quotes if score > 50
     ]
 
     if len(filtered_quotes) == 0:
