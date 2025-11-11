@@ -113,10 +113,17 @@ async def store_custom_quote_in_db(
     # Create or reuse a User record for the person being quoted.
     # We must not attempt to set the primary key `id` (an IntField).
     # Use `global_name` to find an existing entry or create a new one.
-    author, _ = await User.get_or_create(
-        global_name=f"custom_person_{person}",
-        defaults={"display_name": person}
-    )
+    custom_global_name = f"custom_person_{person}"
+    author = await User.filter(global_name=custom_global_name).first()
+    if author is None:
+        # Find the minimum negative id used so far, or start at -1
+        min_id_user = await User.filter(id__lt=0).order_by("id").first()
+        next_id = min_id_user.id - 1 if min_id_user else -1
+        author = await User.create(
+            id=next_id,
+            global_name=custom_global_name,
+            display_name=person
+        )
 
     await QuoteMessage.create(
         content=content,
