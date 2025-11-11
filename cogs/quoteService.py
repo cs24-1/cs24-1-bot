@@ -205,7 +205,7 @@ class QuoteService(commands.Cog):
         embed = await quoteUtils.create_custom_quote_embed(
             inhalt,
             person,
-            ctx.author
+            ctx.user
         )
         await ctx.respond(embed=embed)
 

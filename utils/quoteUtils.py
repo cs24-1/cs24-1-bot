@@ -59,11 +59,11 @@ async def store_quote_in_db(
         comment (str | None): An optional comment to add.
     """
     reporter, _ = await User.get_or_create(
-        id=str(ctx.author.id), defaults={
+        id=int(ctx.author.id), defaults={
             "global_name": ctx.author.name, "display_name": ctx.author.display_name})
 
     date_reported = msg.created_at if (msg :=
-                                       ctx.message) else discord.utils.utcnow()
+                                       ctx.message) else utcnow()
 
     quote = await Quote.create(
         reporter=reporter,
@@ -73,7 +73,7 @@ async def store_quote_in_db(
 
     for message in messages:
         author, _ = await User.get_or_create(
-            id=str(message.author.id), defaults={
+            id=int(message.author.id), defaults={
                 "global_name": message.author.name, "display_name": message.author.display_name})
         await QuoteMessage.create(
             content=message.content,
@@ -99,7 +99,7 @@ async def store_custom_quote_in_db(
         comment (str | None): Optional comment.
     """
     reporter, _ = await User.get_or_create(
-        id=str(ctx.author.id),
+        id=int(ctx.author.id),
         defaults={"global_name": ctx.author.name, "display_name": ctx.author.display_name}
     )
 
@@ -158,7 +158,7 @@ async def send_embed(
 async def create_custom_quote_embed(
     content: str,
     person: str,
-    created_by: discord.User
+    created_by: discord.abc.User
 ) -> discord.Embed:
     """
     Creates a Discord embed for a custom quote, visually consistent with message-based quotes.
@@ -174,7 +174,7 @@ async def create_custom_quote_embed(
 
     # Footer shows who submitted it
     embed.set_footer(text=f"Eingereicht von {created_by.display_name}")
-    embed.timestamp = discord.utils.utcnow()
+    embed.timestamp = utcnow()
     return embed
 
 
