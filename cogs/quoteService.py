@@ -195,7 +195,10 @@ class QuoteService(commands.Cog):
         Creates a custom quote and stores it in the database.
         """
         self.logger.info(
-            f"Custom quote created by {ctx.author}: '{inhalt}' - {person}"
+            "Custom quote created by %s: '%s' - %s",
+            ctx.author,
+            inhalt,
+            person
         )
 
         # Store in DB
