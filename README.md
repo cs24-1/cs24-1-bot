@@ -51,3 +51,46 @@ Solltest du Änderungen an den Daten vornehmen, die in der Datenbank gespeichert
 
 1. Führe `aerich migrate --name=<name der migration>` aus, um eine neue Migration zu erstellen.
 2. Führe `aerich upgrade` aus, um die Datenbank auf den neuesten Stand zu bringen.
+
+# Testing
+
+The project includes a pytest-based test suite. To run tests locally:
+
+## Running Tests
+
+1. Install development dependencies:
+```bash
+pip install -r development.requirements.txt
+```
+
+2. Run all tests:
+```bash
+pytest
+```
+
+3. Run tests with coverage:
+```bash
+pytest --cov
+```
+
+4. Run specific test files:
+```bash
+pytest tests/test_example.py
+```
+
+## Pre-commit Hooks
+
+The project uses pre-commit hooks for code quality. To set up:
+
+```bash
+pre-commit install
+```
+
+To run manually on all files:
+```bash
+pre-commit run --all-files
+```
+
+## Continuous Integration
+
+Tests run automatically on GitHub Actions for Python 3.10, 3.11, and 3.12 on pushes and pull requests to the main branch.
