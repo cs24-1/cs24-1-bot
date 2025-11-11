@@ -8,6 +8,20 @@ import discord
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def setup_test_env(monkeypatch):
+    """
+    Set up test environment variables.
+    This fixture is automatically used by all tests.
+    """
+    monkeypatch.setenv("DISCORD_TOKEN", "test_token")
+    monkeypatch.setenv("OPENAI_TOKEN", "test_token")
+    monkeypatch.setenv("MENSA_CHANNEL", "123456")
+    monkeypatch.setenv("MEME_CHANNEL", "123456")
+    monkeypatch.setenv("QUOTE_CHANNEL", "123456")
+    monkeypatch.setenv("CUR_SERVER", "123456")
+
+
 @pytest.fixture
 def mock_bot():
     """

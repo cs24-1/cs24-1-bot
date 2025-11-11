@@ -1,0 +1,221 @@
+"""
+Unit tests for utils/mensaUtils.py
+"""
+
+from datetime import datetime, timedelta
+from unittest.mock import MagicMock, patch
+
+import pytest
+
+from models.mensa.mensaModels import Meal, MealType, Price
+
+
+class TestGetNextMensaDay:
+    """Tests for get_next_mensa_day function"""
+
+    def test_get_next_mensa_day_from_monday(self):
+        """Test getting next mensa day from Monday."""
+        from utils.mensaUtils import get_next_mensa_day
+
+        # Monday
+        monday = datetime(2024, 1, 1)  # 2024-01-01 is a Monday
+        next_day = get_next_mensa_day(monday)
+
+        # Next day should be Tuesday
+        assert next_day.weekday() == 1  # Tuesday
+
+    def test_get_next_mensa_day_from_friday(self):
+        """Test getting next mensa day from Friday."""
+        from utils.mensaUtils import get_next_mensa_day
+
+        # Friday
+        friday = datetime(2024, 1, 5)  # 2024-01-05 is a Friday
+        next_day = get_next_mensa_day(friday)
+
+        # Next day should be Monday (skip weekend)
+        assert next_day.weekday() == 0  # Monday
+        assert (next_day - friday).days == 3
+
+    def test_get_next_mensa_day_from_saturday(self):
+        """Test getting next mensa day from Saturday."""
+        from utils.mensaUtils import get_next_mensa_day
+
+        # Saturday
+        saturday = datetime(2024, 1, 6)  # 2024-01-06 is a Saturday
+        next_day = get_next_mensa_day(saturday)
+
+        # Next day should be Monday
+        assert next_day.weekday() == 0  # Monday
+
+
+class TestGetLastMensaDay:
+    """Tests for get_last_mensa_day function"""
+
+    def test_get_last_mensa_day_from_tuesday(self):
+        """Test getting previous mensa day from Tuesday."""
+        from utils.mensaUtils import get_last_mensa_day
+
+        # Tuesday
+        tuesday = datetime(2024, 1, 2)  # 2024-01-02 is a Tuesday
+        last_day = get_last_mensa_day(tuesday)
+
+        # Previous day should be Monday
+        assert last_day.weekday() == 0  # Monday
+
+    def test_get_last_mensa_day_from_monday(self):
+        """Test getting previous mensa day from Monday."""
+        from utils.mensaUtils import get_last_mensa_day
+
+        # Monday
+        monday = datetime(2024, 1, 8)  # 2024-01-08 is a Monday
+        last_day = get_last_mensa_day(monday)
+
+        # Previous day should be Friday (skip weekend)
+        assert last_day.weekday() == 4  # Friday
+        assert (monday - last_day).days == 3
+
+
+class TestCheckIfMensaIsOpen:
+    """Tests for check_if_mensa_is_open function"""
+
+    def test_mensa_is_closed_on_weekend(self):
+        """Test that mensa is closed on weekends."""
+        from datetime import datetime
+
+        from utils.mensaUtils import check_if_mensa_is_open
+
+        # Test with a future Saturday
+        future_saturday = datetime.now() + timedelta(days=30)
+        # Adjust to Saturday
+        days_until_saturday = (5 - future_saturday.weekday()) % 7
+        saturday = future_saturday + timedelta(days=days_until_saturday)
+
+        assert check_if_mensa_is_open(saturday) is False
+
+        # Test with a future Sunday
+        sunday = saturday + timedelta(days=1)
+        assert check_if_mensa_is_open(sunday) is False
+
+    def test_mensa_is_closed_for_past_dates(self):
+        """Test that mensa is closed for past dates."""
+        from datetime import datetime
+
+        from utils.mensaUtils import check_if_mensa_is_open
+
+        # Yesterday
+        yesterday = datetime.now() - timedelta(days=1)
+        assert check_if_mensa_is_open(yesterday) is False
+
+    def test_mensa_is_closed_for_far_future(self):
+        """Test that mensa is closed for dates more than 7 days ahead."""
+        from datetime import datetime
+
+        from utils.mensaUtils import check_if_mensa_is_open
+
+        # 10 days in the future
+        far_future = datetime.now() + timedelta(days=10)
+        assert check_if_mensa_is_open(far_future) is False
+
+
+class TestGetMensaOpenDays:
+    """Tests for get_mensa_open_days function"""
+
+    def test_get_mensa_open_days_returns_list(self):
+        """Test that get_mensa_open_days returns a list."""
+        from utils.mensaUtils import get_mensa_open_days
+
+        open_days = get_mensa_open_days()
+        assert isinstance(open_days, list)
+        # Should return weekdays within next 7 days
+        assert len(open_days) >= 1
+
+    def test_get_mensa_open_days_format(self):
+        """Test that get_mensa_open_days returns dates in correct format."""
+        import re
+
+        from utils.mensaUtils import get_mensa_open_days
+
+        open_days = get_mensa_open_days()
+        # Check date format DD.MM.YYYY
+        date_pattern = re.compile(r'^\d{2}\.\d{2}\.\d{4}$')
+        for day in open_days:
+            assert date_pattern.match(
+                day
+            ), f"Date {day} doesn't match format DD.MM.YYYY"
+
+
+class TestExtractNormalMeals:
+    """Tests for extract_normal_meals function"""
+
+    def test_extract_normal_meals_valid_data(self):
+        """Test extracting normal meals from valid data."""
+        from utils.mensaUtils import extract_normal_meals
+
+        meals_data = [
+            {
+                "category": "Veganes Gericht",
+                "name": "Vegane Bowl",
+                "notes": ["glutenfrei"],
+                "prices": {
+                    "students": 3.50
+                }
+            },
+            {
+                "category": "Fleischgericht",
+                "name": "Schnitzel",
+                "notes": ["Schwein"],
+                "prices": {
+                    "students": 4.50
+                }
+            }
+        ]
+
+        meals = list(extract_normal_meals(meals_data))
+        assert len(meals) == 2
+        assert meals[0].mealType == MealType.VEGAN
+        assert meals[0].mealName == "Vegane Bowl"
+        assert meals[1].mealType == MealType.MEAT
+        assert meals[1].mealName == "Schnitzel"
+
+    def test_extract_normal_meals_filters_invalid(self):
+        """Test that invalid meals are filtered out."""
+        from utils.mensaUtils import extract_normal_meals
+
+        meals_data = [
+            {
+                "category": "Veganes Gericht",
+                "name": "Valid Meal",
+                "notes": [],
+                "prices": {
+                    "students": 3.50
+                }
+            },
+            {
+                # Missing price
+                "category": "Fleischgericht",
+                "name": "No Price",
+                "notes": []
+            },
+            {
+                # Missing name
+                "category": "Fischgericht",
+                "notes": [],
+                "prices": {
+                    "students": 4.50
+                }
+            },
+            {
+                # Invalid category
+                "category": "Invalid Category",
+                "name": "Invalid",
+                "notes": [],
+                "prices": {
+                    "students": 2.50
+                }
+            }
+        ]
+
+        meals = list(extract_normal_meals(meals_data))
+        # Only the first meal should be valid
+        assert len(meals) == 1
+        assert meals[0].mealName == "Valid Meal"

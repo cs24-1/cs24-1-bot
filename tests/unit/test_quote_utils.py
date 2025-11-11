@@ -9,19 +9,6 @@ from discord import Color, Embed
 from discord.utils import utcnow
 
 
-@pytest.fixture(autouse=True)
-def setup_test_env(monkeypatch):
-    """
-    Set up test environment variables.
-    """
-    monkeypatch.setenv("DISCORD_TOKEN", "test_token")
-    monkeypatch.setenv("OPENAI_TOKEN", "test_token")
-    monkeypatch.setenv("MENSA_CHANNEL", "123456")
-    monkeypatch.setenv("MEME_CHANNEL", "123456")
-    monkeypatch.setenv("QUOTE_CHANNEL", "123456")
-    monkeypatch.setenv("CUR_SERVER", "123456")
-
-
 class TestBuildQuoteEmbed:
     """Tests for build_quote_embed function"""
 
