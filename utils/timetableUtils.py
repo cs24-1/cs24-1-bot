@@ -5,6 +5,20 @@ from utils.constants import Constants
 import requests
 from requests import RequestException
 from urllib3.exceptions import InsecureRequestWarning
+from requests_cache import CachedSession
+
+_SESSION = CachedSession(
+    backend="memory",
+    expire_after=45 * 60,  # 45 minutes
+)
+
+
+def _campus_url() -> str:
+    return (
+        "https://selfservice.campus-dual.de/room/json?userid="
+        f"{Constants.SECRETS.CAMPUS_USER}&hash="
+        f"{Constants.SECRETS.CAMPUS_HASH}"
+    )
 
 
 def _calc_time_window(days: int) -> tuple[datetime, datetime]:
@@ -61,16 +75,20 @@ def _format_entries(grouped_days: dict) -> str:
     return output.strip()
 
 
-def _fetch_timetable_entries() -> list[dict[str, Any]] | str:
+def _fetch_timetable_entries(
+    force_refresh: bool = False
+) -> list[dict[str,
+               Any]] | str:
     """Fetch raw timetable JSON entries or return an error message."""
-    url = (
-        "https://selfservice.campus-dual.de/room/json?userid="
-        f"{Constants.SECRETS.CAMPUS_USER}&hash="
-        f"{Constants.SECRETS.CAMPUS_HASH}"
-    )
+    url = _campus_url()
     warnings.simplefilter("ignore", InsecureRequestWarning)
     try:
-        response = requests.get(url, verify=False, timeout=30)
+        response = _SESSION.get(
+            url,
+            verify=False,
+            timeout=15,
+            force_refresh=force_refresh
+        )
         if response.status_code != 200:
             return (
                 "❌ Fehler beim Abrufen des Stundenplans. Fehlercode: "
@@ -161,3 +179,8 @@ def get_timetable(days: int):
     grouped = _group_entries_by_date(filtered)
     body = _header(days) + _format_entries(grouped)
     return body
+
+
+def warm_timetable_cache(force_refresh: bool = False) -> None:
+    """Pre-populate or refresh cached timetable response."""
+    _ = _fetch_timetable_entries(force_refresh)

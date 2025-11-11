@@ -3,9 +3,7 @@ from datetime import datetime, time
 import logging
 import discord
 from discord import ApplicationContext
-from discord.ext import commands, tasks  # tasks for @tasks.loop decorator
-import os
-import pytz  # type: ignore
+from discord.ext import commands, tasks
 import requests
 
 # from utils import timetableUtils
@@ -40,17 +38,9 @@ class Timetable(commands.Cog):
     async def timetable(self, ctx: ApplicationContext, argument: str):
         """Fetch and display the class timetable.
 
-        This command allows users to view the class schedule for different time periods.
-        Users can request the schedule for today, tomorrow, or any number of upcoming days.
-
-        Args:
-            ctx: The Discord application context
-            argument: The time period to fetch:
-                     - "?" for help
-                     - "today" for today's schedule
-                     - "tomorrow" for tomorrow's schedule
-                     - a number (1-30) for that many upcoming days
-                     - defaults to 7 days if not specified
+        This command allows users to view the class schedule for different
+        time periods. Users can request the schedule for today, tomorrow, or
+        any number of upcoming days (max. 30).
         """
         await ctx.defer()  # Defer response in case the request takes time
 
@@ -127,6 +117,15 @@ class Timetable(commands.Cog):
         await self.bot.wait_until_ready()
         self.logger.info("🕕 Daily timetable task initialized.")
 
+    @tasks.loop(minutes=60)
+    async def timetable_cache_refresher(self):
+        """Periodically refresh Campus Dual cache in background every 60 minutes."""
+        await asyncio.to_thread(
+            timetableUtils.warm_timetable_cache,
+            True  # do force refresh
+        )
+        self.logger.info("Timetable cache refreshed successfully")
+
     async def send_long_message(
         self,
         target: ApplicationContext | discord.abc.Messageable,
@@ -142,7 +141,12 @@ class Timetable(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        print("TimetableService started successfully")
+        """
+        Warm cache and start background refresh when bot is ready.
+        """
+        self.logger.info("TimetableService started successfully")
+        if not self.timetable_cache_refresher.is_running():
+            self.timetable_cache_refresher.start()
 
 
 def setup(bot: discord.Bot):
