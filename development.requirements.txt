@@ -1,2 +1,9 @@
 -i https://pypi.org/simple
 radon~=5.1
+pytest~=8.3.0
+pytest-cov~=6.0.0
+pytest-asyncio~=0.24.0
+yapf~=0.40.0
+isort~=5.13.0
+flake8~=7.1.0
+pre-commit~=4.0.0
