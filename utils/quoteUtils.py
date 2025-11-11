@@ -114,7 +114,7 @@ async def store_custom_quote_in_db(
     # We must not attempt to set the primary key `id` (an IntField).
     # Use `global_name` to find an existing entry or create a new one.
     author, _ = await User.get_or_create(
-        global_name=person,
+        global_name=f"custom_person_{person}",
         defaults={"display_name": person}
     )
 
