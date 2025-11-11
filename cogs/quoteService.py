@@ -168,6 +168,48 @@ class QuoteService(commands.Cog):
 
         await ctx.respond(embed=embed)
 
+    @quote.command(
+        name="custom",
+        description="Erstellt ein eigenes Zitat mit Inhalt und Person.",
+        guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
+    )
+    @discord.option(
+        "inhalt",
+        description="Der Inhalt des Zitats.",
+        type=discord.SlashCommandOptionType.string,
+        required=True
+    )
+    @discord.option(
+        "person",
+        description="Die Person, der das Zitat zugeschrieben wird.",
+        type=discord.SlashCommandOptionType.string,
+        required=True
+    )
+    async def custom_quote(
+        self,
+        ctx: ApplicationContext,
+        inhalt: str,
+        person: str
+    ):
+        """
+        Creates a custom quote and stores it in the database.
+        """
+        self.logger.info(
+            f"Custom quote created by {ctx.author}: '{inhalt}' - {person}"
+        )
+
+        # Store in DB
+        await quoteUtils.store_custom_quote_in_db(ctx, inhalt, person)
+
+        # Send embed
+        embed = await quoteUtils.create_custom_quote_embed(
+            inhalt,
+            person,
+            ctx.user
+        )
+        await ctx.respond(embed=embed)
+
+
     async def _store_and_send_quote(
         self,
         ctx: ApplicationContext,

@@ -59,11 +59,11 @@ async def store_quote_in_db(
         comment (str | None): An optional comment to add.
     """
     reporter, _ = await User.get_or_create(
-        id=str(ctx.author.id), defaults={
+        id=int(ctx.author.id), defaults={
             "global_name": ctx.author.name, "display_name": ctx.author.display_name})
 
     date_reported = msg.created_at if (msg :=
-                                       ctx.message) else discord.utils.utcnow()
+                                       ctx.message) else utcnow()
 
     quote = await Quote.create(
         reporter=reporter,
@@ -73,7 +73,7 @@ async def store_quote_in_db(
 
     for message in messages:
         author, _ = await User.get_or_create(
-            id=str(message.author.id), defaults={
+            id=int(message.author.id), defaults={
                 "global_name": message.author.name, "display_name": message.author.display_name})
         await QuoteMessage.create(
             content=message.content,
@@ -81,6 +81,49 @@ async def store_quote_in_db(
             date=message.created_at,
             quote=quote
         )
+
+
+async def store_custom_quote_in_db(
+    ctx: ApplicationContext,
+    content: str,
+    person: str,
+    comment: str | None = None
+):
+    """
+    Stores a custom quote (without Discord messages) in the database.
+
+    Args:
+        ctx (ApplicationContext): The context of the command.
+        content (str): The text of the quote.
+        person (str): The person the quote is attributed to.
+        comment (str | None): Optional comment.
+    """
+    reporter, _ = await User.get_or_create(
+        id=int(ctx.author.id),
+        defaults={"global_name": ctx.author.name, "display_name": ctx.author.display_name}
+    )
+
+    # Create the quote
+    quote = await Quote.create(
+        reporter=reporter,
+        date_reported=utcnow(),
+        comment=comment
+    )
+
+    # Create or reuse a User record for the person being quoted.
+    # We must not attempt to set the primary key `id` (an IntField).
+    # Use `global_name` to find an existing entry or create a new one.
+    author, _ = await User.get_or_create(
+        global_name=person,
+        defaults={"display_name": person}
+    )
+
+    await QuoteMessage.create(
+        content=content,
+        author=author,
+        date=utcnow(),
+        quote=quote
+    )
 
 
 async def send_embed(
@@ -110,6 +153,29 @@ async def send_embed(
         await quote_channel.send(content=f"💬 {comment}", embed=embed)
     else:
         await quote_channel.send(embed=embed)
+
+
+async def create_custom_quote_embed(
+    content: str,
+    person: str,
+    created_by: discord.abc.User
+) -> discord.Embed:
+    """
+    Creates a Discord embed for a custom quote, visually consistent with message-based quotes.
+    """
+    embed = discord.Embed(
+        title="💬 Neues Zitat",
+        description=f"“{content}”",
+        color=discord.Color.blurple()
+    )
+
+    # Add the person being quoted
+    embed.add_field(name=f"~ {person}", value="[Manuelles Zitat]", inline=False)
+
+    # Footer shows who submitted it
+    embed.set_footer(text=f"Eingereicht von {created_by.display_name}")
+    embed.timestamp = utcnow()
+    return embed
 
 
 async def get_random_quote() -> Quote:
