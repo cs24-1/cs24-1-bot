@@ -13,66 +13,56 @@ from models.mensa.mensaModels import Meal, MealType, Price
 class TestGetNextMensaDay:
     """Tests for get_next_mensa_day function"""
 
-    def test_get_next_mensa_day_from_monday(self):
-        """Test getting next mensa day from Monday."""
+    @pytest.mark.parametrize(
+        "input_date,expected_weekday,expected_days_diff",
+        [
+            (datetime(2024, 1, 1), 1, 1),  # Monday -> Tuesday
+            (datetime(2024, 1, 2), 2, 1),  # Tuesday -> Wednesday
+            (datetime(2024, 1, 3), 3, 1),  # Wednesday -> Thursday
+            (datetime(2024, 1, 4), 4, 1),  # Thursday -> Friday
+            (datetime(2024, 1, 5), 0, 3),  # Friday -> Monday (skip weekend)
+            (datetime(2024, 1, 6), 0, 2),  # Saturday -> Monday
+        ],
+    )
+    def test_get_next_mensa_day(
+        self,
+        input_date,
+        expected_weekday,
+        expected_days_diff
+    ):
+        """Test getting next mensa day from various days."""
         from utils.mensaUtils import get_next_mensa_day
 
-        # Monday
-        monday = datetime(2024, 1, 1)  # 2024-01-01 is a Monday
-        next_day = get_next_mensa_day(monday)
-
-        # Next day should be Tuesday
-        assert next_day.weekday() == 1  # Tuesday
-
-    def test_get_next_mensa_day_from_friday(self):
-        """Test getting next mensa day from Friday."""
-        from utils.mensaUtils import get_next_mensa_day
-
-        # Friday
-        friday = datetime(2024, 1, 5)  # 2024-01-05 is a Friday
-        next_day = get_next_mensa_day(friday)
-
-        # Next day should be Monday (skip weekend)
-        assert next_day.weekday() == 0  # Monday
-        assert (next_day - friday).days == 3
-
-    def test_get_next_mensa_day_from_saturday(self):
-        """Test getting next mensa day from Saturday."""
-        from utils.mensaUtils import get_next_mensa_day
-
-        # Saturday
-        saturday = datetime(2024, 1, 6)  # 2024-01-06 is a Saturday
-        next_day = get_next_mensa_day(saturday)
-
-        # Next day should be Monday
-        assert next_day.weekday() == 0  # Monday
+        next_day = get_next_mensa_day(input_date)
+        assert next_day.weekday() == expected_weekday
+        assert (next_day - input_date).days == expected_days_diff
 
 
 class TestGetLastMensaDay:
     """Tests for get_last_mensa_day function"""
 
-    def test_get_last_mensa_day_from_tuesday(self):
-        """Test getting previous mensa day from Tuesday."""
+    @pytest.mark.parametrize(
+        "input_date,expected_weekday,expected_days_diff",
+        [
+            (datetime(2024, 1, 2), 0, 1),  # Tuesday -> Monday
+            (datetime(2024, 1, 3), 1, 1),  # Wednesday -> Tuesday
+            (datetime(2024, 1, 4), 2, 1),  # Thursday -> Wednesday
+            (datetime(2024, 1, 5), 3, 1),  # Friday -> Thursday
+            (datetime(2024, 1, 8), 4, 3),  # Monday -> Friday (skip weekend)
+        ],
+    )
+    def test_get_last_mensa_day(
+        self,
+        input_date,
+        expected_weekday,
+        expected_days_diff
+    ):
+        """Test getting previous mensa day from various days."""
         from utils.mensaUtils import get_last_mensa_day
 
-        # Tuesday
-        tuesday = datetime(2024, 1, 2)  # 2024-01-02 is a Tuesday
-        last_day = get_last_mensa_day(tuesday)
-
-        # Previous day should be Monday
-        assert last_day.weekday() == 0  # Monday
-
-    def test_get_last_mensa_day_from_monday(self):
-        """Test getting previous mensa day from Monday."""
-        from utils.mensaUtils import get_last_mensa_day
-
-        # Monday
-        monday = datetime(2024, 1, 8)  # 2024-01-08 is a Monday
-        last_day = get_last_mensa_day(monday)
-
-        # Previous day should be Friday (skip weekend)
-        assert last_day.weekday() == 4  # Friday
-        assert (monday - last_day).days == 3
+        last_day = get_last_mensa_day(input_date)
+        assert last_day.weekday() == expected_weekday
+        assert (input_date - last_day).days == expected_days_diff
 
 
 class TestCheckIfMensaIsOpen:
