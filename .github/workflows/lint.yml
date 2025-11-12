@@ -1,0 +1,43 @@
+name: Linting Checks
+on:
+  - pull_request
+
+jobs:
+  setup-python:
+    name: Setup Python Environment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+          cache: "pip"
+          cache-dependency-path: "*requirements*.txt"
+      - name: Install modules
+        run: pip install -r torch.requirements.txt -r development.requirements.txt -r requirements.txt
+
+  typing-check:
+    name: mypy Typing Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run mypy
+        run: python -m mypy
+
+  import-sort-check:
+    name: isort Import Sort Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run isort
+        run: python -m isort --check-only .
+
+  formatting-check:
+    name: YAPF Formatting Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: run YAPF to test if python code is correctly formatted
+        uses: AlexanderMelde/yapf-action@v1.0
+        with:
+          args: --verbose
