@@ -2,11 +2,14 @@ import asyncio
 from datetime import datetime, time
 import logging
 import discord
-from discord import ApplicationContext
+from discord import ApplicationContext, Bot, TextChannel, SlashCommandOptionType
 from discord.ext import commands, tasks
-import requests
+from discord.abc import Messageable
 from utils import timetableUtils
 from utils.constants import Constants
+from utils.holidayUtils import is_holiday
+
+MAX_TIMETABLE_RANGE_DAYS = 30
 
 
 class Timetable(commands.Cog):
@@ -17,7 +20,7 @@ class Timetable(commands.Cog):
     timetable information.
     """
 
-    def __init__(self, bot: discord.Bot, logger: logging.Logger) -> None:
+    def __init__(self, bot: Bot, logger: logging.Logger) -> None:
         self.bot = bot
         self.logger = logger
 
@@ -34,15 +37,17 @@ class Timetable(commands.Cog):
 
         self.logger.info("TimetableService started successfully")
 
-    @discord.slash_command(
+    @commands.slash_command(
         name="timetable",
         description=
         "Sieh dir den Stundenplan für `today`, `tomorrow` oder die nächsten `n` Tage an",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
     )
     @discord.option(
-        name="argument",
-        description="`today`, `tomorrow`, Oder eine Zahl (1-30). Standard ist 7",
+        "argument",
+        type=SlashCommandOptionType.string,
+        description=
+        f"`today`, `tomorrow`, Oder eine Zahl (1-{MAX_TIMETABLE_RANGE_DAYS}). Standard ist 7",
         required=False,
         default="7"
     )
@@ -58,40 +63,38 @@ class Timetable(commands.Cog):
         try:
             # --- Argument logic ---
             if argument == "?":
-                plan = (
-                    "ℹ️ **Available Commands:**\n\n"
+                response = (
+                    "ℹ️ **Verfügbare Befehle:**\n\n"
                     "`/timetable today`\n"
-                    "→ Shows the timetable for **today**.\n\n"
+                    "→ Zeigt den Stundenplan für **heute**.\n\n"
                     "`/timetable tomorrow`\n"
-                    "→ Shows the timetable for **tomorrow**.\n\n"
+                    "→ Zeigt den Stundenplan für **morgen**.\n\n"
                     "`/timetable`\n"
-                    "→ Shows the timetable for the **next 7 days**.\n\n"
+                    "→ Zeigt den Stundenplan für die **nächsten 7 Tage**.\n\n"
                     "`/timetable <number>`\n"
-                    "→ Shows the timetable for the next `<number>` days (max. 30)."
+                    "→ Zeigt den Stundenplan für die "
+                    f"**nächsten `<number>` Tage** (max. {MAX_TIMETABLE_RANGE_DAYS})."
                 )
             elif argument.lower() == "today":
-                plan = timetableUtils.get_timetable(days=0)
+                response = timetableUtils.get_timetable(days=0)
             elif argument.lower() == "tomorrow":
-                plan = timetableUtils.get_timetable(days=1)
+                response = timetableUtils.get_timetable(days=1)
             elif argument.isdigit():
                 days = int(argument)
-                if days <= 0 or days > 30:
+                if days <= 0 or days > MAX_TIMETABLE_RANGE_DAYS:
                     await ctx.respond(
-                        "❌ Bitte gib eine Zahl zwischen 1 und 30 ein."
+                        f"❌ Bitte gib eine Zahl zwischen 1 und {MAX_TIMETABLE_RANGE_DAYS} ein."
                     )
                     return
-                plan = timetableUtils.get_timetable(days=days)
+                response = timetableUtils.get_timetable(days=days)
             else:
-                plan = f"❌ Invalid argument: {argument or ' - '}. Use 'today', 'tomorrow', or a number (1-30)."
+                response = f"❌ Ungültiger Parameter: {argument or ' - '}. Benutze 'today', 'tomorrow', oder eine Zahl (1-{MAX_TIMETABLE_RANGE_DAYS})."
 
-            await self.send_long_message(ctx, plan)
+            await self.send_long_message(ctx, response)
 
-        except requests.exceptions.SSLError:
-            await ctx.respond(
-                "❌ SSL Error: Certificate could not be validated."
-            )
         except Exception as e:
-            await ctx.respond(f"❌ Unexpected error: {e}")
+            self.logger.error("Unhandled error in /timetable: %s", e)
+            await ctx.respond(f"❌ Unbehandelter Fehler: {e}")
 
     @tasks.loop(time=time(hour=6, minute=0, tzinfo=Constants.SYSTIMEZONE))
     async def send_daily_timetable(self):
@@ -99,7 +102,7 @@ class Timetable(commands.Cog):
         await self.bot.wait_until_ready()
 
         today = datetime.now(tz=Constants.SYSTIMEZONE).date()
-        channel: discord.TextChannel = self.bot.get_channel(
+        channel: TextChannel = self.bot.get_channel(
             Constants.CHANNEL_IDS.TIMETABLE_CHANNEL
         )  # type: ignore
 
@@ -111,11 +114,11 @@ class Timetable(commands.Cog):
             self.logger.info("⏭ Weekend - skipping timetable post.")
             return
 
-        if today in Constants.DATES.HOLIDAYS:
+        if is_holiday(today):
             self.logger.info("⏭ Holiday - skipping timetable post.")
             return
 
-        self.logger.info(f"📨 Sending timetable for {today.isoformat()}...")
+        self.logger.info("Sending timetable for %s...", today.isoformat())
         timetable_text = timetableUtils.get_timetable(days=0)
         await self.send_long_message(channel, timetable_text)
 
@@ -123,7 +126,7 @@ class Timetable(commands.Cog):
     async def before_daily_timetable_task(self):
         """Ensure bot is ready before the loop starts."""
         await self.bot.wait_until_ready()
-        self.logger.info("🕕 Daily timetable task initialized.")
+        self.logger.info("Daily timetable task initialized.")
 
     @tasks.loop(minutes=60)
     async def refresh_timetable_cache(self):
@@ -136,18 +139,21 @@ class Timetable(commands.Cog):
 
     async def send_long_message(
         self,
-        target: ApplicationContext | discord.abc.Messageable,
+        target: ApplicationContext | Messageable,
         text: str
     ) -> None:
         """Split messages into 2000-character chunks."""
         chunks = [text[i:i + 2000] for i in range(0, len(text), 2000)]
-        for chunk in chunks:
+        for i, chunk in enumerate(chunks):
             if isinstance(target, ApplicationContext):
-                await target.respond(chunk)
+                if i == 0:
+                    await target.respond(chunk)
+                else:
+                    await target.followup.send(chunk)
             else:
                 await target.send(chunk)
 
 
-def setup(bot: discord.Bot):
+def setup(bot: Bot):
     logger = logging.getLogger("bot")
     bot.add_cog(Timetable(bot, logger))

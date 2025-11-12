@@ -52,7 +52,7 @@ def _format_entries(grouped_days: dict[str, list[TimetableEntry]]) -> str:
     output = ""
     for date, entries in grouped_days.items():
         output += f"📌 **{date}**:\n"
-        for _i, entry in enumerate(entries):
+        for entry in entries:
             start_dt = datetime.fromtimestamp(entry["start"],
                                               tz=timezone.utc).astimezone(
                                                   Constants.SYSTIMEZONE
@@ -78,14 +78,15 @@ def _fetch_timetable_entries(
 ) -> list[TimetableEntry] | str:
     """Fetch raw timetable JSON entries or return an error message."""
     url = _campus_url()
-    warnings.simplefilter("ignore", InsecureRequestWarning)
     try:
-        response = _SESSION.get(
-            url,
-            verify=False,
-            timeout=15,
-            force_refresh=force_refresh
-        )
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", InsecureRequestWarning)
+            response = _SESSION.get(
+                url,
+                verify=False,
+                timeout=15,
+                force_refresh=force_refresh
+            )
         if response.status_code != 200:
             return (
                 "❌ Fehler beim Abrufen des Stundenplans. Fehlercode: "
