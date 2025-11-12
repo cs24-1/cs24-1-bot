@@ -5,8 +5,6 @@ import discord
 from discord import ApplicationContext
 from discord.ext import commands, tasks
 import requests
-
-# from utils import timetableUtils
 from utils import timetableUtils
 from utils.constants import Constants
 
@@ -22,6 +20,19 @@ class Timetable(commands.Cog):
     def __init__(self, bot: discord.Bot, logger: logging.Logger) -> None:
         self.bot = bot
         self.logger = logger
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        """
+        Warm cache and start background refresh when bot is ready.
+        """
+        if not self.refresh_timetable_cache.is_running():
+            self.refresh_timetable_cache.start()
+
+        if not self.send_daily_timetable.is_running():
+            self.send_daily_timetable.start()
+
+        self.logger.info("TimetableService started successfully")
 
     @discord.slash_command(
         name="timetable",
@@ -66,7 +77,7 @@ class Timetable(commands.Cog):
                 days = int(argument)
                 if days <= 0 or days > 30:
                     await ctx.respond(
-                        "❌ Please enter a number between 1 and 30."
+                        "❌ Bitte gib eine Zahl zwischen 1 und 30 ein."
                     )
                     return
                 plan = timetableUtils.get_timetable(days=days)
@@ -83,13 +94,10 @@ class Timetable(commands.Cog):
             await ctx.respond(f"❌ Unexpected error: {e}")
 
     @tasks.loop(time=time(hour=6, minute=0, tzinfo=Constants.SYSTIMEZONE))
-    async def daily_timetable_task(self):
+    async def send_daily_timetable(self):
         """Sends daily timetable message, skips weekends & holidays."""
         await self.bot.wait_until_ready()
-        now = datetime.now(tz=Constants.SYSTIMEZONE)
-        target_time = now.replace(hour=6, minute=0, second=0, microsecond=0)
 
-        # --- After wake-up: perform the daily action ---
         today = datetime.now(tz=Constants.SYSTIMEZONE).date()
         channel: discord.TextChannel = self.bot.get_channel(
             Constants.CHANNEL_IDS.TIMETABLE_CHANNEL
@@ -111,14 +119,14 @@ class Timetable(commands.Cog):
         timetable_text = timetableUtils.get_timetable(days=0)
         await self.send_long_message(channel, timetable_text)
 
-    @daily_timetable_task.before_loop
+    @send_daily_timetable.before_loop
     async def before_daily_timetable_task(self):
         """Ensure bot is ready before the loop starts."""
         await self.bot.wait_until_ready()
         self.logger.info("🕕 Daily timetable task initialized.")
 
     @tasks.loop(minutes=60)
-    async def timetable_cache_refresher(self):
+    async def refresh_timetable_cache(self):
         """Periodically refresh Campus Dual cache in background every 60 minutes."""
         await asyncio.to_thread(
             timetableUtils.warm_timetable_cache,
@@ -138,15 +146,6 @@ class Timetable(commands.Cog):
                 await target.respond(chunk)
             else:
                 await target.send(chunk)
-
-    @commands.Cog.listener()
-    async def on_ready(self):
-        """
-        Warm cache and start background refresh when bot is ready.
-        """
-        self.logger.info("TimetableService started successfully")
-        if not self.timetable_cache_refresher.is_running():
-            self.timetable_cache_refresher.start()
 
 
 def setup(bot: discord.Bot):
