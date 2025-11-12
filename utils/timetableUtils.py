@@ -1,11 +1,10 @@
 from datetime import datetime, timedelta, timezone
-from typing import Any
 import warnings
 from utils.constants import Constants
-import requests
 from requests import RequestException
 from urllib3.exceptions import InsecureRequestWarning
 from requests_cache import CachedSession
+from utils.types import TimetableEntry
 
 _SESSION = CachedSession(
     backend="memory",
@@ -47,13 +46,13 @@ def _calc_time_window(days: int) -> tuple[datetime, datetime]:
     return start_date, period_end
 
 
-def _format_entries(grouped_days: dict) -> str:
-    """Format grouped timtetable entries into multi-line string."""
+def _format_entries(grouped_days: dict[str, list[TimetableEntry]]) -> str:
+    """Format grouped timetable entries into multi-line string."""
 
     output = ""
     for date, entries in grouped_days.items():
         output += f"📌 **{date}**:\n"
-        for i, entry in enumerate(entries):
+        for _i, entry in enumerate(entries):
             start_dt = datetime.fromtimestamp(entry["start"],
                                               tz=timezone.utc).astimezone(
                                                   Constants.SYSTIMEZONE
@@ -64,7 +63,6 @@ def _format_entries(grouped_days: dict) -> str:
                                             )
             start = start_dt.strftime("%H:%M")
             end = end_dt.strftime("%H:%M")
-            title = entry["title"]
 
             output += f"📚 {entry['description']}\n"
             output += f"🕒 {start}–{end}\n"
@@ -77,8 +75,7 @@ def _format_entries(grouped_days: dict) -> str:
 
 def _fetch_timetable_entries(
     force_refresh: bool = False
-) -> list[dict[str,
-               Any]] | str:
+) -> list[TimetableEntry] | str:
     """Fetch raw timetable JSON entries or return an error message."""
     url = _campus_url()
     warnings.simplefilter("ignore", InsecureRequestWarning)
@@ -94,10 +91,10 @@ def _fetch_timetable_entries(
                 "❌ Fehler beim Abrufen des Stundenplans. Fehlercode: "
                 f"{response.status_code}"
             )
-        data = response.json()
+        entries: list[TimetableEntry] | None = response.json()
 
         # Campus Dual returns HTTP 200 with 'null' JSON when auth fails (ich kann nicht mehr)
-        if data is None:
+        if entries is None:
             return (
                 "❌ Leere Antwort vom Server. "
                 "Mögliche Ursache: ungültiger CAMPUS_USER oder CAMPUS_HASH."
@@ -108,21 +105,15 @@ def _fetch_timetable_entries(
         return "❌ Ungültige JSON-Antwort des Servers."
     except Exception as ex:
         return f"❌ [YIKES] Unbehandelter Fehler: {ex}"
-    entries: list[dict[
-        str,
-        Any]] = (data if isinstance(data,
-                                    list) else data.get("entries",
-                                                        []))
+
     return entries
 
 
 def _filter_entries_for_window(
-    entries: list[dict[str,
-                       Any]],
+    entries: list[TimetableEntry],
     start_date: datetime,
     period_end: datetime
-) -> list[dict[str,
-               Any]]:
+) -> list[TimetableEntry]:
     """Return entries whose start timestamp lies within [start_date, period_end)."""
     return [
         entry for entry in entries if
@@ -132,13 +123,11 @@ def _filter_entries_for_window(
 
 
 def _group_entries_by_date(
-    entries: list[dict[str,
-                       Any]]
+    entries: list[TimetableEntry]
 ) -> dict[str,
-          list[dict[str,
-                    Any]]]:
+          list[TimetableEntry]]:
     """Group entries by localized date string."""
-    grouped: dict[str, list[dict[str, Any]]] = {}
+    grouped: dict[str, list[TimetableEntry]] = {}
     for e in entries:
         start_dt = datetime.fromtimestamp(e["start"],
                                           tz=timezone.utc).astimezone(
@@ -165,7 +154,7 @@ def _header(days: int) -> str:
     return f"📅 **Stundenplan für {scope}**\n\n"
 
 
-def get_timetable(days: int):
+def get_timetable(days: int) -> str:
     """Return formatted timetable string for given day range."""
     raw = _fetch_timetable_entries()
     if isinstance(raw, str):
