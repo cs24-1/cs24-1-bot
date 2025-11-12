@@ -95,11 +95,11 @@ class Mensa:
 
 class DateConstants:
     HOLIDAYS = {
-        datetime(2025, 1, 1).date(),    # Neujahr 
+        datetime(2025, 1, 1).date(),    # Neujahr
         datetime(2025, 4, 18).date(),   # Karfreitag
         datetime(2025, 4, 21).date(),   # Ostermontag
         datetime(2025, 5, 1).date(),    # Tag der Arbeit
-        datetime(2025, 5, 29).date(),   # Christi Himm
+        datetime(2025, 5, 29).date(),   # Christi Himmelfahrt
         datetime(2025, 6, 9).date(),    # Pfingstmontag
         datetime(2025, 10, 3).date(),   # Tag der Deutschen Einheit
         datetime(2025, 12, 25).date(),  # 1. Weihnachtstag
