@@ -9,7 +9,8 @@
     "editor.formatOnType": true,
     "editor.formatOnPaste": true,
     "yapf.args": [
-        "--style=pyproject.toml"
+        "--style",
+        "pyproject.toml"
     ],
     "autoDocstring.includeExtendedSummary": true,
     "autoDocstring.startOnNewLine": true,
