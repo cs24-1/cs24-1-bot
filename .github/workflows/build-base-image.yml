@@ -1,19 +1,18 @@
-name: Deploy Discord Bot
+name: Build Base Docker Image
 
 on:
   push:
     branches:
       - main
-  workflow_run:
-    workflows: ["Build Base Docker Image"]
-    types:
-      - completed
+    paths:
+      - 'torch.requirements.txt'
+      - 'Dockerfile.base'
+      - '.github/workflows/build-base-image.yml'
+  workflow_dispatch:
 
 jobs:
-  build-and-push:
+  build-and-push-base:
     runs-on: ubuntu-latest
-    # Only run if base image build was successful or this is a direct push
-    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
     permissions:
       contents: read
       packages: write
@@ -36,18 +35,19 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: ghcr.io/${{ github.repository }}-base
           tags: |
             type=raw,value=latest
-            type=sha
+            type=sha,prefix={{branch}}-
 
-      - name: Build and push Docker image
+      - name: Build and push base Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: Dockerfile.base
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache
-          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:buildcache,mode=max
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}-base:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}-base:buildcache,mode=max

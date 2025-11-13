@@ -1,4 +1,5 @@
-FROM python:3.12-slim
+# Use the base image with PyTorch dependencies pre-installed
+FROM ghcr.io/cs24-1/cs24-1-bot-base:latest
 
 # Set timezone
 ENV TZ=Europe/Berlin
@@ -11,14 +12,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gpg \
     && rm -rf /var/lib/apt/lists/*
 
-# Install torch requirements
-COPY torch.requirements.txt ./
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r torch.requirements.txt
-
 # Install development requirements
-COPY development.requirements.txt ./
-RUN pip install --no-cache-dir -r development.requirements.txt
+COPY requirements-dev.txt ./
+RUN pip install --no-cache-dir -r requirements-dev.txt
 
 # Install main requirements
 COPY requirements.txt ./

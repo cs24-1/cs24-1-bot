@@ -1,0 +1,20 @@
+# CI/Testing Docker image with all dependencies for testing and linting
+# This image is used in GitHub Actions workflows for testing and linting
+FROM ghcr.io/cs24-1/cs24-1-bot-base:latest
+
+# Ignore pip warnings about running as root
+ENV PIP_ROOT_USER_ACTION=ignore
+
+# Set the working directory
+WORKDIR /app
+
+# Copy and install main requirements
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy and install development requirements for testing and linting
+COPY requirements-dev.txt /app/
+RUN pip install --no-cache-dir -r requirements-dev.txt
+
+# Set environment variable for Python to run in unbuffered mode
+ENV PYTHONUNBUFFERED=1
