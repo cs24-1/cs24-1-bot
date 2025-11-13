@@ -66,7 +66,7 @@ def create_banner_from_image(
                  ...],
     target_height: int,
     target_width: int
-):
+) -> Image.Image:
     # Calculate the aspect ratio of the target size
     target_aspect_ratio = target_width / target_height
 

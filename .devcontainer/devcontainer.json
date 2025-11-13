@@ -20,5 +20,5 @@
       ]
     }
   },
-  "postCreateCommand": "mkdir -p data && touch data/db.sqlite3 && aerich upgrade && pre-commit install"
+  "postCreateCommand": "mkdir -p data && touch data/db.sqlite3 && aerich upgrade"
 }
