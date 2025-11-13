@@ -28,12 +28,6 @@ Diese Schritte sind umständlicher und nicht empfohlen.
 
 Das Projekt benutzt verschiedene Tools zur Sicherstellung der Code-Qualität:
 
-### Pre-commit Hooks
-
-Das Projekt nutzt pre-commit hooks für Code-Qualität. In Development Containers sind diese bereits installiert.
-
-Andernfalls richte sie manuell mit [dieser Anleitung](TESTING.md#pre-commit-hooks) ein.
-
 ### Code-Formatierung
 
 - **YAPF**: Code-Formatierung nach PEP 8 mit 80 Zeichen Zeilenlänge
