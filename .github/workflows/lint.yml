@@ -19,18 +19,55 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      checks: write
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Run mypy (typing check)
+        id: mypy
         run: python -m mypy .
         continue-on-error: true
 
       - name: Run isort (import sort check)
+        id: isort
         run: python -m isort --check-only .
         continue-on-error: true
 
       - name: Run YAPF (formatting check)
+        id: yapf
         run: python -m yapf --diff --recursive .
+        continue-on-error: true
+
+      - name: Report linting status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const mypy = '${{ steps.mypy.outcome }}';
+            const isort = '${{ steps.isort.outcome }}';
+            const yapf = '${{ steps.yapf.outcome }}';
+            
+            const failures = [];
+            if (mypy === 'failure') failures.push('mypy');
+            if (isort === 'failure') failures.push('isort');
+            if (yapf === 'failure') failures.push('YAPF');
+            
+            if (failures.length > 0) {
+              core.warning(`⚠️ Linting checks failed: ${failures.join(', ')}`);
+              core.summary
+                .addHeading('⚠️ Linting Issues Found (Non-blocking)', 2)
+                .addList(failures.map(f => `${f} check failed`))
+                .addRaw('Please review the logs above for details.')
+                .write();
+              
+              // Exit with error to mark this step as failed, but continue-on-error will prevent job failure
+              core.setFailed('Linting checks failed but are non-blocking');
+            } else {
+              core.summary
+                .addHeading('✅ All Linting Checks Passed', 2)
+                .write();
+            }
         continue-on-error: true
