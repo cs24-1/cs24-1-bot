@@ -13,12 +13,12 @@ ENV PIP_ROOT_USER_ACTION=ignore
 WORKDIR /app
 
 # Copy torch requirements file
-COPY torch.requirements.txt /app/
+COPY requirements-torch.txt /app/
 
 # Upgrade pip and install PyTorch dependencies
 # These are the heaviest dependencies, so we install them in the base image
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir -r torch.requirements.txt
+    pip install --no-cache-dir -r requirements-torch.txt
 
 # Set timezone to Europe/Berlin (used by the bot)
 ENV TZ=Europe/Berlin
