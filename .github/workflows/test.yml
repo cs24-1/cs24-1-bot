@@ -3,11 +3,17 @@ name: Testing Checks
 on:
   pull_request:
   workflow_dispatch:
+  workflow_run:
+    workflows: ["Build CI Docker Image"]
+    types:
+      - completed
 
 jobs:
   test:
     name: Testing Checks
     runs-on: ubuntu-latest
+    # Skip if triggered by workflow_run and the CI image build failed
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     container:
       image: ghcr.io/cs24-1/cs24-1-bot-ci:latest
       credentials:
