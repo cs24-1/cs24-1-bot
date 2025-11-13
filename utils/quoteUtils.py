@@ -1,11 +1,11 @@
 import random
 
-from discord import ApplicationContext, Embed, Color
 import discord
+from discord import ApplicationContext, Color, Embed
 from discord.utils import utcnow
 from thefuzz import fuzz  # type: ignore
 
-from models.database.quoteData import QuoteMessage, Quote
+from models.database.quoteData import Quote, QuoteMessage
 from models.database.userData import User
 from utils.constants import Constants
 
@@ -171,8 +171,7 @@ async def search_quotes(
         (
             score,
             quote,
-        ) for score,
-        quote in ranked_quotes if score > 50
+        ) for score, quote in ranked_quotes if score > 50
     ]
 
     if len(filtered_quotes) == 0:

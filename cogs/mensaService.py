@@ -1,9 +1,9 @@
 import logging
 from datetime import datetime, time
 
+import discord
 from discord import ApplicationContext
 from discord.ext import commands, tasks
-import discord
 
 from models.mensa.mensaModels import Meal
 from models.mensa.mensaView import MensaView

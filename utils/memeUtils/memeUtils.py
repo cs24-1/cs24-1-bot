@@ -2,12 +2,13 @@ import os
 import random
 import uuid
 from datetime import datetime
+from io import BytesIO
 from logging import Logger
 from typing import Tuple
 
 import discord
-from PIL import Image, ImageSequence, ImageFile
-from io import BytesIO
+from PIL import Image, ImageSequence
+from PIL.ImageFile import ImageFile
 from thefuzz import fuzz
 
 from models.database.memeData import Meme, MemeFormat
@@ -18,7 +19,12 @@ from utils.memeUtils.memeBannerUtils import bannerize_meme_image
 
 
 async def save_meme_image(
-    logger: Logger, image: discord.Attachment, author: User, message: str, date: datetime) -> None:
+    logger: Logger,
+    image: discord.Attachment,
+    author: User,
+    message: str,
+    date: datetime
+) -> None:
     """
     Saves the original meme image to the meme_images directory.
     """
@@ -39,26 +45,55 @@ async def save_meme_image(
     # Create a bannerized version of the image and save it
     bannerized_image = bannerize_meme_image(image_data, extension == "gif")
     bannerized_image_path = f"{Constants.FILE_PATHS.BANNERIZED_MEME_FOLDER}/{meme_uuid}.{extension}"
-    save_meme_image_file(Image.open(BytesIO(bannerized_image)), bannerized_image_path)
+    save_meme_image_file(
+        Image.open(BytesIO(bannerized_image)),
+        bannerized_image_path
+    )
 
     # Save metadata about the meme image
-    await save_meme_metadata(meme_uuid, MemeFormat(extension), ocr_content, author, message, date)
+    await save_meme_metadata(
+        meme_uuid,
+        MemeFormat(extension),
+        ocr_content,
+        author,
+        message,
+        date
+    )
 
 
 def save_meme_image_file(img: ImageFile, path: str) -> None:
     if img.format == "GIF":
         frames = [frame.copy() for frame in ImageSequence.Iterator(img)]
-        frames[0].save(path, save_all=True, append_images=frames[1:], loop=0, format='GIF')
+        frames[0].save(
+            path,
+            save_all=True,
+            append_images=frames[1:],
+            loop=0,
+            format='GIF'
+        )
     else:
         img.save(path)
 
 
 async def save_meme_metadata(
-    meme_uuid: str, meme_format: MemeFormat, content: str, author: User, message: str, date: datetime) -> None:
+    meme_uuid: str,
+    meme_format: MemeFormat,
+    content: str,
+    author: User,
+    message: str,
+    date: datetime
+) -> None:
     """
     Saves metadata about the meme image to a CSV file.
     """
-    await Meme.create(uuid=meme_uuid, format=meme_format, content=content, author=author, message=message, date=date)
+    await Meme.create(
+        uuid=meme_uuid,
+        format=meme_format,
+        content=content,
+        author=author,
+        message=message,
+        date=date
+    )
 
 
 async def get_random_meme(bannerized: bool) -> Tuple[bytes, Meme]:
@@ -74,8 +109,10 @@ async def get_random_meme(bannerized: bool) -> Tuple[bytes, Meme]:
 
     random_meme: Meme = random.choice(memes)
     meme_path = os.path.join(
-        Constants.FILE_PATHS.BANNERIZED_MEME_FOLDER if bannerized else Constants.FILE_PATHS.RAW_MEME_FOLDER,
-        f"{random_meme.uuid}.{random_meme.format.value}")
+        Constants.FILE_PATHS.BANNERIZED_MEME_FOLDER
+        if bannerized else Constants.FILE_PATHS.RAW_MEME_FOLDER,
+        f"{random_meme.uuid}.{random_meme.format.value}"
+    )
 
     with open(meme_path, 'rb') as f:
         meme_image = f.read()
@@ -83,25 +120,36 @@ async def get_random_meme(bannerized: bool) -> Tuple[bytes, Meme]:
     return meme_image, random_meme
 
 
-async def search_memes(search: str, num: int, bannerized: bool = False) -> list[tuple[bytes, Meme]]:
+async def search_memes(search: str,
+                       num: int,
+                       bannerized: bool = False) -> list[tuple[bytes,
+                                                               Meme]]:
     """
     Searches for memes containing the given search term.
     """
-    memes: list[tuple[int, Meme]] = [
-        (fuzz.token_set_ratio(search, meme.content + "\n" + meme.message), meme)
-        for meme
-        in await Meme.all()]
+    memes: list[
+        tuple[int,
+              Meme]
+    ] = [
+        (
+            fuzz.token_set_ratio(search,
+                                 meme.content + "\n" + meme.message),
+            meme
+        ) for meme in await Meme.all()
+    ]
 
-    filtered_memes: list[tuple[int, Meme]] = [(ratio, meme) for ratio, meme in memes if ratio > 50]
+    filtered_memes: list[tuple[int, Meme]]
+    filtered_memes = [(ratio, meme) for ratio, meme in memes if ratio > 50]
 
     if len(filtered_memes) == 0:
         return []
 
     # Read the selected meme images
-    result = []
-    for _, meme in random.choices(filtered_memes, k = num):
+    result: list[tuple[bytes, Meme]] = []
+    for _, meme in random.choices(filtered_memes, k=num):
         meme_path = os.path.join(
-            Constants.FILE_PATHS.BANNERIZED_MEME_FOLDER if bannerized else Constants.FILE_PATHS.RAW_MEME_FOLDER,
+            Constants.FILE_PATHS.BANNERIZED_MEME_FOLDER
+            if bannerized else Constants.FILE_PATHS.RAW_MEME_FOLDER,
             f"{meme.uuid}.{meme.format.value}"
         )
         with open(meme_path, 'rb') as f:

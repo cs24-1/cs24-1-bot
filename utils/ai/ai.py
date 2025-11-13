@@ -1,10 +1,11 @@
 import dataclasses
 import json
+
 from openai import NotFoundError, OpenAI
 
+from models.ai.response import CodeTranslateResponse
 from utils.ai import system_data
 from utils.constants import Constants
-from models.ai.response import CodeTranslateResponse
 
 
 class AIUtils:

@@ -5,10 +5,15 @@ repos:
     hooks:
       - id: yapf
         args: [ --diff ]
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.2.0
+  - repo: local
     hooks:
       - id: mypy
+        name: mypy
+        entry: mypy
+        language: system
+        types: [python]
+        args: ["--config-file=pyproject.toml"]
+        require_serial: true
   - repo: https://github.com/PyCQA/isort
     rev: 5.12.0
     hooks:

@@ -17,6 +17,7 @@ split_before_named_assigns = true
 [tool.mypy]
 explicit_package_bases = true
 check_untyped_defs = true
+ignore_missing_imports = true
 exclude = ["docs"]
 
 [tool.pytest.ini_options]
