@@ -60,7 +60,7 @@ The project includes a pytest-based test suite. To run tests locally:
 
 1. Install development dependencies:
 ```bash
-pip install -r development.requirements.txt
+pip install -r requirements-dev.txt
 ```
 
 2. Run all tests:

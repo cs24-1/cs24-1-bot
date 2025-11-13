@@ -1,24 +1,21 @@
 name: Linting Checks
+
 on:
-  - pull_request
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   lint:
     name: Linting Checks
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/cs24-1/cs24-1-bot-ci:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.12"
-          cache: "pip"
-          cache-dependency-path: "*requirements*.txt"
-
-      - name: Install modules
-        run: pip install -r torch.requirements.txt -r development.requirements.txt -r requirements.txt
+        uses: actions/checkout@v4
 
       - name: Run mypy (typing check)
         run: python -m mypy
@@ -27,6 +24,4 @@ jobs:
         run: python -m isort --check-only .
 
       - name: Run YAPF (formatting check)
-        uses: AlexanderMelde/yapf-action@v1.0
-        with:
-          args: --verbose
+        run: python -m yapf --diff --recursive .
