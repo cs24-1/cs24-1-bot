@@ -250,7 +250,7 @@ line_length = 80
 
 1. Add to appropriate requirements file:
    - `requirements.txt`: Core dependencies
-   - `torch.requirements.txt`: PyTorch and related packages
+   - `requirements-torch.txt`: PyTorch and related packages
    - `requirements-dev.txt`: Development tools
 2. Pin versions with `~=` for compatible updates
 3. Update Dockerfile if needed for system dependencies
