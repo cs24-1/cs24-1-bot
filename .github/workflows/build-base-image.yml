@@ -6,7 +6,7 @@ on:
     # branches:
     #   - main
     paths:
-      - 'torch.requirements.txt'
+      - 'requirements-torch.txt'
       - 'Dockerfile.base'
       - '.github/workflows/build-base-image.yml'
   workflow_dispatch:

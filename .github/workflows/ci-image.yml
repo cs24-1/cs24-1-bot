@@ -6,7 +6,7 @@ on:
     # branches:
     #   - main
     paths:
-      - 'torch.requirements.txt'
+      - 'requirements-torch.txt'
       - 'requirements.txt'
       - 'requirements-dev.txt'
       - 'Dockerfile.ci'
