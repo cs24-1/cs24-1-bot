@@ -22,6 +22,7 @@ jobs:
     permissions:
       checks: write
       contents: read
+      packages: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
