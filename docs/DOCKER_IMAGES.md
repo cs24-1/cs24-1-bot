@@ -7,11 +7,11 @@ This project uses a multi-layered Docker image strategy to optimize build times 
 ```
 python:3.12-slim
     ↓
-cs24-1-bot-base (PyTorch + system dependencies)
+cs24-1-bot-base (requirements-torch.txt)
     ↓
-    ├── cs24-1-bot-ci (+ requirements.txt + requirements-dev.txt)
-    ├── cs24-1-bot (production: + requirements.txt + app code)
-    └── devcontainer (development: + requirements.txt + requirements-dev.txt + dev tools)
+    ├── cs24-1-bot-ci (requirements.txt + requirements-dev.txt)
+    ├── cs24-1-bot (requirements.txt + app code)
+    └── devcontainer (requirements.txt + requirements-dev.txt + dev tools)
 ```
 
 ## Images
@@ -22,10 +22,10 @@ cs24-1-bot-base (PyTorch + system dependencies)
 
 **Contains:**
 - Python 3.12 slim
-- PyTorch and torchvision (from `torch.requirements.txt`)
+- PyTorch and torchvision (from `requirements-torch.txt`)
 - System timezone configuration
 
-**Build trigger:** Changes to `torch.requirements.txt` or `Dockerfile.base`
+**Build trigger:** Changes to `requirements-torch.txt` or `Dockerfile.base`
 
 **Platforms:** linux/amd64, linux/arm64
 
@@ -84,7 +84,7 @@ cs24-1-bot-base (PyTorch + system dependencies)
 Builds and pushes the base image with PyTorch dependencies.
 
 - **Triggers:** 
-  - Push to `main` with changes to `torch.requirements.txt` or `Dockerfile.base`
+  - Push to `main` with changes to `requirements-torch.txt` or `Dockerfile.base`
   - Manual workflow dispatch
 - **Artifacts:** `ghcr.io/cs24-1/cs24-1-bot-base:latest`
 
@@ -160,7 +160,7 @@ The CI image might not exist yet. Manually trigger the `ci-image.yml` workflow t
 ### Base image outdated
 
 If PyTorch or system dependencies are outdated:
-1. Update `torch.requirements.txt`
+1. Update `requirements-torch.txt`
 2. Push to `main` or manually trigger `build-base-image.yml`
 3. Wait for rebuild to complete
 4. Subsequent jobs will use the new base image

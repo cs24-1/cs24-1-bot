@@ -5,7 +5,7 @@ This document describes the dependency chain between GitHub Actions workflows in
 ## Dependency Graph
 
 ```
-Push to main (torch.requirements.txt changes)
+Push to main (requirements-torch.txt changes)
     ↓
 ┌─────────────────────────────────┐
 │ Build Base Docker Image         │
@@ -32,8 +32,8 @@ Push to main (torch.requirements.txt changes)
 ### 1. Build Base Docker Image (`build-base-image.yml`)
 
 **Triggers:**
-- Push with changes to:
-  - `torch.requirements.txt`
+- Push to `main` branch with changes to:
+  - `requirements-torch.txt`
   - `Dockerfile.base`
   - `.github/workflows/build-base-image.yml`
 - Manual workflow dispatch
@@ -51,8 +51,8 @@ Push to main (torch.requirements.txt changes)
 ### 2. Build CI Docker Image (`ci-image.yml`)
 
 **Triggers:**
-- Push with changes to:
-  - `torch.requirements.txt`
+- Push to `main` branch with changes to:
+  - `requirements-torch.txt`
   - `requirements.txt`
   - `requirements-dev.txt`
   - `Dockerfile.ci`
@@ -73,13 +73,14 @@ Push to main (torch.requirements.txt changes)
 - Runs on direct push/dispatch regardless of base image status
 - Runs after base image build completes successfully
 - Skips if triggered by workflow_run and base image build failed
+- Builds for linux/amd64 platform only
 
 ---
 
 ### 3. Deploy Discord Bot (`deploy.yml`)
 
 **Triggers:**
-- Push to branch (currently any branch for testing)
+- Push to `main` branch
 - **Workflow run:** After "Build Base Docker Image" completes successfully
 
 **Dependencies:** 
@@ -93,6 +94,7 @@ Push to main (torch.requirements.txt changes)
 - Runs on direct push regardless of base image status
 - Runs after base image build completes successfully
 - Skips if triggered by workflow_run and base image build failed
+- Builds for linux/amd64 and linux/arm64 platforms
 
 ---
 
@@ -108,13 +110,16 @@ Push to main (torch.requirements.txt changes)
 
 **Triggers downstream:** None
 
-**Purpose:** Runs pytest with coverage
+**Purpose:** Runs pytest with coverage and posts coverage report as PR comment
 
 **Behavior:**
-- Uses pre-built CI image from registry
+- Uses pre-built CI image from registry (ghcr.io/cs24-1/cs24-1-bot-ci:latest)
 - Runs on direct PR/dispatch regardless of CI image status
 - Runs after CI image build completes successfully
 - Skips if triggered by workflow_run and CI image build failed
+- Generates JUnit XML and coverage reports
+- Posts coverage report as PR comment (only changed files)
+- Requires permissions: checks (write), contents (read), pull-requests (write), packages (read)
 
 ---
 
@@ -133,99 +138,12 @@ Push to main (torch.requirements.txt changes)
 **Purpose:** Runs mypy, isort, and YAPF checks
 
 **Behavior:**
-- Uses pre-built CI image from registry
+- Uses pre-built CI image from registry (ghcr.io/cs24-1/cs24-1-bot-ci:latest)
 - Runs on direct PR/dispatch regardless of CI image status
 - Runs after CI image build completes successfully
 - Skips if triggered by workflow_run and CI image build failed
-
----
-
-## Execution Scenarios
-
-### Scenario 1: PyTorch Dependency Update
-
-```
-1. Developer updates torch.requirements.txt
-2. Pushes to main
-3. Build Base Docker Image triggers (15 min)
-   ├─> On success: Build CI Docker Image triggers (5 min)
-   │   ├─> On success: Testing Checks triggers (2 min)
-   │   └─> On success: Linting Checks triggers (1 min)
-   └─> On success: Deploy Discord Bot triggers (8 min)
-```
-
-**Total time:** ~31 minutes (sequential execution)
-
----
-
-### Scenario 2: Application Dependency Update
-
-```
-1. Developer updates requirements.txt
-2. Pushes to main
-3. Build CI Docker Image triggers (5 min)
-   ├─> On success: Testing Checks triggers (2 min)
-   └─> On success: Linting Checks triggers (1 min)
-4. Deploy Discord Bot triggers independently (8 min)
-```
-
-**Total time:** ~8 minutes (parallel execution of CI and Deploy)
-
----
-
-### Scenario 3: Pull Request
-
-```
-1. Developer opens PR
-2. Testing Checks triggers (2 min)
-3. Linting Checks triggers (2 min)
-```
-
-**Total time:** ~2 minutes (parallel execution)
-
-**Note:** Uses existing CI image from registry, no rebuilds needed
-
----
-
-### Scenario 4: Manual Workflow Trigger
-
-```
-1. Developer manually triggers "Build Base Docker Image"
-2. Build Base Docker Image runs (15 min)
-   └─> On success: Build CI Docker Image triggers (5 min)
-       ├─> On success: Testing Checks triggers (2 min)
-       └─> On success: Linting Checks triggers (1 min)
-```
-
-**Note:** Deploy does NOT trigger (requires push event)
-
----
-
-## Conditional Execution
-
-All dependent workflows use conditional execution to ensure they only run when upstream workflows succeed:
-
-### Pattern 1: Direct Push or Successful Workflow Run
-```yaml
-if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-```
-
-Used by:
-- Build CI Docker Image
-- Deploy Discord Bot
-
-**Behavior:** Runs immediately on direct push/dispatch, OR waits for upstream workflow success
-
-### Pattern 2: Skip on Failed Workflow Run
-```yaml
-if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
-```
-
-Used by:
-- Testing Checks
-- Linting Checks
-
-**Behavior:** Always runs on direct trigger (PR/dispatch), but skips if upstream workflow failed
+- All checks use continue-on-error: true (non-blocking)
+- Requires permissions: checks (write), contents (read), packages (read)
 
 ---
 
@@ -253,79 +171,7 @@ If CI image changes and you need to re-test an open PR:
 
 ---
 
-## Monitoring Workflow Dependencies
-
-### Check Workflow Status
-```bash
-# Via GitHub CLI
-gh run list --workflow=build-base-image.yml
-gh run list --workflow=ci-image.yml
-gh run list --workflow=deploy.yml
-```
-
-### View Dependency Chain
-```bash
-# View all workflow runs
-gh run list --limit 20
-
-# Watch specific workflow
-gh run watch <run-id>
-```
-
-### Debug Failed Dependencies
-```bash
-# View logs of failed run
-gh run view <run-id> --log-failed
-```
-
----
-
-## Best Practices
-
-### When to Use Manual Triggers
-
-- **Base Image:** After manual changes to Dockerfile.base
-- **CI Image:** After adding new dev dependencies
-- **Deploy:** Never (should be automatic on main push)
-- **Test/Lint:** To re-run checks without pushing new commits
-
-### Handling Failed Builds
-
-1. **Base image fails:**
-   - Fix the issue
-   - Push fix or manually re-trigger
-   - CI image and Deploy will NOT run until base succeeds
-
-2. **CI image fails:**
-   - Fix the issue  
-   - Push fix or manually re-trigger
-   - Test/Lint will NOT run until CI succeeds
-   - Deploy continues independently (doesn't depend on CI image)
-
-3. **Deploy fails:**
-   - No downstream impact
-   - Fix and re-trigger deploy
-
-4. **Test/Lint fails:**
-   - No downstream impact (leaf nodes)
-   - Fix code and push to PR
-
----
-
-## Future Improvements
-
-Potential enhancements to the workflow dependency chain:
-
-1. **Composite workflows:** Combine related workflows into a single reusable workflow
-2. **Matrix builds:** Test against multiple Python versions simultaneously
-3. **Artifact sharing:** Pass build artifacts between workflows instead of rebuilding
-4. **Smarter triggers:** Only rebuild images when dependencies actually change (hash-based)
-5. **Notification system:** Alert on workflow failures in the dependency chain
-
----
-
 ## Related Documentation
 
 - Docker image strategy: `docs/DOCKER_IMAGES.md`
 - Implementation details: `docs/DOCKER_IMPLEMENTATION.md`
-- Quick reference: `docs/DOCKER_QUICK_REF.md`
