@@ -2,15 +2,17 @@
 Unit tests for cogs/quoteService.py
 """
 
-from unittest.mock import AsyncMock, MagicMock, patch
-
-import pytest
+from unittest.mock import MagicMock
 
 
 class TestQuoteService:
     """Tests for QuoteService Cog"""
 
-    def test_quote_service_initialization(self, mock_bot, mock_logger):
+    def test_quote_service_initialization(
+        self,
+        mock_bot: MagicMock,
+        mock_logger: MagicMock
+    ):
         """Test that QuoteService initializes correctly."""
         from cogs.quoteService import QuoteService
 
@@ -20,7 +22,11 @@ class TestQuoteService:
         assert service.logger == mock_logger
         assert hasattr(service, "quote_cache")
 
-    def test_quote_cache_stores_messages(self, mock_bot, mock_logger):
+    def test_quote_cache_stores_messages(
+        self,
+        mock_bot: MagicMock,
+        mock_logger: MagicMock
+    ):
         """Test that quote_cache can store and retrieve messages."""
         from cogs.quoteService import QuoteService
 
@@ -29,13 +35,17 @@ class TestQuoteService:
         # Add messages to cache
         user_id = 12345
         mock_messages = [MagicMock(), MagicMock()]
-        service.quote_cache[user_id] = mock_messages
+        service.quote_cache[user_id] = mock_messages  # type: ignore
 
         # Verify retrieval
         assert user_id in service.quote_cache
         assert service.quote_cache[user_id] == mock_messages
 
-    def test_quote_cache_can_be_cleared(self, mock_bot, mock_logger):
+    def test_quote_cache_can_be_cleared(
+        self,
+        mock_bot: MagicMock,
+        mock_logger: MagicMock
+    ):
         """Test that quote_cache entries can be removed."""
         from cogs.quoteService import QuoteService
 

@@ -10,7 +10,11 @@ import pytest
 class TestAIService:
     """Tests for AIService Cog"""
 
-    def test_ai_service_initialization(self, mock_bot, mock_logger):
+    def test_ai_service_initialization(
+        self,
+        mock_bot: MagicMock,
+        mock_logger: MagicMock
+    ):
         """Test that AIService initializes correctly."""
         from cogs.aiService import AIService
 
@@ -22,7 +26,11 @@ class TestAIService:
             assert hasattr(service, "ai")
 
     @pytest.mark.asyncio
-    async def test_reset_ai_usage_resets_all_users(self, mock_bot, mock_logger):
+    async def test_reset_ai_usage_resets_all_users(
+        self,
+        mock_bot: MagicMock,
+        mock_logger: MagicMock
+    ):
         """Test that reset_ai_usage task resets usage for all users."""
         from cogs.aiService import AIService
 

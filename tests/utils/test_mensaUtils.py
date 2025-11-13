@@ -1,13 +1,12 @@
 """
 Unit tests for utils/mensaUtils.py
 """
-
 from datetime import datetime, timedelta
-from unittest.mock import MagicMock, patch
+from typing import Any
 
 import pytest
 
-from models.mensa.mensaModels import Meal, MealType, Price
+from models.mensa.mensaModels import MealType
 
 
 class TestGetNextMensaDay:
@@ -26,9 +25,9 @@ class TestGetNextMensaDay:
     )
     def test_get_next_mensa_day(
         self,
-        input_date,
-        expected_weekday,
-        expected_days_diff
+        input_date: datetime,
+        expected_weekday: int,
+        expected_days_diff: int
     ):
         """Test getting next mensa day from various days."""
         from utils.mensaUtils import get_next_mensa_day
@@ -53,9 +52,9 @@ class TestGetLastMensaDay:
     )
     def test_get_last_mensa_day(
         self,
-        input_date,
-        expected_weekday,
-        expected_days_diff
+        input_date: datetime,
+        expected_weekday: int,
+        expected_days_diff: int
     ):
         """Test getting previous mensa day from various days."""
         from utils.mensaUtils import get_last_mensa_day
@@ -141,6 +140,7 @@ class TestExtractNormalMeals:
         """Test extracting normal meals from valid data."""
         from utils.mensaUtils import extract_normal_meals
 
+        meals_data: list[dict[str, Any]]
         meals_data = [
             {
                 "category": "Veganes Gericht",
@@ -171,6 +171,7 @@ class TestExtractNormalMeals:
         """Test that invalid meals are filtered out."""
         from utils.mensaUtils import extract_normal_meals
 
+        meals_data: list[dict[str, Any]]
         meals_data = [
             {
                 "category": "Veganes Gericht",

@@ -2,15 +2,17 @@
 Unit tests for cogs/mensaService.py
 """
 
-from unittest.mock import AsyncMock, MagicMock, patch
-
-import pytest
+from unittest.mock import MagicMock
 
 
 class TestMensaService:
     """Tests for MensaService Cog"""
 
-    def test_mensa_service_initialization(self, mock_bot, mock_logger):
+    def test_mensa_service_initialization(
+        self,
+        mock_bot: MagicMock,
+        mock_logger: MagicMock
+    ):
         """Test that MensaService initializes correctly."""
         from cogs.mensaService import MensaService
 

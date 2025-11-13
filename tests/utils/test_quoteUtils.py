@@ -2,11 +2,9 @@
 Unit tests for utils/quoteUtils.py
 """
 
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock
 
-import pytest
 from discord import Color, Embed
-from discord.utils import utcnow
 
 
 class TestBuildQuoteEmbed:
@@ -76,6 +74,7 @@ class TestBuildQuoteEmbed:
 
         embed = build_quote_embed([mock_message], author_name="Submitter")
 
+        assert embed.footer is not None
         assert embed.footer.text == "Eingereicht von Submitter"
 
     def test_build_quote_embed_long_content_truncation(self):

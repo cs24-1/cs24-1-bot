@@ -23,7 +23,7 @@ class TestPrice:
              "0,99 €"),
         ],
     )
-    def test_price_str_formatting(self, value, expected_str):
+    def test_price_str_formatting(self, value: float, expected_str: str):
         """Test that price is formatted correctly as German currency."""
         price = Price(value)
         assert str(price) == expected_str
@@ -42,7 +42,12 @@ class TestPrice:
              True),
         ],
     )
-    def test_price_equality(self, value1, value2, expected_equal):
+    def test_price_equality(
+        self,
+        value1: float,
+        value2: float,
+        expected_equal: bool
+    ):
         """Test price equality comparison."""
         price1 = Price(value1)
         price2 = Price(value2)
@@ -59,7 +64,7 @@ class TestPrice:
              1.00),
         ],
     )
-    def test_price_less_than(self, value1, value2):
+    def test_price_less_than(self, value1: float, value2: float):
         """Test price less than comparison."""
         price1 = Price(value1)
         price2 = Price(value2)
@@ -77,7 +82,7 @@ class TestPrice:
              0.99),
         ],
     )
-    def test_price_greater_than(self, value1, value2):
+    def test_price_greater_than(self, value1: float, value2: float):
         """Test price greater than comparison."""
         price1 = Price(value1)
         price2 = Price(value2)
@@ -95,7 +100,7 @@ class TestPrice:
              3.75),
         ],
     )
-    def test_price_from_string(self, price_str, expected_value):
+    def test_price_from_string(self, price_str: str, expected_value: float):
         """Test parsing price from string with comma as decimal separator."""
         price = Price.get_from_string(price_str)
         assert price.value == expected_value

@@ -2,9 +2,6 @@
 Unit tests for utils/constants.py
 """
 
-import pytest
-
-
 class TestConstants:
     """Tests for utils/constants.py"""
 
