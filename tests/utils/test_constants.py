@@ -2,6 +2,7 @@
 Unit tests for utils/constants.py
 """
 
+
 class TestConstants:
     """Tests for utils/constants.py"""
 
