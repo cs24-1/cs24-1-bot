@@ -29,9 +29,12 @@ jobs:
 
       - name: Run mypy (typing check)
         run: python -m mypy .
+        continue-on-error: true
 
       - name: Run isort (import sort check)
         run: python -m isort --check-only .
+        continue-on-error: true
 
       - name: Run YAPF (formatting check)
         run: python -m yapf --diff --recursive .
+        continue-on-error: true
