@@ -23,10 +23,6 @@ VOLUME /app/data
 ENV TZ=Europe/Berlin
 
 # Define environment variable
-ENV DISCORD_TOKEN=''
-ENV CUR_SERVER=''
-ENV MENSA_CHANNEL=''
-ENV MEME_CHANNEL=''
 ENV DB_FILE_PATH='/app/data/db.sqlite3'
 
 # Run bot.py when the container launches
