@@ -59,7 +59,3 @@ Dockerfile*
 tests/
 test_*.py
 *_test.py
-
-# Development requirements (only needed for dev/ci images)
-requirements-dev.txt
-development.requirements.txt
