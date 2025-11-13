@@ -10,7 +10,11 @@ import pytest
 class TestMemeService:
     """Tests for MemeService Cog"""
 
-    def test_meme_service_initialization(self, mock_bot, mock_logger):
+    def test_meme_service_initialization(
+        self,
+        mock_bot: MagicMock,
+        mock_logger: MagicMock
+    ):
         """Test that MemeService initializes correctly."""
         from cogs.memeService import MemeService
 
@@ -20,7 +24,11 @@ class TestMemeService:
         assert service.logger == mock_logger
 
     @pytest.mark.asyncio
-    async def test_save_memes_ignores_bot_messages(self, mock_bot, mock_logger):
+    async def test_save_memes_ignores_bot_messages(
+        self,
+        mock_bot: MagicMock,
+        mock_logger: MagicMock
+    ):
         """Test that save_memes ignores messages from bots."""
         from cogs.memeService import MemeService
 
@@ -39,8 +47,8 @@ class TestMemeService:
     @pytest.mark.asyncio
     async def test_save_memes_ignores_non_meme_channel(
         self,
-        mock_bot,
-        mock_logger
+        mock_bot: MagicMock,
+        mock_logger: MagicMock
     ):
         """Test that save_memes ignores messages from other channels."""
         from cogs.memeService import MemeService
@@ -62,8 +70,8 @@ class TestMemeService:
     @pytest.mark.asyncio
     async def test_save_memes_processes_valid_image(
         self,
-        mock_bot,
-        mock_logger
+        mock_bot: MagicMock,
+        mock_logger: MagicMock
     ):
         """Test that save_memes processes valid image attachments."""
         from cogs.memeService import MemeService

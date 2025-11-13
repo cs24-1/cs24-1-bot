@@ -2,11 +2,6 @@
 Tests for main.py utility functions.
 """
 
-import os
-from pathlib import Path
-
-import pytest
-
 
 def test_get_extensions_finds_cogs():
     """
