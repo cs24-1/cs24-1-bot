@@ -2,8 +2,9 @@ name: Deploy Discord Bot
 
 on:
   push:
-    branches:
-      - main
+    # Temporably disabled branch filter for testing purposes
+    # branches:
+    #   - main
   workflow_run:
     workflows: ["Build Base Docker Image"]
     types:

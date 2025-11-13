@@ -2,8 +2,9 @@ name: Build CI Docker Image
 
 on:
   push:
-    branches:
-      - main
+    # Temporably disabled branch filter for testing purposes
+    # branches:
+    #   - main
     paths:
       - 'torch.requirements.txt'
       - 'requirements.txt'
