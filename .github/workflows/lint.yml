@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run mypy (typing check)
-        run: python -m mypy
+        run: python -m mypy .
 
       - name: Run isort (import sort check)
         run: python -m isort --check-only .
