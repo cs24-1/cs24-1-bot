@@ -15,7 +15,9 @@ split_arguments_when_comma_terminated = true
 split_before_named_assigns = true
 
 [tool.mypy]
+explicit_package_bases = true
 check_untyped_defs = true
+exclude = ["docs"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
