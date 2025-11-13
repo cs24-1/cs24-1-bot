@@ -171,7 +171,8 @@ async def search_quotes(
         (
             score,
             quote,
-        ) for score, quote in ranked_quotes if score > 50
+        ) for score,
+        quote in ranked_quotes if score > 50
     ]
 
     if len(filtered_quotes) == 0:
