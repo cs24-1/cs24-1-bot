@@ -36,7 +36,7 @@ Siehe [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) für detaillierte Anweisungen.
 
 ### Für Entwickler
 
-- **[Development Setup](docs/DEVELOPMENT.md)** - Lokales Setup, Tools, und Pre-commit Hooks
+- **[Development Setup](docs/DEVELOPMENT.md)** - Lokales Setup und Tools
 - **[Database](docs/DATABASE.md)** - Datenbank-Initialisierung, Migrationen, und Best Practices
 - **[Testing](docs/TESTING.md)** - Test-Ausführung, Coverage, Linting, und CI
 

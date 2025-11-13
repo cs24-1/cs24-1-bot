@@ -98,19 +98,6 @@ See [WORKFLOW_DEPENDENCIES.md](WORKFLOW_DEPENDENCIES.md) for more details on CI 
 
 They are available in Visual Studio Code when using the Development Container.
 
-### Pre-commit Hooks
-
-Install pre-commit hooks to run linting automatically:
-
-```bash
-pre-commit install
-```
-
-Run manually on all files:
-```bash
-pre-commit run --all-files
-```
-
 ## Best Practices
 
 1. **Write tests first** (TDD approach) or alongside new features
