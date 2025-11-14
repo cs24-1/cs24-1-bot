@@ -182,6 +182,25 @@ class QuoteService(commands.Cog):
             f"✅ {len(messages)} Quote{'s' if len(messages) > 1 else ''} gepostet!",
             ephemeral=True
         )
+        
+    @discord.message_command(
+        name="Quote",
+        guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
+    )
+    async def quote_single_message(
+        self,
+        ctx: ApplicationContext,
+        message: discord.Message
+    ):
+        """
+        Immediately quotes a single selected message into the quotes channel.
+        """
+        await quoteUtils.send_embed(ctx, [message], None)
+
+        await ctx.respond(
+            f"📌 Nachricht von **{message.author.display_name}** im Quotes-Channel zitiert!\n",
+            ephemeral=True
+        )
 
 
 def setup(bot: commands.Bot):
