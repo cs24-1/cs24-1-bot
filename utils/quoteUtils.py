@@ -162,7 +162,7 @@ async def send_embed(
         await quote_channel.send(embed=embed)
 
 
-async def create_custom_quote_embed(
+async def build_custom_quote_embed(
     content: str,
     person: str,
     created_by: discord.abc.User
