@@ -168,6 +168,68 @@ class QuoteService(commands.Cog):
 
         await ctx.respond(embed=embed)
 
+    @quote.command(
+        name="custom",
+        description="Erstellt ein eigenes Zitat mit Inhalt und Person.",
+        guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
+    )
+    @discord.option(
+        "inhalt",
+        description="Der Inhalt des Zitats.",
+        type=discord.SlashCommandOptionType.string,
+        required=True
+    )
+    @discord.option(
+        "person",
+        description="Die Person, der das Zitat zugeschrieben wird.",
+        type=discord.SlashCommandOptionType.string,
+        required=True
+    )
+    async def custom_quote(
+        self,
+        ctx: ApplicationContext,
+        inhalt: str,
+        person: str
+    ):
+        """
+        Creates a custom quote and stores it in the database.
+        """
+        self.logger.info(
+            "Custom quote created by %s: '%s' - %s",
+            ctx.author,
+            inhalt,
+            person
+        )
+
+        # Store in DB
+        try:
+            await quoteUtils.store_custom_quote_in_db(ctx, inhalt, person)
+        except Exception as ex:
+            self.logger.error("Failed to store custom quote: %s", ex)
+            await ctx.respond(
+            "❌ Fehler beim Speichern des Zitats in der Datenbank.",
+            ephemeral=True
+            )
+            return
+
+        # Send embed to quote channel
+        quote_channel: discord.TextChannel | None = ctx.guild.get_channel(
+            Constants.CHANNEL_IDS.QUOTE_CHANNEL
+        )
+
+        if not quote_channel:
+            await ctx.respond("❌ Quote-Channel nicht gefunden.", ephemeral=True)
+            return
+
+        embed = await quoteUtils.build_custom_quote_embed(
+            inhalt,
+            person,
+            ctx.user
+        )
+        await quote_channel.send(embed=embed)
+        await ctx.respond("✅ Zitat wurde im Quote-Channel gepostet!", ephemeral=True)
+
+
     async def _store_and_send_quote(
         self,
         ctx: ApplicationContext,
