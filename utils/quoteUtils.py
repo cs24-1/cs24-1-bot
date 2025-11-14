@@ -177,7 +177,7 @@ async def build_custom_quote_embed(
     )
 
     # Add the person being quoted
-    embed.add_field(name=f"~ {person}", value="[Manuelles Zitat]", inline=False)
+    embed.add_field(name=f"~ {person}", value="", inline=False)
 
     # Footer shows who submitted it
     embed.set_footer(text=f"Eingereicht von {created_by.display_name}")

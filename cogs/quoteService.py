@@ -204,13 +204,22 @@ class QuoteService(commands.Cog):
         # Store in DB
         await quoteUtils.store_custom_quote_in_db(ctx, inhalt, person)
 
-        # Send embed
-        embed = await quoteUtils.create_custom_quote_embed(
+        # Send embed to quote channel
+        quote_channel: discord.TextChannel | None = ctx.guild.get_channel(
+            Constants.CHANNEL_IDS.QUOTE_CHANNEL
+        )
+
+        if not quote_channel:
+            await ctx.respond("❌ Quote-Channel nicht gefunden.", ephemeral=True)
+            return
+
+        embed = await quoteUtils.build_custom_quote_embed(
             inhalt,
             person,
             ctx.user
         )
-        await ctx.respond(embed=embed)
+        await quote_channel.send(embed=embed)
+        await ctx.respond("✅ Zitat wurde im Quote-Channel gepostet!", ephemeral=True)
 
 
     async def _store_and_send_quote(
