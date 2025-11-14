@@ -1,9 +1,9 @@
-from datetime import time
 import logging
+from datetime import time
 
+import discord
 from discord import ApplicationContext
 from discord.ext import commands, tasks
-import discord
 
 from models.database.userData import User
 from utils.ai import ai

@@ -8,15 +8,33 @@
     },
     "editor.formatOnType": true,
     "editor.formatOnPaste": true,
-    "editor.defaultFormatter": "eeyore.yapf",
     "yapf.args": [
-        "--style=pyproject.toml"
+        "--style",
+        "pyproject.toml"
     ],
+    "autoDocstring.includeExtendedSummary": true,
+    "autoDocstring.startOnNewLine": true,
     "mypy-type-checker.args": [
         "--config-file",
         "pyproject.toml"
     ],
+    "[python]": {
+        "editor.defaultFormatter": "eeyore.yapf",
+        "editor.formatOnSave": true
+    },
     "[json]": {
         "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "editor.codeActionsOnSave": {
+        "source.organizeImports": "always",
+        "source.unusedImports": "always"
     }
 }

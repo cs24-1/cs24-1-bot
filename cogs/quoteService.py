@@ -1,12 +1,12 @@
 import logging
 
-from cachetools import TTLCache
 import discord
-from discord.ext import commands
+from cachetools import TTLCache
 from discord import ApplicationContext
+from discord.ext import commands
 
-from utils.constants import Constants
 from utils import quoteUtils
+from utils.constants import Constants
 
 
 class QuoteService(commands.Cog):

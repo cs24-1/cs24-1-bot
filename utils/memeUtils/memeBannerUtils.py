@@ -1,7 +1,8 @@
 import random
+from io import BytesIO
 
 from PIL import Image, ImageSequence
-from io import BytesIO
+
 
 def bannerize_meme_image(image_data: bytes, is_gif: bool) -> bytes:
     """
@@ -14,27 +15,58 @@ def bannerize_meme_image(image_data: bytes, is_gif: bool) -> bytes:
     target_width, target_height = 960, 339
 
     # Create a random color for the banner background
-    random_color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255), 255)
+    random_color = (
+        random.randint(0,
+                       255),
+        random.randint(0,
+                       255),
+        random.randint(0,
+                       255),
+        255
+    )
 
     if is_gif:
         frames = []
         for frame in ImageSequence.Iterator(img):
             frame = frame.convert("RGBA")
-            new_frame = create_banner_from_image(frame, random_color, target_height, target_width)
+            new_frame = create_banner_from_image(
+                frame,
+                random_color,
+                target_height,
+                target_width
+            )
             frames.append(new_frame)
 
         gif_image_stream = BytesIO()
-        frames[0].save(gif_image_stream, format='GIF', save_all=True, append_images=frames[1:], loop=0)
+        frames[0].save(
+            gif_image_stream,
+            format='GIF',
+            save_all=True,
+            append_images=frames[1:],
+            loop=0
+        )
         gif_image_stream.seek(0)
         return gif_image_stream.read()
     else:
-        new_img = create_banner_from_image(img, random_color, target_height, target_width)
+        new_img = create_banner_from_image(
+            img,
+            random_color,
+            target_height,
+            target_width
+        )
         png_image_stream = BytesIO()
         new_img.save(png_image_stream, format='PNG')
         png_image_stream.seek(0)
         return png_image_stream.read()
 
-def create_banner_from_image(frame: Image.Image, color: tuple, target_height: int, target_width: int):
+
+def create_banner_from_image(
+    frame: Image.Image,
+    color: tuple[float,
+                 ...],
+    target_height: int,
+    target_width: int
+) -> Image.Image:
     # Calculate the aspect ratio of the target size
     target_aspect_ratio = target_width / target_height
 
@@ -51,7 +83,7 @@ def create_banner_from_image(frame: Image.Image, color: tuple, target_height: in
         new_width = int(new_height * original_aspect_ratio)
 
     # Resize the image to fit within the target dimensions
-    frame = frame.resize((new_width, new_height), Image.LANCZOS)
+    frame = frame.resize((new_width, new_height), Image.LANCZOS)  # type: ignore
 
     # Create a new image with the target size and paste the resized frame onto it
     new_frame = Image.new("RGBA", (target_width, target_height), color)

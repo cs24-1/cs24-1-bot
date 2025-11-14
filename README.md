@@ -1,53 +1,66 @@
+# CS24-1 Discord Bot
+
 *Ein wilder Bot der Seminargruppe CS24-1 erscheint…*
 
-# Development Setup
+Ein Discord-Bot für die Seminargruppe CS24-1 mit Features wie KI-basierter Code-Übersetzung, Meme-Sammlung und Mensa-Speiseplan-Updates.
 
-Es gibt zwei Wege, den Bot lokal auszuführen: Manuell oder über Development Containers (empfohlen).
+## Technologie-Stack
 
-## Development Container (empfohlen)
+- **Python 3.10+** mit py-cord (discord.py fork)
+- **Tortoise ORM** mit SQLite für Datenbank-Management
+- **OpenAI API** für Code-Übersetzungsfunktionen
+- **PIL & EasyOCR** für Meme-Verarbeitung
+- **Docker** für Development und Deployment
 
-1. Stelle sicher, dass du [Docker](https://www.docker.com/get-started/) oder [Podman](https://podman.io/getting-started/installation) installiert hast.
-2. Klone das Repo und öffne das Projekt in [Visual Studio Code](https://code.visualstudio.com/) (oder einem anderen Editor, der [Dev Containers](https://code.visualstudio.com/docs/remote/containers) unterstützt).
-3. Kopiere die `EXAMPLE.env` Datei und nenne sie in `.env` um. Fülle die Werte aus.
-4. Beim öffnen des Projekts sollte VS Code dich fragen, ob du den Ordner in einem Container öffnen möchtest. Bestätige dies. (Sollte die Abfrage nicht erscheinen, öffne die Kommando-Palette mit `Strg+Shift+P` und suche nach `Dev Containers: Reopen in Container`).
-5. Warte, bis der Container gebaut und gestartet ist. Dies kann einige Minuten dauern.
-6. Öffne ein neues Terminal in VS Code und führe `python3 main.py` aus, um den Bot zu starten.
+## Features
 
-## Manuell
+- 🤖 **AI Service**: Code-Übersetzung mit OpenAI API und täglichen Nutzungslimits
+- 🎨 **Meme Service**: Automatische Meme-Sammlung und Bot-Banner-Rotation
+- 🍽️ **Mensa Service**: Tägliche Mensa-Speiseplan-Updates
+- 💬 **Quote Service**: Zitat-Sammlung und -Verwaltung
 
-Diese Schritte sind umständlicher und nicht empfohlen.
+## Quick Start
 
-1. Clone das Repo
-2. Erstelle eine venv mit `python3 -m venv venv` oder dem Tool, dass deine IDE mitbringt.
-3. Installiere alle Pakete aus `requirements.txt` und `torch.requirements.txt` mit `python3 -m pip install -r requirements.txt` (bzw. `python3 -m pip install -r requirements.txt`).
-4. Erstelle einen Testbot auf der [Discord Developers Seite](https://discord.com/developers)
-5. Kopiere die `EXAMPLE.env` Datei und nenne sie in `.env` um. Fülle die Werte aus.
-6. Richte die Datenbank ein. Befolge [diese Anleitung](#Datenbank-Einrichtung).
-7. Starte den Bot, indem du die `main.py` Datei mittels `python3 main.py` ausführst.
+### Development Container (empfohlen)
 
-# Datenbank
+1. Installiere [Docker](https://www.docker.com/get-started/) oder [Podman](https://podman.io/getting-started/installation)
+2. Klone das Repository
+3. Öffne das Projekt in [Visual Studio Code](https://code.visualstudio.com/)
+4. Kopiere `EXAMPLE.env` zu `.env` und fülle die Werte aus
+5. Öffne in Dev Container (VS Code fragt automatisch)
+6. Führe `python3 main.py` aus
 
-Der Bot benutzt eine SQLite Datenbank mit [Tortoise ORM](https://tortoise-orm.readthedocs.io/en/latest/) als ORM.
+Siehe [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) für detaillierte Anweisungen.
 
-Dafür muss die Datenbank initialisiert werden, bevor der Bot gestartet wird.
+## Dokumentation
 
-## Initialisierung
+### Für Entwickler
 
-### Development Container
+- **[Development Setup](docs/DEVELOPMENT.md)** - Lokales Setup und Tools
+- **[Database](docs/DATABASE.md)** - Datenbank-Initialisierung, Migrationen, und Best Practices
+- **[Testing](docs/TESTING.md)** - Test-Ausführung, Coverage, Linting, und CI
 
-Wenn du Development Container benutzt, wird die Datenbank beim Start des Containers automatisch eingerichtet. Andernfalls musst du die Datenbank manuell einrichten.
+### Infrastruktur
 
-### Manuell
+- **[Docker Images](docs/DOCKER_IMAGES.md)** - Multi-Layer Docker-Strategie und Image-Übersicht
+- **[Workflow Dependencies](docs/WORKFLOW_DEPENDENCIES.md)** - GitHub Actions Workflow-Abhängigkeiten
 
-1. Zunächst musst du das Tortoise-CLI tool `aerich` installieren. Führe dazu `python3 -m pip install aerich` aus.
+## Projektstruktur
 
-2. Nun benötigst du eine Datenbank. Erstelle dafür eine leere Datei namens `db.sqlite3` im Ordner `data/`.
+```
+.
+├── cogs/              # Discord Command-Module (Cogs)
+├── models/            # Datenmodelle
+│   ├── ai/           # AI-bezogene Modelle
+│   ├── database/     # Datenbank-Modelle (Tortoise ORM)
+│   └── mensa/        # Mensa-bezogene Modelle
+├── utils/            # Hilfsfunktionen
+├── migrations/       # Datenbank-Migrationen (aerich)
+├── tests/            # Pytest Test Suite
+├── docs/             # Dokumentation
+└── main.py          # Bot-Einstiegspunkt
+```
 
-3. Führe im Projekt-Root `aerich upgrade` aus, um die Datenbank auf die neueste Version zu bringen.
+## Lizenz
 
-## Änderungen am Datenmodel
-
-Solltest du Änderungen an den Daten vornehmen, die in der Datenbank gespeichert werden, musst du die Datenbankmigrationen aktualisieren.
-
-1. Führe `aerich migrate --name=<name der migration>` aus, um eine neue Migration zu erstellen.
-2. Führe `aerich upgrade` aus, um die Datenbank auf den neuesten Stand zu bringen.
+Siehe [LICENSE](LICENSE) Datei für Details.
