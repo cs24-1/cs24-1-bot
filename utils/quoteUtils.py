@@ -1,4 +1,5 @@
 import random
+from tortoise.transactions import in_transaction
 
 from discord import ApplicationContext, Embed, Color
 import discord
@@ -35,20 +36,20 @@ def build_quote_embed(
         title="💬 Neues Zitat",
         color=Color.blurple()
     )
-    
+
     for msg in messages:
         content = msg.content if msg.content else "[- kein Text -]"
         # Description field has 4096 char limit, truncate if needed
         max_content_length = 4096 - 2  # 2 for quotes
         if len(content) > max_content_length:
             content = content[:max_content_length - 3] + "..."
-        
+
         # Add content in description
         if embed.description:
             embed.description += f"\n\n\u201C{content}\u201D"
         else:
             embed.description = f"\u201C{content}\u201D"
-        
+
         # Add author and link as field
         link_text = f"[Originalnachricht]({msg.jump_url})"
         embed.add_field(
@@ -56,7 +57,7 @@ def build_quote_embed(
             value=link_text,
             inline=False
         )
-    
+
     if author_name:
         embed.set_footer(text=f"Eingereicht von {author_name}")
     embed.timestamp = utcnow()
@@ -113,7 +114,6 @@ async def store_custom_quote_in_db(
         ctx (ApplicationContext): The context of the command.
         content (str): The text of the quote.
         person (str): The person the quote is attributed to.
-        comment (str | None): Optional comment.
     """
     reporter, _ = await User.get_or_create(
         id=int(ctx.author.id),
@@ -129,15 +129,16 @@ async def store_custom_quote_in_db(
     # Create or reuse a User record for the person being quoted.
     # We must not attempt to set the primary key `id` (an IntField).
     # Use `global_name` to find an existing entry or create a new one.
-    from tortoise.transactions import in_transaction
-    
+
     custom_global_name = f"custom_person_{person}"
     author = await User.filter(global_name=custom_global_name).first()
     if author is None:
         # Use transaction to prevent race condition in ID assignment
         async with in_transaction() as connection:
             # Find the minimum negative id used so far, or start at -1
-            min_id_user = await User.filter(id__lt=0).order_by("id").first()
+            min_id_user = await User.filter(
+                id__lt=0
+            ).order_by("id").using_db(connection).first()
             next_id = min_id_user.id - 1 if min_id_user else -1
             author = await User.create(
                 id=next_id,
