@@ -195,7 +195,7 @@ class QuoteService(commands.Cog):
         """
         Immediately quotes a single selected message into the quotes channel.
         """
-        await quoteUtils.send_embed(ctx, [message], None)
+        await self._store_and_send_quote(ctx, [message], None)
 
         await ctx.respond(
             f"📌 Nachricht von **{message.author.display_name}** im Quotes-Channel zitiert!\n",
