@@ -1,5 +1,8 @@
 FROM python:3.12-slim
 
+# Set timezone
+ENV TZ=Europe/Berlin
+
 # Ignore pip warnings about running as root
 ENV PIP_ROOT_USER_ACTION=ignore
 

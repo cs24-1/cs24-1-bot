@@ -9,12 +9,15 @@ load_dotenv()
 class Secrects:
     DISCORD_TOKEN = str(os.getenv("DISCORD_TOKEN"))  # type: ignore
     OPENAI_TOKEN = str(os.getenv("OPENAI_TOKEN"))  # type: ignore
+    CAMPUS_USER = str(os.getenv("CAMPUS_USER"))  # type: ignore
+    CAMPUS_HASH = str(os.getenv("CAMPUS_HASH"))  # type: ignore
 
 
 class ChannelIds:
     MENSA_CHANNEL = int(os.getenv("MENSA_CHANNEL"))  # type: ignore
     MEME_CHANNEL = int(os.getenv("MEME_CHANNEL"))  # type: ignore
     QUOTE_CHANNEL = int(os.getenv("QUOTE_CHANNEL"))  # type: ignore
+    TIMETABLE_CHANNEL = int(os.getenv("TIMETABLE_CHANNEL"))  # type: ignore
 
 
 class ServerIds:

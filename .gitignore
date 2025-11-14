@@ -240,3 +240,6 @@ fabric.properties
 
 # Data files
 data/*
+
+# Dev notes
+todo.md

@@ -17,9 +17,9 @@ class MensaView(discord.ui.View):
         if mensaUtils.check_if_mensa_is_open(
             mensaUtils.get_last_mensa_day(self.current_date)
         ):
-            self.last_day.disabled = False  # type: ignore
+            self.previous_day.disabled = False  # type: ignore
         else:
-            self.last_day.disabled = True  # type: ignore
+            self.previous_day.disabled = True  # type: ignore
 
         # disable next_day button if tomorrow the mensa is closed
         if mensaUtils.check_if_mensa_is_open(
@@ -30,7 +30,7 @@ class MensaView(discord.ui.View):
             self.next_day.disabled = True  # type: ignore
 
     @discord.ui.button(emoji="⬅️")
-    async def last_day(
+    async def previous_day(
         self,
         button: discord.ui.Button["MensaView"],
         interaction: discord.Interaction
