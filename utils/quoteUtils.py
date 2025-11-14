@@ -31,14 +31,32 @@ def build_quote_embed(
     Returns:
         discord.Embed: The constructed embed.
     """
-    embed = Embed(color=Color.blurple())
+    embed = Embed(
+        title="💬 Neues Zitat",
+        color=Color.blurple()
+    )
+    
     for msg in messages:
-        content = msg.content[:1024] if msg.content else "[- kein Text -]"
+        content = msg.content if msg.content else "[- kein Text -]"
+        # Description field has 4096 char limit, truncate if needed
+        max_content_length = 4096 - 2  # 2 for quotes
+        if len(content) > max_content_length:
+            content = content[:max_content_length - 3] + "..."
+        
+        # Add content in description
+        if embed.description:
+            embed.description += f"\n\n\u201C{content}\u201D"
+        else:
+            embed.description = f"\u201C{content}\u201D"
+        
+        # Add author and link as field
+        link_text = f"[Originalnachricht]({msg.jump_url})"
         embed.add_field(
             name=f"~ {msg.author.display_name}",
-            value=f"“{content}”\n[Originalnachricht]({msg.jump_url})",
+            value=link_text,
             inline=False
         )
+    
     if author_name:
         embed.set_footer(text=f"Eingereicht von {author_name}")
     embed.timestamp = utcnow()
@@ -87,7 +105,6 @@ async def store_custom_quote_in_db(
     ctx: ApplicationContext,
     content: str,
     person: str,
-    comment: str | None = None
 ):
     """
     Stores a custom quote (without Discord messages) in the database.
@@ -107,23 +124,27 @@ async def store_custom_quote_in_db(
     quote = await Quote.create(
         reporter=reporter,
         date_reported=utcnow(),
-        comment=comment
     )
 
     # Create or reuse a User record for the person being quoted.
     # We must not attempt to set the primary key `id` (an IntField).
     # Use `global_name` to find an existing entry or create a new one.
+    from tortoise.transactions import in_transaction
+    
     custom_global_name = f"custom_person_{person}"
     author = await User.filter(global_name=custom_global_name).first()
     if author is None:
-        # Find the minimum negative id used so far, or start at -1
-        min_id_user = await User.filter(id__lt=0).order_by("id").first()
-        next_id = min_id_user.id - 1 if min_id_user else -1
-        author = await User.create(
-            id=next_id,
-            global_name=custom_global_name,
-            display_name=person
-        )
+        # Use transaction to prevent race condition in ID assignment
+        async with in_transaction() as connection:
+            # Find the minimum negative id used so far, or start at -1
+            min_id_user = await User.filter(id__lt=0).order_by("id").first()
+            next_id = min_id_user.id - 1 if min_id_user else -1
+            author = await User.create(
+                id=next_id,
+                global_name=custom_global_name,
+                display_name=person,
+                using_db=connection
+            )
 
     await QuoteMessage.create(
         content=content,
@@ -172,12 +193,26 @@ async def build_custom_quote_embed(
     """
     embed = discord.Embed(
         title="💬 Neues Zitat",
-        description=f"“{content}”",
         color=discord.Color.blurple()
     )
 
-    # Add the person being quoted
-    embed.add_field(name=f"~ {person}", value="", inline=False)
+    # Truncate content to fit within description limit (4096 chars)
+    # Account for the quotes around content
+    max_content_length = 4096 - 2  # 2 for the quotes
+    if len(content) > max_content_length:
+        truncated_content = content[:max_content_length - 3] + "..."
+    else:
+        truncated_content = content
+
+    # Add content in description with quotes
+    embed.description = f"\u201C{truncated_content}\u201D"
+
+    # Add the person being quoted as a field
+    embed.add_field(
+        name=f"~ {person}",
+        value="\u200b",  # Zero-width space for empty value
+        inline=False
+    )
 
     # Footer shows who submitted it
     embed.set_footer(text=f"Eingereicht von {created_by.display_name}")
