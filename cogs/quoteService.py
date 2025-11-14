@@ -198,7 +198,7 @@ class QuoteService(commands.Cog):
         await self._store_and_send_quote(ctx, [message], None)
 
         await ctx.respond(
-            f"📌 Nachricht von **{message.author.display_name}** im Quotes-Channel zitiert!\n",
+            f"📌 Nachricht von **{message.author.display_name}** im Quotes-Channel zitiert!",
             ephemeral=True
         )
 
