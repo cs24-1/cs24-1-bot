@@ -1,15 +1,21 @@
 from datetime import datetime, timedelta, timezone
 import warnings
+
+from discord import AutocompleteContext
 from utils.constants import Constants
 from requests import RequestException
 from urllib3.exceptions import InsecureRequestWarning
 from requests_cache import CachedSession
-from utils.types import TimetableEntry
+from models.timetableModels import TimetableEntry
 
 _SESSION = CachedSession(
     backend="memory",
     expire_after=45 * 60,  # 45 minutes
 )
+"""Cache session for campus API"""
+
+MAX_TIMETABLE_RANGE_DAYS = 30
+"""The maximum range a user is allowed to request starting from today"""
 
 
 def _campus_url() -> str:
@@ -18,6 +24,12 @@ def _campus_url() -> str:
         f"{Constants.SECRETS.CAMPUS_USER}&hash="
         f"{Constants.SECRETS.CAMPUS_HASH}"
     )
+
+
+def _local_datetime_from_utc_timestamp(timestamp: float) -> datetime:
+    """Get a `datetime` of the SYSTIMEZONE based on a UNIX UTC timestamp"""
+    utc_datetime = datetime.fromtimestamp(timestamp, tz=timezone.utc)
+    return utc_datetime.astimezone(Constants.SYSTIMEZONE)
 
 
 def _calc_time_window(days: int) -> tuple[datetime, datetime]:
@@ -53,14 +65,9 @@ def _format_entries(grouped_days: dict[str, list[TimetableEntry]]) -> str:
     for date, entries in grouped_days.items():
         output += f"📌 **{date}**:\n"
         for entry in entries:
-            start_dt = datetime.fromtimestamp(entry["start"],
-                                              tz=timezone.utc).astimezone(
-                                                  Constants.SYSTIMEZONE
-                                              )
-            end_dt = datetime.fromtimestamp(entry["end"],
-                                            tz=timezone.utc).astimezone(
-                                                Constants.SYSTIMEZONE
-                                            )
+            start_dt = _local_datetime_from_utc_timestamp(entry["start"])
+            end_dt = _local_datetime_from_utc_timestamp(entry["end"])
+
             start = start_dt.strftime("%H:%M")
             end = end_dt.strftime("%H:%M")
 
@@ -117,9 +124,8 @@ def _filter_entries_for_window(
 ) -> list[TimetableEntry]:
     """Return entries whose start timestamp lies within [start_date, period_end)."""
     return [
-        entry for entry in entries if
-        start_date <= datetime.fromtimestamp(entry["start"], tz=timezone.utc).
-        astimezone(Constants.SYSTIMEZONE) < period_end
+        entry for entry in entries if start_date <=
+        _local_datetime_from_utc_timestamp(entry["start"]) < period_end
     ]
 
 
@@ -129,13 +135,10 @@ def _group_entries_by_date(
           list[TimetableEntry]]:
     """Group entries by localized date string."""
     grouped: dict[str, list[TimetableEntry]] = {}
-    for e in entries:
-        start_dt = datetime.fromtimestamp(e["start"],
-                                          tz=timezone.utc).astimezone(
-                                              Constants.SYSTIMEZONE
-                                          )
+    for entry in entries:
+        start_dt = _local_datetime_from_utc_timestamp(entry["start"])
         date_key = start_dt.strftime("%A, %d.%m.%Y")
-        grouped.setdefault(date_key, []).append(e)
+        grouped.setdefault(date_key, []).append(entry)
     return grouped
 
 
@@ -153,6 +156,15 @@ def _header(days: int) -> str:
         if days == 0 else "morgen" if days == 1 else f"die nächsten {days} Tage"
     )
     return f"📅 **Stundenplan für {scope}**\n\n"
+
+
+def days_autocomplete(ctx: AutocompleteContext) -> list[str]:
+    """
+    Autocompletes filtered days for the timetable argument.
+    """
+    default_entries = ["today", "tomorrow"] + [str(n) for n in range(31)]
+
+    return [entry for entry in default_entries if entry.startswith(ctx.value)]
 
 
 def get_timetable(days: int) -> str:

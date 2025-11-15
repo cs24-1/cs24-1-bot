@@ -10,11 +10,8 @@ SUBDIV = "SN"
 def is_holiday(date: date):
     """Check whether the given date is a holiday in the configured subdivision"""
     this_year = date.today().year
-    holidays: dict[date,
-                   str] = country_holidays(
-                       country=COUNTRY,
-                       subdiv=SUBDIV,
-                       years=this_year
-                   )
+
+    holidays: dict[date, str]
+    holidays = country_holidays(country=COUNTRY, subdiv=SUBDIV, years=this_year)
 
     return date in holidays

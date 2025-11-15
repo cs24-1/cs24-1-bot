@@ -133,10 +133,8 @@ async def search_memes(search: str,
     """
     Searches for memes containing the given search term.
     """
-    memes: list[
-        tuple[int,
-              Meme]
-    ] = [
+    memes: list[tuple[int, Meme]]
+    memes = [
         (
             fuzz.token_set_ratio(search,
                                  meme.content + "\n" + meme.message),
@@ -144,11 +142,8 @@ async def search_memes(search: str,
         ) for meme in await Meme.all()
     ]
 
-    filtered_memes: list[tuple[int,
-                               Meme]] = [
-                                   (ratio,
-                                    meme) for ratio, meme in memes if ratio > 50
-                               ]
+    filtered_memes: list[tuple[int, Meme]]
+    filtered_memes = [(ratio, meme) for ratio, meme in memes if ratio > 50]
 
     if len(filtered_memes) == 0:
         return []

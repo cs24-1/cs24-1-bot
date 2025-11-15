@@ -5,14 +5,14 @@ import discord
 from discord import ApplicationContext, Bot, TextChannel, SlashCommandOptionType
 from discord.ext import commands, tasks
 from discord.abc import Messageable
+from discord.utils import basic_autocomplete
 from utils import timetableUtils
+from utils.timetableUtils import MAX_TIMETABLE_RANGE_DAYS
 from utils.constants import Constants
 from utils.holidayUtils import is_holiday
 
-MAX_TIMETABLE_RANGE_DAYS = 30
 
-
-class Timetable(commands.Cog):
+class TimetableService(commands.Cog):
     """A Discord cog that provides commands to view the class timetable.
     
     This cog allows users to fetch and display class schedules for different time periods
@@ -44,14 +44,15 @@ class Timetable(commands.Cog):
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
     )
     @discord.option(
-        "argument",
+        name="days",
         type=SlashCommandOptionType.string,
         description=
-        f"`today`, `tomorrow`, Oder eine Zahl (1-{MAX_TIMETABLE_RANGE_DAYS}). Standard ist 7",
+        f"`today`, `tomorrow`, oder eine Zahl (1-{MAX_TIMETABLE_RANGE_DAYS}). Standard ist 7, d.h. der Plan für die nächsten 7 Tage.",
         required=False,
-        default="7"
+        default="7",
+        autocomplete=basic_autocomplete(timetableUtils.days_autocomplete)
     )
-    async def timetable(self, ctx: ApplicationContext, argument: str):
+    async def timetable(self, ctx: ApplicationContext, days: str):
         """Fetch and display the class timetable.
 
         This command allows users to view the class schedule for different
@@ -61,34 +62,20 @@ class Timetable(commands.Cog):
         await ctx.defer()  # Defer response in case the request takes time
 
         try:
-            # --- Argument logic ---
-            if argument == "?":
-                response = (
-                    "ℹ️ **Verfügbare Befehle:**\n\n"
-                    "`/timetable today`\n"
-                    "→ Zeigt den Stundenplan für **heute**.\n\n"
-                    "`/timetable tomorrow`\n"
-                    "→ Zeigt den Stundenplan für **morgen**.\n\n"
-                    "`/timetable`\n"
-                    "→ Zeigt den Stundenplan für die **nächsten 7 Tage**.\n\n"
-                    "`/timetable <number>`\n"
-                    "→ Zeigt den Stundenplan für die "
-                    f"**nächsten `<number>` Tage** (max. {MAX_TIMETABLE_RANGE_DAYS})."
-                )
-            elif argument.lower() == "today":
+            if days.lower() == "today":
                 response = timetableUtils.get_timetable(days=0)
-            elif argument.lower() == "tomorrow":
+            elif days.lower() == "tomorrow":
                 response = timetableUtils.get_timetable(days=1)
-            elif argument.isdigit():
-                days = int(argument)
-                if days <= 0 or days > MAX_TIMETABLE_RANGE_DAYS:
+            elif days.isdigit():
+                days_parsed = int(days)
+                if days_parsed <= 0 or days_parsed > MAX_TIMETABLE_RANGE_DAYS:
                     await ctx.respond(
                         f"❌ Bitte gib eine Zahl zwischen 1 und {MAX_TIMETABLE_RANGE_DAYS} ein."
                     )
                     return
-                response = timetableUtils.get_timetable(days=days)
+                response = timetableUtils.get_timetable(days=days_parsed)
             else:
-                response = f"❌ Ungültiger Parameter: {argument or ' - '}. Benutze 'today', 'tomorrow', oder eine Zahl (1-{MAX_TIMETABLE_RANGE_DAYS})."
+                response = f"❌ Ungültiger Parameter: {days or ' - '}. Benutze 'today', 'tomorrow', oder eine Zahl (1-{MAX_TIMETABLE_RANGE_DAYS})."
 
             await self.send_long_message(ctx, response)
 
@@ -99,7 +86,6 @@ class Timetable(commands.Cog):
     @tasks.loop(time=time(hour=6, minute=0, tzinfo=Constants.SYSTIMEZONE))
     async def send_daily_timetable(self):
         """Sends daily timetable message, skips weekends & holidays."""
-        await self.bot.wait_until_ready()
 
         today = datetime.now(tz=Constants.SYSTIMEZONE).date()
         channel: TextChannel = self.bot.get_channel(
@@ -121,12 +107,6 @@ class Timetable(commands.Cog):
         self.logger.info("Sending timetable for %s...", today.isoformat())
         timetable_text = timetableUtils.get_timetable(days=0)
         await self.send_long_message(channel, timetable_text)
-
-    @send_daily_timetable.before_loop
-    async def before_daily_timetable_task(self):
-        """Ensure bot is ready before the loop starts."""
-        await self.bot.wait_until_ready()
-        self.logger.info("Daily timetable task initialized.")
 
     @tasks.loop(minutes=60)
     async def refresh_timetable_cache(self):
@@ -156,4 +136,4 @@ class Timetable(commands.Cog):
 
 def setup(bot: Bot):
     logger = logging.getLogger("bot")
-    bot.add_cog(Timetable(bot, logger))
+    bot.add_cog(TimetableService(bot, logger))
