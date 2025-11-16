@@ -3,7 +3,7 @@ import warnings
 
 from discord import AutocompleteContext
 from utils.constants import Constants
-from requests import RequestException
+from requests import JSONDecodeError, RequestException
 from urllib3.exceptions import InsecureRequestWarning
 from requests_cache import CachedSession
 from models.timetableModels import TimetableEntry
@@ -109,10 +109,8 @@ def _fetch_timetable_entries(
             )
     except RequestException as ex:
         return f"❌ Fehler beim Abrufen des Stundenplans: {ex}"
-    except ValueError:
+    except JSONDecodeError:
         return "❌ Ungültige JSON-Antwort des Servers."
-    except Exception as ex:
-        return f"❌ [YIKES] Unbehandelter Fehler: {ex}"
 
     return entries
 
@@ -162,7 +160,9 @@ def days_autocomplete(ctx: AutocompleteContext) -> list[str]:
     """
     Autocompletes filtered days for the timetable argument.
     """
-    default_entries = ["today", "tomorrow"] + [str(n) for n in range(31)]
+    default_entries = ["today",
+                       "tomorrow"
+                       ] + [str(n) for n in range(1, MAX_TIMETABLE_RANGE_DAYS)]
 
     return [entry for entry in default_entries if entry.startswith(ctx.value)]
 

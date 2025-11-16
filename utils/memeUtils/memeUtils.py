@@ -19,7 +19,7 @@ from utils.memeUtils.memeBannerUtils import bannerize_meme_image
 
 def _ensure_parent_dir(path: str) -> None:
     directory = os.path.dirname(path)
-    if directory and not os.path.exists(directory):
+    if directory:
         os.makedirs(directory, exist_ok=True)
 
 
