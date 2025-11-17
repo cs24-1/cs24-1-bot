@@ -1,7 +1,7 @@
 [tool.aerich]
 tortoise_orm = "tortoiseConfig.TORTOISE_ORM"
 location = "./migrations"
-src_folder = "./."
+src_folder = "./src"
 
 [tool.yapf]
 based_on_style = "pep8"
@@ -19,9 +19,11 @@ explicit_package_bases = true
 check_untyped_defs = true
 ignore_missing_imports = true
 exclude = ["docs"]
+mypy_path = "src"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["src"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
@@ -30,7 +32,7 @@ addopts = [
     "-v",
     "--strict-markers",
     "--tb=short",
-    "--cov=.",
+    "--cov=src",
     "--cov-report=term-missing",
     "--cov-report=html",
 ]

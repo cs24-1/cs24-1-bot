@@ -182,7 +182,7 @@ class QuoteService(commands.Cog):
             f"✅ {len(messages)} Quote{'s' if len(messages) > 1 else ''} gepostet!",
             ephemeral=True
         )
-        
+
     @discord.message_command(
         name="Quote",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]

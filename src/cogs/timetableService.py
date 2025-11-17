@@ -1,15 +1,18 @@
 import asyncio
-from datetime import datetime, time
 import logging
+from datetime import datetime, time
+
 import discord
-from discord import ApplicationContext, Bot, TextChannel, SlashCommandOptionType
-from discord.ext import commands, tasks
+from discord import (ApplicationContext, Bot, SlashCommandOptionType,
+                     TextChannel)
 from discord.abc import Messageable
+from discord.ext import commands, tasks
 from discord.utils import basic_autocomplete
+
 from utils import timetableUtils
-from utils.timetableUtils import MAX_TIMETABLE_RANGE_DAYS
 from utils.constants import Constants
 from utils.holidayUtils import is_holiday
+from utils.timetableUtils import MAX_TIMETABLE_RANGE_DAYS
 
 
 class TimetableService(commands.Cog):
