@@ -3,8 +3,12 @@ import logging
 from datetime import datetime, time
 
 import discord
-from discord import (ApplicationContext, Bot, SlashCommandOptionType,
-                     TextChannel)
+from discord import (
+    ApplicationContext,
+    Bot,
+    SlashCommandOptionType,
+    TextChannel
+)
 from discord.abc import Messageable
 from discord.ext import commands, tasks
 from discord.utils import basic_autocomplete
