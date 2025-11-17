@@ -14,6 +14,15 @@ split_all_comma_separated_values = true
 split_arguments_when_comma_terminated = true
 split_before_named_assigns = true
 
+[tool.isort]
+profile = "black"
+line_length = 80
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
 [tool.mypy]
 explicit_package_bases = true
 check_untyped_defs = true
