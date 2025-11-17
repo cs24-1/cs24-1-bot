@@ -46,6 +46,10 @@ When using the Development Container, the following extensions are automatically
 - `njpwerner.autodocstring`: Docstring generation
 - `github.vscode-github-actions`: GitHub Actions support
 
+## Code Structure
+
+For detailed information on code organization, style conventions, and patterns used in this project, see [CODE_STRUCTURE.md](CODE_STRUCTURE.md).
+
 ## Local Testing
 
 See [TESTING.md](TESTING.md) for information on running tests.

@@ -37,6 +37,7 @@ Siehe [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) für detaillierte Anweisungen.
 ### Für Entwickler
 
 - **[Development Setup](docs/DEVELOPMENT.md)** - Lokales Setup und Tools
+- **[Code Structure](docs/CODE_STRUCTURE.md)** - Code-Organisation, Stil-Konventionen und Patterns
 - **[Database](docs/DATABASE.md)** - Datenbank-Initialisierung, Migrationen, und Best Practices
 - **[Testing](docs/TESTING.md)** - Test-Ausführung, Coverage, Linting, und CI
 
