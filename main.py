@@ -16,7 +16,8 @@ from utils.types import Context
 def get_extensions() -> Iterator[str]:
     files = Path("cogs").rglob("*.py")
     for file in files:
-        yield file.as_posix()[:-3].replace("/", ".")
+        end_bit = len(".py")
+        yield file.as_posix()[:-end_bit].replace("/", ".")
 
 
 def load_extensions(
