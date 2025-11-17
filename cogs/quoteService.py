@@ -203,7 +203,7 @@ class QuoteService(commands.Cog):
 
         # Store in DB
         try:
-            await quoteUtils.store_custom_quote_in_db(ctx, inhalt, person)
+            await quoteUtils.store_custom_quote_in_db(ctx, content, person)
         except Exception as ex:
             self.logger.error("Failed to store custom quote: %s", ex)
             await ctx.respond(
