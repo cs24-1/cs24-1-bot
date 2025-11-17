@@ -40,22 +40,23 @@ def build_quote_embed(
 
     for msg in messages:
         content = msg.content if msg.content else "[- kein Text -]"
-        # Description field has 4096 char limit, truncate if needed
-        max_content_length = 4096 - 2  # 2 for quotes
+        # Field value has 1024 char limit
+        link_text = f"[Originalnachricht]({msg.jump_url})"
+        max_content_length = 1024 - len(link_text) - 4  # quotes + newline + link
         if len(content) > max_content_length:
             content = content[:max_content_length - 3] + "..."
 
-        # Add content in description
-        if embed.description:
-            embed.description += f"\n\n\u201C{content}\u201D"
-        else:
-            embed.description = f"\u201C{content}\u201D"
+        # Add content as a field value with quotes, then link
+        embed.add_field(
+            name="\u200b",  # Zero-width space for empty name
+            value=f"\u201C{content}\u201D\n{link_text}",
+            inline=False
+        )
 
-        # Add author and link as field
-        link_text = f"[Originalnachricht]({msg.jump_url})"
+        # Add author as next field
         embed.add_field(
             name=f"~ {msg.author.display_name}",
-            value=link_text,
+            value="\u200b",  # Zero-width space for empty value
             inline=False
         )
 
@@ -224,18 +225,22 @@ async def build_custom_quote_embed(
         color=discord.Color.blurple()
     )
 
-    # Truncate content to fit within description limit (4096 chars)
+    # Truncate content to fit within field value limit (1024 chars)
     # Account for the quotes around content
-    max_content_length = 4096 - 2  # 2 for the quotes
+    max_content_length = 1024 - 2  # 2 for the quotes
     if len(content) > max_content_length:
         truncated_content = content[:max_content_length - 3] + "..."
     else:
         truncated_content = content
 
-    # Add content in description with quotes
-    embed.description = f"\u201C{truncated_content}\u201D"
+    # Add content as a field value with quotes
+    embed.add_field(
+        name="\u200b",  # Zero-width space for empty name
+        value=f"\u201C{truncated_content}\u201D",
+        inline=False
+    )
 
-    # Add the person being quoted as a field
+    # Add the person being quoted as next field
     embed.add_field(
         name=f"~ {person}",
         value="\u200b",  # Zero-width space for empty value
