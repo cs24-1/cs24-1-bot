@@ -34,7 +34,7 @@ This is a Discord bot built with:
 1. **AI Service**: Code translation using OpenAI API with daily usage limits
 2. **Meme Service**: Automatic meme collection and bot banner rotation
 3. **Mensa Service**: Daily cafeteria menu updates
-4. **Quote Service**: Zitat-Sammlung und -Verwaltung
+4. **Quote Service**: Zitatsammlung und -Verwaltung
 
 ### Code Style Essentials
 
