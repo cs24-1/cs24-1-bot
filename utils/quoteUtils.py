@@ -9,6 +9,7 @@ from thefuzz import fuzz  # type: ignore
 from models.database.quoteData import QuoteMessage, Quote
 from models.database.userData import User
 from utils.constants import Constants
+import logging
 
 
 def build_quote_embed(
@@ -153,6 +154,32 @@ async def store_custom_quote_in_db(
         date=utcnow(),
         quote=quote
     )
+    logger = logging.getLogger("bot")
+
+    # Enforce a maximum stored quote length. Prefer constant, fallback to 4000.
+    max_allowed = getattr(Constants, "CUSTOM_QUOTE_MAX_LENGTH", 4000)
+    if len(content) > max_allowed:
+        truncated = content[: max_allowed - 3] + "..."
+        # Update the already created QuoteMessage to avoid storing huge text.
+        last_msg = await QuoteMessage.filter(quote=quote).order_by("-id").first()
+        if last_msg:
+            last_msg.content = truncated
+            await last_msg.save()
+        logger.warning(
+            "Custom quote by %s truncated to %s characters",
+            ctx.author.id,
+            max_allowed,
+        )
+        try:
+            await ctx.respond(
+                "⚠️ Dein Zitat war zu lang und wurde auf "
+                f"{max_allowed} Zeichen gekürzt.",
+                ephemeral=True,
+            )
+        except Exception:
+            # Don't raise if responding fails; logging is sufficient.
+            logger.error("Failed to notify user about quote truncation: %s",
+                         ctx.author.id)
 
 
 async def send_embed(
