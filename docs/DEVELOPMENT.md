@@ -1,42 +1,42 @@
 # Development Setup
 
-Es gibt zwei Wege, den Bot lokal auszuführen: Manuell oder über Development Containers (empfohlen).
+There are two ways to run the bot locally: Manually or using Development Containers (recommended).
 
-## Development Container (empfohlen)
+## Development Container (recommended)
 
-1. Stelle sicher, dass du [Docker](https://www.docker.com/get-started/) oder [Podman](https://podman.io/getting-started/installation) installiert hast.
-2. Klone das Repo und öffne das Projekt in [Visual Studio Code](https://code.visualstudio.com/) (oder einem anderen Editor, der [Dev Containers](https://code.visualstudio.com/docs/remote/containers) unterstützt).
-3. Erstelle einen Testbot auf der [Discord Developers Seite](https://discord.com/developers)
-4. Kopiere die `EXAMPLE.env` Datei und nenne sie in `.env` um. Fülle die Werte aus.
-5. Beim öffnen des Projekts sollte VS Code dich fragen, ob du den Ordner in einem Container öffnen möchtest. Bestätige dies. (Sollte die Abfrage nicht erscheinen, öffne die Kommando-Palette mit `Strg+Shift+P` und suche nach `Dev Containers: Reopen in Container`).
-6. Warte, bis der Container gebaut und gestartet ist. Dies kann einige Minuten dauern.
-7. Öffne ein neues Terminal in VS Code und führe `python3 main.py` aus, um den Bot zu starten.
+1. Make sure you have [Docker](https://www.docker.com/get-started/) or [Podman](https://podman.io/getting-started/installation) installed.
+2. Clone the repo and open the project in [Visual Studio Code](https://code.visualstudio.com/) (or another editor that supports [Dev Containers](https://code.visualstudio.com/docs/remote/containers)).
+3. Create a test bot on the [Discord Developers page](https://discord.com/developers)
+4. Copy the `EXAMPLE.env` file and rename it to `.env`. Fill in the values.
+5. When opening the project, VS Code should ask if you want to open the folder in a container. Confirm this. (If the prompt doesn't appear, open the command palette with `Ctrl+Shift+P` and search for `Dev Containers: Reopen in Container`).
+6. Wait for the container to build and start. This may take a few minutes.
+7. Open a new terminal in VS Code and run `python3 main.py` to start the bot.
 
-## Manuell
+## Manual
 
-Diese Schritte sind umständlicher und nicht empfohlen.
+These steps are more cumbersome and not recommended.
 
-1. Clone das Repo
-2. Erstelle eine venv mit `python3 -m venv venv` oder dem Tool, dass deine IDE mitbringt.
-3. Installiere alle Pakete aus `requirements.txt` und `requirements-torch.txt` mit `python3 -m pip install -r requirements.txt` (bzw. `python3 -m pip install -r requirements-torch.txt`).
-4. Erstelle einen Testbot auf der [Discord Developers Seite](https://discord.com/developers)
-5. Kopiere die `EXAMPLE.env` Datei und nenne sie in `.env` um. Fülle die Werte aus.
-6. Richte die Datenbank ein. Befolge [diese Anleitung](DATABASE.md#manuell).
-7. Starte den Bot, indem du die `main.py` Datei mittels `python3 main.py` ausführst.
+1. Clone the repo
+2. Create a venv with `python3 -m venv venv` or the tool that your IDE provides.
+3. Install all packages from `requirements.txt` and `requirements-torch.txt` with `python3 -m pip install -r requirements.txt` (and `python3 -m pip install -r requirements-torch.txt`).
+4. Create a test bot on the [Discord Developers page](https://discord.com/developers)
+5. Copy the `EXAMPLE.env` file and rename it to `.env`. Fill in the values.
+6. Set up the database. Follow [these instructions](DATABASE.md#manual).
+7. Start the bot by running the `main.py` file with `python3 main.py`.
 
 ## Development Tools
 
-Das Projekt benutzt verschiedene Tools zur Sicherstellung der Code-Qualität:
+The project uses various tools to ensure code quality:
 
-### Code-Formatierung
+### Code Formatting
 
-- **YAPF**: Code-Formatierung nach PEP 8 mit 80 Zeichen Zeilenlänge
-- **isort**: Import-Sortierung
-- **mypy**: Type Checking
+- **YAPF**: Code formatting according to PEP 8 with 80 character line length
+- **isort**: Import sorting
+- **mypy**: Type checking
 
 ### VS Code Extensions
 
-Bei Nutzung des Development Containers werden folgende Extensions automatisch installiert:
+When using the Development Container, the following extensions are automatically installed:
 
 - `ms-python.python`: Python language support
 - `ms-python.mypy-type-checker`: Type checking
@@ -46,6 +46,6 @@ Bei Nutzung des Development Containers werden folgende Extensions automatisch in
 - `njpwerner.autodocstring`: Docstring generation
 - `github.vscode-github-actions`: GitHub Actions support
 
-## Lokale Tests
+## Local Testing
 
-Siehe [TESTING.md](TESTING.md) für Informationen zum Ausführen von Tests.
+See [TESTING.md](TESTING.md) for information on running tests.

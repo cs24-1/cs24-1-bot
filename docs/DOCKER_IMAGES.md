@@ -113,14 +113,6 @@ Run tests and linting using the pre-built CI image.
 - **Triggers:** Pull requests
 - **Uses:** `ghcr.io/cs24-1/cs24-1-bot-ci:latest`
 
-## Benefits
-
-1. **Faster CI/CD**: No need to rebuild PyTorch (15-20 minutes) on every test/lint run
-2. **Consistent environments**: Same base across dev, test, and production
-3. **Reduced bandwidth**: Layer caching and reuse across workflows
-4. **Easier maintenance**: Requirements centralized in base images
-5. **Multi-platform support**: Automatic ARM64 and AMD64 builds where needed
-
 ## Manual Rebuilds
 
 To manually trigger a rebuild of the base or CI images:

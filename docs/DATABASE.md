@@ -1,79 +1,65 @@
-# Datenbank
+# Database
 
-Der Bot benutzt eine SQLite Datenbank mit [Tortoise ORM](https://tortoise-orm.readthedocs.io/en/latest/) als ORM.
+The bot uses a SQLite database with [Tortoise ORM](https://tortoise-orm.readthedocs.io/en/latest/) as the ORM.
 
-Die Datenbank muss initialisiert werden, bevor der Bot gestartet wird.
+The database must be initialized before the bot is started.
 
-## Initialisierung
+## Initialization
 
 ### Development Container
 
-Wenn du Development Container benutzt, wird die Datenbank beim Start des Containers automatisch eingerichtet. Andernfalls musst du die Datenbank manuell einrichten.
+If you are using a Development Container, the database will be automatically set up when the container starts. Otherwise, you must set up the database manually.
 
-### Manuell
+### Manual
 
-1. Zunächst musst du das Tortoise-CLI tool `aerich` installieren. Führe dazu `python3 -m pip install aerich` aus.
+1. First, you need to install the Tortoise CLI tool `aerich`. Run `python3 -m pip install aerich` to do so.
 
-2. Nun benötigst du eine Datenbank. Erstelle dafür eine leere Datei namens `db.sqlite3` im Ordner `data/`.
+2. Now you need a database. Create an empty file named `db.sqlite3` in the `data/` folder.
 
-3. Führe im Projekt-Root `aerich upgrade` aus, um die Datenbank auf die neueste Version zu bringen.
+3. Run `aerich upgrade` in the project root to bring the database up to the latest version.
 
-## Datenbankmodelle
+## Database Models
 
-Alle Datenbankmodelle befinden sich in `models/database/` und erben von `BaseModel`:
+All database models are located in `models/database/` and inherit from `BaseModel`:
 
-- `aiData.py`: AI-Service Nutzungsdaten
-- `memeData.py`: Meme-Sammlung Daten
-- `quoteData.py`: Quote-Daten
-- `userData.py`: Benutzer-Daten
+- `aiData.py`: AI service usage data
+- `memeData.py`: Meme collection data
+- `quoteData.py`: Quote data
+- `userData.py`: User data
 
-## Änderungen am Datenmodel
+## Changes to the Data Model
 
-Solltest du Änderungen an den Daten vornehmen, die in der Datenbank gespeichert werden, musst du die Datenbankmigrationen aktualisieren.
+If you make changes to the data stored in the database, you must update the database migrations.
 
-1. Führe `aerich migrate --name=<name der migration>` aus, um eine neue Migration zu erstellen.
-2. Führe `aerich upgrade` aus, um die Datenbank auf den neuesten Stand zu bringen.
+1. Run `aerich migrate --name=<migration name>` to create a new migration.
+2. Run `aerich upgrade` to bring the database up to date.
 
 ### Best Practices
 
-- Verwende beschreibende Namen für Migrationen (z.B. `add_user_role_field`)
-- Teste Migrationen lokal vor dem Commit
-- Dokumentiere Breaking Changes in der Commit-Message
-- Verwende `aerich downgrade` vorsichtig in der Entwicklung
+- Use descriptive names for migrations (e.g., `add_user_role_field`)
+- Test migrations locally before committing
+- Document breaking changes in the commit message
+- Use `aerich downgrade` carefully during development
 
-## Konfiguration
+## Configuration
 
-Die Datenbank-Konfiguration befindet sich in `tortoiseConfig.py`:
+The database configuration is located in `tortoiseConfig.py`.
 
-```python
-TORTOISE_ORM = {
-    "connections": {
-        "default": "sqlite://data/db.sqlite3"
-    },
-    "apps": {
-        "models": {
-            "models": ["models.database", "aerich.models"],
-            "default_connection": "default",
-        },
-    },
-}
-```
+## Migrations
 
-## Migrationen
-
-Alle Migrationen befinden sich im `migrations/` Ordner.
+All migrations are located in the `migrations/` folder.
 
 ## Troubleshooting
 
-### Datenbank ist korrupt
+### Database is corrupt
 
-1. Sichere die aktuelle Datenbank: `cp data/db.sqlite3 data/db.sqlite3.backup`
-2. Lösche die Datenbank: `rm data/db.sqlite3`
-3. Initialisiere neu: `aerich upgrade`
+1. Back up the current database: `cp data/db.sqlite3 data/db.sqlite3.backup`
+2. Delete the database: `rm data/db.sqlite3`
+3. Reinitialize: `aerich upgrade`
 
-### Migration schlägt fehl
+### Migration fails
 
-1. Überprüfe die Datenbank-Integrität
-2. Prüfe, ob alle Modelle korrekt importiert sind in `tortoiseConfig.py`
-3. Versuche ein `aerich downgrade` zur vorherigen Version
-4. Konsultiere die Tortoise ORM [Dokumentation](https://tortoise-orm.readthedocs.io/en/latest/)
+1. Check the database integrity
+2. Verify that all models are correctly imported in `tortoiseConfig.py`
+3. Try `aerich downgrade` to the previous version
+4. Consult the Tortoise ORM [documentation](https://tortoise-orm.readthedocs.io/en/latest/)
