@@ -188,7 +188,7 @@ class QuoteService(commands.Cog):
     async def custom_quote(
         self,
         ctx: ApplicationContext,
-        inhalt: str,
+        content: str,
         person: str
     ):
         """
@@ -197,7 +197,7 @@ class QuoteService(commands.Cog):
         self.logger.info(
             "Custom quote created by %s: '%s' - %s",
             ctx.author,
-            inhalt,
+            content,
             person
         )
 
@@ -207,8 +207,8 @@ class QuoteService(commands.Cog):
         except Exception as ex:
             self.logger.error("Failed to store custom quote: %s", ex)
             await ctx.respond(
-            "❌ Fehler beim Speichern des Zitats in der Datenbank.",
-            ephemeral=True
+                "❌ Fehler beim Speichern des Zitats in der Datenbank.",
+                ephemeral=True
             )
             return
 
@@ -222,7 +222,7 @@ class QuoteService(commands.Cog):
             return
 
         embed = await quoteUtils.build_custom_quote_embed(
-            inhalt,
+            content,
             person,
             ctx.user
         )
