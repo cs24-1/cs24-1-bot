@@ -15,11 +15,16 @@ def setup_test_env(monkeypatch):
     This fixture is automatically used by all tests.
     """
     monkeypatch.setenv("DISCORD_TOKEN", "test_token")
-    monkeypatch.setenv("OPENAI_TOKEN", "test_token")
+    monkeypatch.setenv("CUR_SERVER", "123456")
+
     monkeypatch.setenv("MENSA_CHANNEL", "123456")
     monkeypatch.setenv("MEME_CHANNEL", "123456")
     monkeypatch.setenv("QUOTE_CHANNEL", "123456")
-    monkeypatch.setenv("CUR_SERVER", "123456")
+    monkeypatch.setenv("TIMETABLE_CHANNEL", "123456")
+
+    monkeypatch.setenv("OPENAI_TOKEN", "test_token")
+    monkeypatch.setenv("CAMPUS_USER", "test_user")
+    monkeypatch.setenv("CAMPUS_HASH", "test_hash")
 
 
 @pytest.fixture

@@ -27,14 +27,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Create .env file for testing
-        run: |
-          # Create .env by finding all env var assignments in EXAMPLE.env and setting them to "1"
-          # grep: Find lines starting with uppercase letters/underscores followed by =
-          # sed: Replace everything after = with 1
-          grep -E '^[A-Z_]+=' EXAMPLE.env | sed 's/=.*/=1/' > .env
-
+        
       - name: Run tests with coverage
         run: |
           pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov | tee pytest-coverage.txt
