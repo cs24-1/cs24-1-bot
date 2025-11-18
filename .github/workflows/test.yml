@@ -29,8 +29,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run tests with coverage
+        shell: bash
         run: |
           pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov | tee pytest-coverage.txt
+          exit ${PIPESTATUS[0]}
 
       - name: Comment coverage report
         uses: MishaKav/pytest-coverage-comment@main
@@ -38,3 +40,4 @@ jobs:
           pytest-coverage-path: ./pytest-coverage.txt
           junitxml-path: ./pytest.xml
           report-only-changed-files: true
+        continue-on-error: true

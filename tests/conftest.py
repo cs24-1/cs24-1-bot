@@ -2,24 +2,30 @@
 Shared pytest fixtures and configuration for cs24-1-bot tests.
 """
 
+import os
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock
 
 import discord
 import pytest
 
 
-@pytest.fixture(autouse=True)
-def setup_test_env(monkeypatch):
+def pytest_configure(config: Any) -> None:
     """
-    Set up test environment variables.
-    This fixture is automatically used by all tests.
+    Configure pytest before any tests run.
+    This sets up environment variables before any modules are imported.
     """
-    monkeypatch.setenv("DISCORD_TOKEN", "test_token")
-    monkeypatch.setenv("OPENAI_TOKEN", "test_token")
-    monkeypatch.setenv("MENSA_CHANNEL", "123456")
-    monkeypatch.setenv("MEME_CHANNEL", "123456")
-    monkeypatch.setenv("QUOTE_CHANNEL", "123456")
-    monkeypatch.setenv("CUR_SERVER", "123456")
+    os.environ["DISCORD_TOKEN"] = "test_token"
+    os.environ["CUR_SERVER"] = "123456"
+
+    os.environ["MENSA_CHANNEL"] = "123456"
+    os.environ["MEME_CHANNEL"] = "123456"
+    os.environ["QUOTE_CHANNEL"] = "123456"
+    os.environ["TIMETABLE_CHANNEL"] = "123456"
+
+    os.environ["OPENAI_TOKEN"] = "test_token"
+    os.environ["CAMPUS_USER"] = "test_user"
+    os.environ["CAMPUS_HASH"] = "test_hash"
 
 
 @pytest.fixture
