@@ -1,6 +1,6 @@
 import logging
-from typing import Iterator
 from pathlib import Path
+from typing import Iterator
 
 import discord
 from aerich import Command  # type: ignore
@@ -10,7 +10,7 @@ from tortoise import Tortoise, run_async  # type: ignore
 
 import tortoiseConfig
 from utils.constants import Constants
-from utils.types import Context
+from utils.typeAliases import Context
 
 
 def get_extensions() -> Iterator[str]:

@@ -2,12 +2,12 @@ import os
 import random
 import uuid
 from datetime import datetime
+from io import BytesIO
 from logging import Logger
 from typing import Tuple
 
 import discord
 from PIL import Image, ImageSequence
-from io import BytesIO
 from thefuzz import fuzz  # type: ignore
 
 from models.database.memeData import Meme, MemeFormat
@@ -133,8 +133,10 @@ async def search_memes(search: str,
     """
     Searches for memes containing the given search term.
     """
-    memes: list[tuple[int, Meme]]
-    memes = [
+    memes: list[
+        tuple[int,
+              Meme]
+    ] = [
         (
             fuzz.token_set_ratio(search,
                                  meme.content + "\n" + meme.message),
@@ -149,7 +151,7 @@ async def search_memes(search: str,
         return []
 
     # Read the selected meme images
-    result = []
+    result: list[tuple[bytes, Meme]] = []
     for _, meme in random.choices(filtered_memes, k=num):
         meme_path = os.path.join(
             Constants.FILE_PATHS.BANNERIZED_MEME_FOLDER
