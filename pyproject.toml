@@ -25,7 +25,6 @@ ensure_newline_before_comments = true
 
 [tool.mypy]
 explicit_package_bases = true
-explicit_package_bases = true
 check_untyped_defs = true
 ignore_missing_imports = true
 exclude = ["docs"]
