@@ -27,8 +27,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Run tests with coverage
+        shell: bash
         run: |
           pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov | tee pytest-coverage.txt
           exit ${PIPESTATUS[0]}
