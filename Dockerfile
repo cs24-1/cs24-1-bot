@@ -22,8 +22,11 @@ VOLUME /app/data
 # Set timezone
 ENV TZ=Europe/Berlin
 
+# Add src to Python path
+ENV PYTHONPATH=/app/src
+
 # Define environment variable
 ENV DB_FILE_PATH='/app/data/db.sqlite3'
 
 # Run bot.py when the container launches
-CMD ["python", "-u", "main.py"]
+CMD ["python", "-u", "src/main.py"]

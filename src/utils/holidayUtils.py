@@ -1,6 +1,7 @@
 # TODO: add tests once framework is in place
-from holidays import country_holidays
 from datetime import date
+
+from holidays import country_holidays
 
 # hard-coded for now
 COUNTRY = "DE"
