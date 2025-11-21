@@ -81,13 +81,13 @@ class Quote(BaseModel):
         )
         embed.set_footer(
             text=
-            f"von @{self.reporter.display_name} ({self.reporter.global_name})"
+            f"von {self.reporter.mention} ({self.reporter.global_name})"
         )
 
         for msg in self.messages:
             content = msg.content[:1024] if msg.content else "[- kein Text -]"
             embed.add_field(
-                name=f"~ {msg.author.display_name}",
+                name=f"~ {msg.author.mention}",
                 value=f"“{content}”",
                 inline=False
             )

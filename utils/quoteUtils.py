@@ -35,7 +35,7 @@ def build_quote_embed(
     for msg in messages:
         content = msg.content[:1024] if msg.content else "[- kein Text -]"
         embed.add_field(
-            name=f"~ {msg.author.display_name}",
+            name=f"~ {msg.author.mention}",
             value=f'"{content}"\n[Originalnachricht]({msg.jump_url})',
             inline=False
         )
