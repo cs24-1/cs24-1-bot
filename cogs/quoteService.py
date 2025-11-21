@@ -168,6 +168,59 @@ class QuoteService(commands.Cog):
 
         await ctx.respond(embed=embed)
 
+    @quote.command(
+        name="custom",
+        description="Erstellt ein eigenes Zitat mit Inhalt und Person.",
+        guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
+    )
+    @discord.option(
+        "inhalt",
+        description="Der Inhalt des Zitats.",
+        type=discord.SlashCommandOptionType.string,
+        required=True
+    )
+    @discord.option(
+        "person",
+        description="Die Person, der das Zitat zugeschrieben wird.",
+        type=discord.SlashCommandOptionType.string,
+        required=True
+    )
+    async def custom_quote(
+        self,
+        ctx: ApplicationContext,
+        content: str,
+        person: str
+    ):
+        """
+        Creates a custom quote.
+        """
+        self.logger.info(
+            "Custom quote created by %s: '%s' - %s",
+            ctx.author,
+            content,
+            person
+        )
+
+        # Send embed to quote channel
+        quote_channel: discord.TextChannel | None = ctx.guild.get_channel(
+            Constants.CHANNEL_IDS.QUOTE_CHANNEL
+        )
+
+        if not quote_channel:
+            await ctx.respond("❌ Quote-Channel nicht gefunden.", ephemeral=True)
+            return
+
+        embed = await quoteUtils.build_custom_quote_embed(
+            content,
+            person,
+            ctx.user
+        )
+        await quote_channel.send(embed=embed)
+        await ctx.respond(
+            "✅ Zitat wurde im Quote-Channel gepostet!",
+            ephemeral=True
+        )
+
     async def _store_and_send_quote(
         self,
         ctx: ApplicationContext,
@@ -182,7 +235,7 @@ class QuoteService(commands.Cog):
             f"✅ {len(messages)} Quote{'s' if len(messages) > 1 else ''} gepostet!",
             ephemeral=True
         )
-        
+
     @discord.message_command(
         name="Quote",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
