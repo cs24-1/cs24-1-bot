@@ -201,17 +201,6 @@ class QuoteService(commands.Cog):
             person
         )
 
-        # Store in DB
-        try:
-            await quoteUtils.store_custom_quote_in_db(ctx, content, person)
-        except Exception as ex:
-            self.logger.error("Failed to store custom quote: %s", ex)
-            await ctx.respond(
-                "❌ Fehler beim Speichern des Zitats in der Datenbank.",
-                ephemeral=True
-            )
-            return
-
         # Send embed to quote channel
         quote_channel: discord.TextChannel | None = ctx.guild.get_channel(
             Constants.CHANNEL_IDS.QUOTE_CHANNEL

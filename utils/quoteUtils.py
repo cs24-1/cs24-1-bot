@@ -1,3 +1,4 @@
+import logging
 import random
 from tortoise.transactions import in_transaction
 
@@ -9,7 +10,7 @@ from thefuzz import fuzz  # type: ignore
 from models.database.quoteData import QuoteMessage, Quote
 from models.database.userData import User
 from utils.constants import Constants
-import logging
+
 
 
 def build_quote_embed(
@@ -104,85 +105,6 @@ async def store_quote_in_db(
         )
 
 
-async def store_custom_quote_in_db(
-    ctx: ApplicationContext,
-    content: str,
-    person: str,
-):
-    """
-    Stores a custom quote (without Discord messages) in the database.
-
-    Args:
-        ctx (ApplicationContext): The context of the command.
-        content (str): The text of the quote.
-        person (str): The person the quote is attributed to.
-    """
-    reporter, _ = await User.get_or_create(
-        id=int(ctx.author.id),
-        defaults={"global_name": ctx.author.name, "display_name": ctx.author.display_name}
-    )
-
-    # Create the quote
-    quote = await Quote.create(
-        reporter=reporter,
-        date_reported=utcnow(),
-    )
-
-    # Create or reuse a User record for the person being quoted.
-    # We must not attempt to set the primary key `id` (an IntField).
-    # Use `global_name` to find an existing entry or create a new one.
-
-    custom_global_name = f"custom_person_{person}"
-    author = await User.filter(global_name=custom_global_name).first()
-    if author is None:
-        # Use transaction to prevent race condition in ID assignment
-        async with in_transaction() as connection:
-            # Find the minimum negative id used so far, or start at -1
-            min_id_user = await User.filter(
-                id__lt=0
-            ).order_by("id").using_db(connection).first()
-            next_id = min_id_user.id - 1 if min_id_user else -1
-            author = await User.create(
-                id=next_id,
-                global_name=custom_global_name,
-                display_name=person,
-                using_db=connection
-            )
-
-    await QuoteMessage.create(
-        content=content,
-        author=author,
-        date=utcnow(),
-        quote=quote
-    )
-    logger = logging.getLogger("bot")
-
-    # Enforce a maximum stored quote length. Prefer constant, fallback to 4000.
-    max_allowed = getattr(Constants, "CUSTOM_QUOTE_MAX_LENGTH", 4000)
-    if len(content) > max_allowed:
-        truncated = content[: max_allowed - 3] + "..."
-        # Update the already created QuoteMessage to avoid storing huge text.
-        last_msg = await QuoteMessage.filter(quote=quote).order_by("-id").first()
-        if last_msg:
-            last_msg.content = truncated
-            await last_msg.save()
-        logger.warning(
-            "Custom quote by %s truncated to %s characters",
-            ctx.author.id,
-            max_allowed,
-        )
-        try:
-            await ctx.respond(
-                "⚠️ Dein Zitat war zu lang und wurde auf "
-                f"{max_allowed} Zeichen gekürzt.",
-                ephemeral=True,
-            )
-        except Exception:
-            # Don't raise if responding fails; logging is sufficient.
-            logger.error("Failed to notify user about quote truncation: %s",
-                         ctx.author.id)
-
-
 async def send_embed(
     ctx: ApplicationContext,
     messages: list[discord.Message],
@@ -217,8 +139,16 @@ async def build_custom_quote_embed(
     person: str,
     created_by: discord.abc.User
 ) -> discord.Embed:
-    """
-    Creates a Discord embed for a custom quote, visually consistent with message-based quotes.
+    """  
+    Creates a Discord embed for a custom quote, visually consistent with message-based quotes.  
+
+    Args:  
+        content (str): The text content of the quote.  
+        person (str): The name of the person being quoted.  
+        created_by (discord.abc.User): The user who created this custom quote.  
+
+    Returns:  
+        discord.Embed: The constructed embed for the custom quote.  
     """
     embed = discord.Embed(
         title="💬 Neues Zitat",
