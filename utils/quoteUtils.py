@@ -10,7 +10,6 @@ from models.database.userData import User
 from utils.constants import Constants
 
 
-
 def build_quote_embed(
     messages: list[discord.Message],
     author_name: str | None = None
@@ -32,30 +31,29 @@ def build_quote_embed(
     Returns:
         discord.Embed: The constructed embed.
     """
-    embed = Embed(
-        title="💬 Neues Zitat",
-        color=Color.blurple()
-    )
+    embed = Embed(title="💬 Neues Zitat", color=Color.blurple())
 
     for msg in messages:
         content = msg.content if msg.content else "[- kein Text -]"
         # Field value has 1024 char limit
         link_text = f"[Originalnachricht]({msg.jump_url})"
-        max_content_length = 1024 - len(link_text) - 4  # quotes + newline + link
+        max_content_length = 1024 - len(
+            link_text
+        ) - 4  # quotes + newline + link
         if len(content) > max_content_length:
             content = content[:max_content_length - 3] + "..."
 
         # Add content as a field value with quotes, then link
         embed.add_field(
             name="\u200b",  # Zero-width space for empty name
-            value=f"\u201C{content}\u201D\n{link_text}",
+            value=f"\u201C{content}\u201D\n",
             inline=False
         )
 
         # Add author as next field
         embed.add_field(
             name=f"~ {msg.author.display_name}",
-            value=f'"{content}"\n[Originalnachricht]({msg.jump_url})',
+            value=f"\u200b{link_text}",  # Zero-width space for empty value
             inline=False
         )
 
@@ -82,8 +80,7 @@ async def store_quote_in_db(
         id=int(ctx.author.id), defaults={
             "global_name": ctx.author.name, "display_name": ctx.author.display_name})
 
-    date_reported = msg.created_at if (msg :=
-                                       ctx.message) else utcnow()
+    date_reported = msg.created_at if (msg := ctx.message) else utcnow()
 
     quote = await Quote.create(
         reporter=reporter,
@@ -148,10 +145,7 @@ async def build_custom_quote_embed(
     Returns:
         discord.Embed: The constructed embed for the custom quote.
     """
-    embed = discord.Embed(
-        title="💬 Neues Zitat",
-        color=discord.Color.blurple()
-    )
+    embed = discord.Embed(title="💬 Neues Zitat", color=discord.Color.blurple())
 
     # Truncate content to fit within field value limit (1024 chars)
     # Account for the quotes around content
