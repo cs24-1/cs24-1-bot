@@ -1,0 +1,43 @@
+name: Testing Checks
+
+on:
+  pull_request:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Build CI Docker Image"]
+    types:
+      - completed
+
+jobs:
+  test:
+    name: Testing Checks
+    runs-on: ubuntu-latest
+    # Skip if triggered by workflow_run and the CI image build failed
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    container:
+      image: ghcr.io/cs24-1/cs24-1-bot-ci:latest
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    permissions:
+      checks: write
+      contents: read
+      pull-requests: write
+      packages: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run tests with coverage
+        shell: bash
+        run: |
+          pytest --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov | tee pytest-coverage.txt
+          exit ${PIPESTATUS[0]}
+
+      - name: Comment coverage report
+        uses: MishaKav/pytest-coverage-comment@main
+        with:
+          pytest-coverage-path: ./pytest-coverage.txt
+          junitxml-path: ./pytest.xml
+          report-only-changed-files: true
+        continue-on-error: true

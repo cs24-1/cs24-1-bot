@@ -2,12 +2,12 @@ import logging
 import random
 from tortoise.transactions import in_transaction
 
-from discord import ApplicationContext, Embed, Color
 import discord
+from discord import ApplicationContext, Color, Embed
 from discord.utils import utcnow
 from thefuzz import fuzz  # type: ignore
 
-from models.database.quoteData import QuoteMessage, Quote
+from models.database.quoteData import Quote, QuoteMessage
 from models.database.userData import User
 from utils.constants import Constants
 
@@ -57,7 +57,7 @@ def build_quote_embed(
         # Add author as next field
         embed.add_field(
             name=f"~ {msg.author.display_name}",
-            value="\u200b",  # Zero-width space for empty value
+            value=f'"{content}"\n[Originalnachricht]({msg.jump_url})',
             inline=False
         )
 
@@ -242,7 +242,8 @@ async def search_quotes(
         (
             score,
             quote,
-        ) for score, quote in ranked_quotes if score > 50
+        ) for score,
+        quote in ranked_quotes if score > 50
     ]
 
     if len(filtered_quotes) == 0:

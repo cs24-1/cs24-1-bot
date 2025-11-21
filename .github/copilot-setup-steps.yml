@@ -1,0 +1,22 @@
+name: Setup development environment for Copilot
+on:
+  workflow_dispatch:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/cs24-1/cs24-1-bot-base:latest
+    steps:
+      - uses: actions/checkout@v4
+          
+      - name: Install dependencies
+        run: |
+          pip install --no-cache-dir -r requirements-dev.txt
+          pip install --no-cache-dir -r requirements.txt
+          
+      - name: Initialize database
+        run: |
+          mkdir -p data
+          touch data/db.sqlite3
+          aerich upgrade

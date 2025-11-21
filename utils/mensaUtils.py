@@ -13,14 +13,11 @@ from datetime import datetime, timedelta
 from typing import Any, Iterator
 
 import discord
-
 import requests
+from cachetools import TTLCache, cached
 
 from models.mensa.mensaModels import Meal, MealType, Price
-
 from utils.constants import Constants
-
-from cachetools import TTLCache, cached
 
 
 @cached(cache=TTLCache(maxsize=7, ttl=600))  # type: ignore

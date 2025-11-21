@@ -1,9 +1,7 @@
 from enum import Enum
-
 from typing import TYPE_CHECKING
 
 import discord
-from tortoise import Model
 from tortoise import fields
 
 from models.database.baseModel import BaseModel
@@ -76,4 +74,4 @@ class Meme(BaseModel):
 
         :returns: The UUID of the meme.
         """
-        return self.uuid
+        return str(self.uuid)

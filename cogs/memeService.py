@@ -1,12 +1,12 @@
 import logging
 
+import discord
 from discord import ApplicationContext
 from discord.ext import commands, tasks
-import discord
 
 from models.database.userData import User
-from utils.memeUtils import memeUtils
 from utils.constants import Constants
+from utils.memeUtils import memeUtils
 
 
 class MemeService(commands.Cog):
