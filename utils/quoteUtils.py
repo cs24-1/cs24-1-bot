@@ -1,6 +1,4 @@
-import logging
 import random
-from tortoise.transactions import in_transaction
 
 import discord
 from discord import ApplicationContext, Color, Embed
