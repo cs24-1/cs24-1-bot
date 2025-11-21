@@ -192,7 +192,7 @@ class QuoteService(commands.Cog):
         person: str
     ):
         """
-        Creates a custom quote and stores it in the database.
+        Creates a custom quote.
         """
         self.logger.info(
             "Custom quote created by %s: '%s' - %s",
@@ -216,8 +216,10 @@ class QuoteService(commands.Cog):
             ctx.user
         )
         await quote_channel.send(embed=embed)
-        await ctx.respond("✅ Zitat wurde im Quote-Channel gepostet!", ephemeral=True)
-
+        await ctx.respond(
+            "✅ Zitat wurde im Quote-Channel gepostet!",
+            ephemeral=True
+        )
 
     async def _store_and_send_quote(
         self,
@@ -233,7 +235,7 @@ class QuoteService(commands.Cog):
             f"✅ {len(messages)} Quote{'s' if len(messages) > 1 else ''} gepostet!",
             ephemeral=True
         )
-        
+
     @discord.message_command(
         name="Quote",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
