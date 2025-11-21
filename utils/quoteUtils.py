@@ -137,16 +137,16 @@ async def build_custom_quote_embed(
     person: str,
     created_by: discord.abc.User
 ) -> discord.Embed:
-    """  
-    Creates a Discord embed for a custom quote, visually consistent with message-based quotes.  
+    """
+    Creates a Discord embed for a custom quote, visually consistent with message-based quotes.
 
-    Args:  
-        content (str): The text content of the quote.  
-        person (str): The name of the person being quoted.  
-        created_by (discord.abc.User): The user who created this custom quote.  
+    Args:
+        content (str): The text content of the quote.
+        person (str): The name of the person being quoted.
+        created_by (discord.abc.User): The user who created this custom quote.
 
-    Returns:  
-        discord.Embed: The constructed embed for the custom quote.  
+    Returns:
+        discord.Embed: The constructed embed for the custom quote.
     """
     embed = discord.Embed(
         title="💬 Neues Zitat",
