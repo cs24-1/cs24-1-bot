@@ -13,9 +13,6 @@ COPY requirements/requirements.txt /app
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the pyproject.toml for aerich configuration
-COPY pyproject.toml /app/
-
 # Copy only the necessary application files
 COPY src/ /app/src/
 
@@ -31,5 +28,8 @@ ENV PYTHONPATH=/app/src
 # Define environment variable
 ENV DB_FILE_PATH='/app/data/db.sqlite3'
 
-# Run bot.py when the container launches
-CMD ["python", "-u", "src/main.py"]
+# Change to src directory for proper context
+WORKDIR /app/src
+
+# Run main.py when the container launches
+CMD ["python", "-u", "main.py"]
