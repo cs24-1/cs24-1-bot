@@ -5,7 +5,6 @@ Unit tests for models/quotes/quoteModels.py
 from unittest.mock import MagicMock
 
 from discord import Message
-
 from models.quotes.quoteModels import PartialMessage
 
 
@@ -53,7 +52,7 @@ class TestPartialMessage:
 
         assert partial.content == "Test message"
         assert partial.jump_url == "https://discord.com/channels/123/456/789"
-        assert partial.author_name is None
+        assert partial.author_name == "[Unbekannt]"
 
     def test_from_discord_message_with_long_content(self):
         """Test conversion with very long message content."""
