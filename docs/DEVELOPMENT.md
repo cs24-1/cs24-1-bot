@@ -18,7 +18,7 @@ These steps are more cumbersome and not recommended.
 
 1. Clone the repo
 2. Create a venv with `python3 -m venv venv` or the tool that your IDE provides.
-3. Install all packages from `requirements.txt` and `requirements-torch.txt` with `python3 -m pip install -r requirements.txt` (and `python3 -m pip install -r requirements-torch.txt`).
+3. Install all packages from `requirements/requirements.txt` and `requirements/requirements-torch.txt` with `python3 -m pip install -r requirements/requirements.txt` (and `python3 -m pip install -r requirements/requirements-torch.txt`).
 4. Create a test bot on the [Discord Developers page](https://discord.com/developers)
 5. Copy the `EXAMPLE.env` file and rename it to `.env`. Fill in the values.
 6. Set up the database. Follow [these instructions](DATABASE.md#manual).

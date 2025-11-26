@@ -4,10 +4,10 @@ import discord
 from cachetools import TTLCache
 from discord import ApplicationContext
 from discord.ext import commands
-from models.quotes.quoteModels import PartialMessage
-from utils.constants import Constants
 
+from models.quotes.quoteModels import PartialMessage
 from utils import quoteUtils
+from utils.constants import Constants
 
 
 class QuoteService(commands.Cog):

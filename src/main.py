@@ -14,10 +14,12 @@ from utils.typeAliases import Context
 
 
 def get_extensions() -> Iterator[str]:
-    files = Path("cogs").rglob("*.py")
+    files = Path("src/cogs").rglob("*.py")
     for file in files:
         end_bit = len(".py")
-        yield file.as_posix()[:-end_bit].replace("/", ".")
+        # Remove 'src/' prefix to get module path like 'cogs.aiService'
+        module_path = file.as_posix()[4:-end_bit].replace("/", ".")
+        yield module_path
 
 
 def load_extensions(

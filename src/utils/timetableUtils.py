@@ -1,12 +1,13 @@
-from datetime import datetime, timedelta, timezone
 import warnings
+from datetime import datetime, timedelta, timezone
 
 from discord import AutocompleteContext
-from utils.constants import Constants
 from requests import JSONDecodeError, RequestException
-from urllib3.exceptions import InsecureRequestWarning
 from requests_cache import CachedSession
+from urllib3.exceptions import InsecureRequestWarning
+
 from models.timetableModels import TimetableEntry
+from utils.constants import Constants
 
 _SESSION = CachedSession(
     backend="memory",
@@ -162,7 +163,8 @@ def days_autocomplete(ctx: AutocompleteContext) -> list[str]:
     """
     default_entries = ["today",
                        "tomorrow"
-                       ] + [str(n) for n in range(1, MAX_TIMETABLE_RANGE_DAYS)]
+                       ] + [str(n) for n in range(1,
+                                                  MAX_TIMETABLE_RANGE_DAYS)]
 
     return [entry for entry in default_entries if entry.startswith(ctx.value)]
 

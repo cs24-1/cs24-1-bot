@@ -13,9 +13,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install development requirements
-COPY requirements-dev.txt ./
+COPY requirements/requirements-dev.txt ./
 RUN pip install --no-cache-dir -r requirements-dev.txt
 
 # Install main requirements
-COPY requirements.txt ./
+COPY requirements/requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt

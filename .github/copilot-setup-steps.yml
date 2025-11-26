@@ -12,8 +12,8 @@ jobs:
           
       - name: Install dependencies
         run: |
-          pip install --no-cache-dir -r requirements-dev.txt
-          pip install --no-cache-dir -r requirements.txt
+          pip install --no-cache-dir -r requirements/requirements-dev.txt
+          pip install --no-cache-dir -r requirements/requirements.txt
           
       - name: Initialize database
         run: |

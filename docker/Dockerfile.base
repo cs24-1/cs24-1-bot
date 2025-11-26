@@ -13,7 +13,7 @@ ENV PIP_ROOT_USER_ACTION=ignore
 WORKDIR /app
 
 # Copy torch requirements file
-COPY requirements-torch.txt /app/
+COPY requirements/requirements-torch.txt /app/
 
 # Upgrade pip and install PyTorch dependencies
 # These are the heaviest dependencies, so we install them in the base image

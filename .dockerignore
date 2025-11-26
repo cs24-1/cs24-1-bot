@@ -52,7 +52,7 @@ data/
 Thumbs.db
 
 # Docker
-Dockerfile*
+docker/Dockerfile*
 .dockerignore
 
 # Test files

@@ -36,5 +36,12 @@
     "editor.codeActionsOnSave": {
         "source.organizeImports": "always",
         "source.unusedImports": "always"
+    },
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/.pytest_cache": true,
+        "**/.mypy_cache": true,
+        "htmlcov": true,
+        ".coverage": true,
     }
 }

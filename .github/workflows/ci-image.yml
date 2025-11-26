@@ -5,10 +5,10 @@ on:
     branches:
       - main
     paths:
-      - 'requirements-torch.txt'
-      - 'requirements.txt'
-      - 'requirements-dev.txt'
-      - 'Dockerfile.ci'
+      - 'requirements/requirements-torch.txt'
+      - 'requirements/requirements.txt'
+      - 'requirements/requirements-dev.txt'
+      - 'docker/Dockerfile.ci'
       - '.github/workflows/ci-image.yml'
   workflow_dispatch:
   workflow_run:
@@ -52,7 +52,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: Dockerfile.ci
+          file: docker/Dockerfile.ci
           push: true
           platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}
