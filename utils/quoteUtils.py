@@ -118,7 +118,7 @@ async def send_embed(
 
     Args:
         ctx (ApplicationContext): The context of the app.
-        messages (list[discord.Message]): The messages to quote.
+        messages (list[PartialMessage]): The messages to quote.
         comment (str | None): An optional comment to add.
     """
     quote_channel: discord.TextChannel | None = ctx.guild.get_channel(
