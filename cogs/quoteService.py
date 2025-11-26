@@ -227,7 +227,7 @@ class QuoteService(commands.Cog):
         await ctx.respond(
             f"📌 Nachricht von **{message.author.display_name}** gespeichert!\n"
             f"({len(self.quote_cache[user_id])} gesammelt - verfällt in {self.quote_cache.ttl // 60} Minuten)\n\n"
-            f"**Tipp:** nutze den Befehl `/quotes post`, um deine gesammelten Nachrichten zu zitieren.",
+            f"**Tipp:** nutze den Befehl `/quote post`, um deine gesammelten Nachrichten zu zitieren.",
             ephemeral=True
         )
 
