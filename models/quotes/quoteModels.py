@@ -7,7 +7,7 @@ from discord import Message
 class PartialMessage:
     content: str | None
     jump_url: str | None
-    author_name: str | None
+    author_name: str
 
     @classmethod
     def from_discord_message(cls, message: Message) -> "PartialMessage":
@@ -25,5 +25,5 @@ class PartialMessage:
         return cls(
             content=message.content,
             jump_url=message.jump_url,
-            author_name=message.author.display_name if message.author else None,
+            author_name=message.author.display_name if message.author else "[Unbekannt]",
         )
