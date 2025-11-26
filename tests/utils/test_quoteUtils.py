@@ -2,9 +2,8 @@
 Unit tests for utils/quoteUtils.py
 """
 
-from unittest.mock import MagicMock
-
 from discord import Color, Embed
+from models.quotes.quoteModels import PartialMessage
 
 
 class TestBuildQuoteEmbed:
@@ -15,10 +14,11 @@ class TestBuildQuoteEmbed:
         from utils.quoteUtils import build_quote_embed
 
         # Create mock message
-        mock_message = MagicMock()
-        mock_message.content = "Test message content"
-        mock_message.author.display_name = "TestUser"
-        mock_message.jump_url = "https://discord.com/channels/123/456/789"
+        mock_message = PartialMessage(
+            content="Test message content",
+            jump_url="https://discord.com/channels/123/456/789",
+            author_name="TestUser"
+        )
 
         embed = build_quote_embed([mock_message])
 
@@ -39,15 +39,17 @@ class TestBuildQuoteEmbed:
         from utils.quoteUtils import build_quote_embed
 
         # Create mock messages
-        mock_message1 = MagicMock()
-        mock_message1.content = "First message"
-        mock_message1.author.display_name = "User1"
-        mock_message1.jump_url = "https://discord.com/channels/123/456/789"
+        mock_message1 = PartialMessage(
+            content="First message",
+            jump_url="https://discord.com/channels/123/456/789",
+            author_name="User1"
+        )
 
-        mock_message2 = MagicMock()
-        mock_message2.content = "Second message"
-        mock_message2.author.display_name = "User2"
-        mock_message2.jump_url = "https://discord.com/channels/123/456/790"
+        mock_message2 = PartialMessage(
+            content="Second message",
+            jump_url="https://discord.com/channels/123/456/790",
+            author_name="User2"
+        )
 
         embed = build_quote_embed([mock_message1, mock_message2])
 
@@ -64,10 +66,11 @@ class TestBuildQuoteEmbed:
         """Test that empty messages get placeholder text."""
         from utils.quoteUtils import build_quote_embed
 
-        mock_message = MagicMock()
-        mock_message.content = ""
-        mock_message.author.display_name = "TestUser"
-        mock_message.jump_url = "https://discord.com/channels/123/456/789"
+        mock_message = PartialMessage(
+            content="",
+            jump_url="https://discord.com/channels/123/456/789",
+            author_name="TestUser"
+        )
 
         embed = build_quote_embed([mock_message])
 
@@ -78,10 +81,11 @@ class TestBuildQuoteEmbed:
         """Test that author name appears in footer."""
         from utils.quoteUtils import build_quote_embed
 
-        mock_message = MagicMock()
-        mock_message.content = "Test"
-        mock_message.author.display_name = "TestUser"
-        mock_message.jump_url = "https://discord.com/channels/123/456/789"
+        mock_message = PartialMessage(
+            content="Test",
+            jump_url="https://discord.com/channels/123/456/789",
+            author_name="TestUser"
+        )
 
         embed = build_quote_embed([mock_message], author_name="Submitter")
 
@@ -92,10 +96,11 @@ class TestBuildQuoteEmbed:
         """Test that messages longer than field limit are truncated."""
         from utils.quoteUtils import build_quote_embed
 
-        mock_message = MagicMock()
-        mock_message.content = "A" * 2000  # Very long message
-        mock_message.author.display_name = "TestUser"
-        mock_message.jump_url = "https://discord.com/channels/123/456/789"
+        mock_message = PartialMessage(
+            content="A" * 2000,  # Very long message
+            jump_url="https://discord.com/channels/123/456/789",
+            author_name="TestUser"
+        )
 
         embed = build_quote_embed([mock_message])
 
