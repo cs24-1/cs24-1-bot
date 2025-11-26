@@ -85,7 +85,11 @@ def setup_bot_logger():
 async def init_database():
 
     # update the database
-    command = Command(tortoise_config=tortoiseConfig.TORTOISE_ORM, app="models")
+    command = Command(
+        tortoise_config=tortoiseConfig.TORTOISE_ORM,
+        app="models",
+        location="src/migrations"
+    )
     await command.init()
     await command.upgrade(run_in_transaction=True)
 
