@@ -36,7 +36,7 @@ def build_quote_embed(
     for msg in messages:
         # Add content as a field value with quotes, then link
         embed.add_field(
-            name="",  # Zero-width space for empty name
+            name="",
             value=_build_quote_embed_message(msg),
             inline=False
         )

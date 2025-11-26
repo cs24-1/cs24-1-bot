@@ -170,7 +170,18 @@ class QuoteService(commands.Cog):
         person: str
     ):
         """
-        Creates a custom quote.
+        Creates a custom quote without linking to a Discord message and posts
+        it to the quote channel.
+
+        This command allows users to specify the content and the person to
+        whom the quote is attributed. The quote is posted as an embed in the
+        designated quote channel. If the quote channel is not found, an error
+        message is sent to the user.
+
+        Parameters:
+            ctx (ApplicationContext): The context of the command invocation.
+            content (str): The content of the quote.
+            person (str): The person to whom the quote is attributed.
         """
         self.logger.info(
             "Custom quote created by %s: '%s' - %s",
@@ -260,11 +271,11 @@ class QuoteService(commands.Cog):
     ):
         await quoteUtils.store_quote_in_db(ctx, messages, comment)
 
-        partialMessages = [
+        partial_messages = [
             PartialMessage.from_discord_message(msg) for msg in messages
         ]
 
-        await quoteUtils.send_embed(ctx, partialMessages, comment)
+        await quoteUtils.send_embed(ctx, partial_messages, comment)
 
         await ctx.respond(
             f"✅ {len(messages)} Quote{'s' if len(messages) > 1 else ''} gepostet!",
