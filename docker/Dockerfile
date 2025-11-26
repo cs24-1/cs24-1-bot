@@ -28,8 +28,5 @@ ENV PYTHONPATH=/app/src
 # Define environment variable
 ENV DB_FILE_PATH='/app/data/db.sqlite3'
 
-# Change to src directory for proper context
-WORKDIR /app/src
-
 # Run main.py when the container launches
-CMD ["python", "-u", "main.py"]
+CMD ["python", "-u", "src/main.py"]
