@@ -13,6 +13,9 @@ COPY requirements/requirements.txt /app
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy the pyproject.toml for aerich configuration
+COPY pyproject.toml /app/
+
 # Copy only the necessary application files
 COPY src/ /app/src/
 
