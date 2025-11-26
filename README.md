@@ -50,16 +50,19 @@ Siehe [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) für detaillierte Anweisungen.
 
 ```
 .
-├── cogs/              # Discord Command-Module (Cogs)
-├── models/            # Datenmodelle
-│   ├── ai/           # AI-bezogene Modelle
-│   ├── database/     # Datenbank-Modelle (Tortoise ORM)
-│   └── mensa/        # Mensa-bezogene Modelle
-├── utils/            # Hilfsfunktionen
-├── migrations/       # Datenbank-Migrationen (aerich)
-├── tests/            # Pytest Test Suite
-├── docs/             # Dokumentation
-└── main.py          # Bot-Einstiegspunkt
+├── src/              # Quellcode
+│   ├── cogs/        # Discord Command-Module (Cogs)
+│   ├── models/      # Datenmodelle
+│   │   ├── ai/     # AI-bezogene Modelle
+│   │   ├── database/ # Datenbank-Modelle (Tortoise ORM)
+│   │   └── mensa/  # Mensa-bezogene Modelle
+│   ├── utils/       # Hilfsfunktionen
+│   ├── migrations/  # Datenbank-Migrationen (aerich)
+│   └── main.py      # Bot-Einstiegspunkt
+├── tests/           # Pytest Test Suite
+├── docs/            # Dokumentation
+├── docker/          # Docker-Konfiguration
+└── data/            # Laufzeitdaten (gitignored)
 ```
 
 ## Lizenz

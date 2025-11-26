@@ -8,7 +8,7 @@ LABEL org.opencontainers.image.source=https://github.com/cs24-1/cs24-1-bot
 WORKDIR /app
 
 # Copy the requirements file into the container at /app
-COPY requirements.txt /app
+COPY requirements/requirements.txt /app
 
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt

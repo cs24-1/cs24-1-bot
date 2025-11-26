@@ -47,7 +47,7 @@ The database configuration is located in `tortoiseConfig.py`.
 
 ## Migrations
 
-All migrations are located in the `migrations/` folder.
+All migrations are located in the `src/migrations/` folder.
 
 ## Troubleshooting
 

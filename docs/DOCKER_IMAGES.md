@@ -16,7 +16,7 @@ cs24-1-bot-base (requirements-torch.txt)
 
 ## Images
 
-### 1. Base Image (`Dockerfile.base`)
+### 1. Base Image (`docker/Dockerfile.base`)
 
 **Image:** `ghcr.io/cs24-1/cs24-1-bot-base:latest`
 
@@ -25,13 +25,13 @@ cs24-1-bot-base (requirements-torch.txt)
 - PyTorch and torchvision (from `requirements-torch.txt`)
 - System timezone configuration
 
-**Build trigger:** Changes to `requirements-torch.txt` or `Dockerfile.base`
+**Build trigger:** Changes to `requirements/requirements-torch.txt` or `docker/Dockerfile.base`
 
 **Platforms:** linux/amd64, linux/arm64
 
 **Usage:** Foundation for all other images to avoid rebuilding heavy PyTorch dependencies
 
-### 2. CI Image (`Dockerfile.ci`)
+### 2. CI Image (`docker/Dockerfile.ci`)
 
 **Image:** `ghcr.io/cs24-1/cs24-1-bot-ci:latest`
 
@@ -40,13 +40,13 @@ cs24-1-bot-base (requirements-torch.txt)
 - Application dependencies (`requirements.txt`)
 - Development dependencies (`requirements-dev.txt`)
 
-**Build trigger:** Changes to requirements files or `Dockerfile.ci`
+**Build trigger:** Changes to requirements files or `docker/Dockerfile.ci`
 
 **Platform:** linux/amd64 (GitHub Actions runners)
 
 **Usage:** Used in testing and linting workflows
 
-### 3. Production Image (`Dockerfile`)
+### 3. Production Image (`docker/Dockerfile`)
 
 **Image:** `ghcr.io/cs24-1/cs24-1-bot:latest`
 
@@ -84,7 +84,7 @@ cs24-1-bot-base (requirements-torch.txt)
 Builds and pushes the base image with PyTorch dependencies.
 
 - **Triggers:** 
-  - Push to `main` with changes to `requirements-torch.txt` or `Dockerfile.base`
+  - Push to `main` with changes to `requirements/requirements-torch.txt` or `docker/Dockerfile.base`
   - Manual workflow dispatch
 - **Artifacts:** `ghcr.io/cs24-1/cs24-1-bot-base:latest`
 
@@ -93,7 +93,7 @@ Builds and pushes the base image with PyTorch dependencies.
 Builds and pushes the CI image with all testing/linting dependencies.
 
 - **Triggers:**
-  - Push to `main` with changes to requirements files or `Dockerfile.ci`
+  - Push to `main` with changes to requirements files or `docker/Dockerfile.ci`
   - Manual workflow dispatch
 - **Artifacts:** `ghcr.io/cs24-1/cs24-1-bot-ci:latest`
 
@@ -128,7 +128,7 @@ The devcontainer uses the base image from the registry. If you need to test base
 
 1. Build the base image locally:
    ```bash
-   docker build -f Dockerfile.base -t ghcr.io/cs24-1/cs24-1-bot-base:latest .
+   docker build -f docker/Dockerfile.base -t ghcr.io/cs24-1/cs24-1-bot-base:latest .
    ```
 
 2. Rebuild the devcontainer in VS Code:

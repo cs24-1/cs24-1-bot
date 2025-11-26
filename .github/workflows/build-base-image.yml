@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'requirements-torch.txt'
-      - 'Dockerfile.base'
+      - 'requirements/requirements-torch.txt'
+      - 'docker/Dockerfile.base'
       - '.github/workflows/build-base-image.yml'
   workflow_dispatch:
 
@@ -44,7 +44,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: Dockerfile.base
+          file: docker/Dockerfile.base
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.meta.outputs.tags }}

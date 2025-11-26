@@ -34,7 +34,7 @@ Push to main (requirements-torch.txt changes)
 **Triggers:**
 - Push to `main` branch with changes to:
   - `requirements-torch.txt`
-  - `Dockerfile.base`
+  - `docker/Dockerfile.base`
   - `.github/workflows/build-base-image.yml`
 - Manual workflow dispatch
 
@@ -52,10 +52,10 @@ Push to main (requirements-torch.txt changes)
 
 **Triggers:**
 - Push to `main` branch with changes to:
-  - `requirements-torch.txt`
-  - `requirements.txt`
-  - `requirements-dev.txt`
-  - `Dockerfile.ci`
+  - `requirements/requirements-torch.txt`
+  - `requirements/requirements.txt`
+  - `requirements/requirements-dev.txt`
+  - `docker/Dockerfile.ci`
   - `.github/workflows/ci-image.yml`
 - Manual workflow dispatch
 - **Workflow run:** After "Build Base Docker Image" completes successfully

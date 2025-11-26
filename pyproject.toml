@@ -1,6 +1,6 @@
 [tool.aerich]
 tortoise_orm = "tortoiseConfig.TORTOISE_ORM"
-location = "./migrations"
+location = "./src/migrations"
 src_folder = "./src"
 
 [tool.yapf]

@@ -9,11 +9,11 @@ ENV PIP_ROOT_USER_ACTION=ignore
 WORKDIR /app
 
 # Copy and install main requirements
-COPY requirements.txt /app/
+COPY requirements/requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy and install development requirements for testing and linting
-COPY requirements-dev.txt /app/
+COPY requirements/requirements-dev.txt /app/
 RUN pip install --no-cache-dir -r requirements-dev.txt
 
 # Set environment variable for Python to run in unbuffered mode
