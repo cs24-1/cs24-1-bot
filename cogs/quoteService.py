@@ -4,9 +4,10 @@ import discord
 from cachetools import TTLCache
 from discord import ApplicationContext
 from discord.ext import commands
+from models.quotes.quoteModels import PartialMessage
+from utils.constants import Constants
 
 from utils import quoteUtils
-from utils.constants import Constants
 
 
 class QuoteService(commands.Cog):
@@ -28,13 +29,15 @@ class QuoteService(commands.Cog):
     async def on_ready(self):
         self.logger.info("QuoteService started successfully")
 
+    # ----- Slash Commands -----
+
     quote = discord.SlashCommandGroup(
         name="quote",
         description="Verwalte Zitate."
     )
 
     @quote.command(
-        name="create",
+        name="by_messages",
         description=
         "Zitiert eine bis maximal fünf Nachrichten anhand ihrer URLs oder IDs.",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER],
@@ -58,31 +61,6 @@ class QuoteService(commands.Cog):
                 messages.append(msg)
 
         await self._store_and_send_quote(ctx, messages, comment)
-
-    @discord.message_command(
-        name="Nachricht zu Quote hinzufügen",
-        guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
-    )
-    async def add_message_to_quote(
-        self,
-        ctx: ApplicationContext,
-        message: discord.Message
-    ):
-        """
-        Adds a single message to your personal quoting context.
-        """
-        user_id = ctx.author.id
-
-        quotes = self.quote_cache.setdefault(user_id, [])
-
-        quotes.append(message)
-
-        await ctx.respond(
-            f"📌 Nachricht von **{message.author.display_name}** gespeichert!\n"
-            f"({len(self.quote_cache[user_id])} gesammelt - verfällt in {self.quote_cache.ttl // 60} Minuten)\n\n"
-            f"**Tipp:** nutze den Befehl `/quotes post`, um deine gesammelten Nachrichten zu zitieren.",
-            ephemeral=True
-        )
 
     @quote.command(
         name="post",
@@ -168,23 +146,104 @@ class QuoteService(commands.Cog):
 
         await ctx.respond(embed=embed)
 
-    async def _store_and_send_quote(
+    @quote.command(
+        name="external",
+        description="Erstellt ein eigenes Zitat mit Inhalt und Person.",
+        guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
+    )
+    @discord.option(
+        "inhalt",
+        description="Der Inhalt des Zitats.",
+        type=discord.SlashCommandOptionType.string,
+        required=True
+    )
+    @discord.option(
+        "person",
+        description="Die Person, der das Zitat zugeschrieben wird.",
+        type=discord.SlashCommandOptionType.string,
+        required=True
+    )
+    async def custom_quote(
         self,
         ctx: ApplicationContext,
-        messages: list[discord.Message],
-        comment: str | None,
+        content: str,
+        person: str
     ):
-        await quoteUtils.store_quote_in_db(ctx, messages, comment)
+        """
+        Creates a custom quote without linking to a Discord message and posts
+        it to the quote channel.
 
-        await quoteUtils.send_embed(ctx, messages, comment)
+        This command allows users to specify the content and the person to
+        whom the quote is attributed. The quote is posted as an embed in the
+        designated quote channel. If the quote channel is not found, an error
+        message is sent to the user.
 
+        Parameters:
+            ctx (ApplicationContext): The context of the command invocation.
+            content (str): The content of the quote.
+            person (str): The person to whom the quote is attributed.
+        """
+        self.logger.info(
+            "Custom quote created by %s: '%s' - %s",
+            ctx.author,
+            content,
+            person
+        )
+
+        # Send embed to quote channel
+        quote_channel: discord.TextChannel | None = ctx.guild.get_channel(
+            Constants.CHANNEL_IDS.QUOTE_CHANNEL
+        )
+
+        if not quote_channel:
+            await ctx.respond("❌ Quote-Channel nicht gefunden.", ephemeral=True)
+            return
+
+        partial_message = PartialMessage(
+            content=content,
+            author_name=person,
+            jump_url=None
+        )
+
+        embed = quoteUtils.build_quote_embed(
+            [partial_message],
+            ctx.author.display_name
+        )
+        await quote_channel.send(embed=embed)
         await ctx.respond(
-            f"✅ {len(messages)} Quote{'s' if len(messages) > 1 else ''} gepostet!",
+            "✅ Zitat wurde im Quote-Channel gepostet!",
             ephemeral=True
         )
-        
+
+    # ----- Message Commands -----
+
     @discord.message_command(
-        name="Quote",
+        name="Nachricht zu Quote hinzufügen",
+        guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
+    )
+    async def add_message_to_quote(
+        self,
+        ctx: ApplicationContext,
+        message: discord.Message
+    ):
+        """
+        Adds a single message to your personal quoting context.
+        """
+        user_id = ctx.author.id
+
+        quotes = self.quote_cache.setdefault(user_id, [])
+
+        quotes.append(message)
+
+        await ctx.respond(
+            f"📌 Nachricht von **{message.author.display_name}** gespeichert!\n"
+            f"({len(self.quote_cache[user_id])} gesammelt - verfällt in {self.quote_cache.ttl // 60} Minuten)\n\n"
+            f"**Tipp:** nutze den Befehl `/quote post`, um deine gesammelten Nachrichten zu zitieren.",
+            ephemeral=True
+        )
+
+    @discord.message_command(
+        name="Nachricht direkt zitieren",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
     )
     async def quote_single_message(
@@ -199,6 +258,27 @@ class QuoteService(commands.Cog):
 
         await ctx.respond(
             f"📌 Nachricht von **{message.author.display_name}** im Quotes-Channel zitiert!",
+            ephemeral=True
+        )
+
+    # ---- Internal Methods -----
+
+    async def _store_and_send_quote(
+        self,
+        ctx: ApplicationContext,
+        messages: list[discord.Message],
+        comment: str | None,
+    ):
+        await quoteUtils.store_quote_in_db(ctx, messages, comment)
+
+        partial_messages = [
+            PartialMessage.from_discord_message(msg) for msg in messages
+        ]
+
+        await quoteUtils.send_embed(ctx, partial_messages, comment)
+
+        await ctx.respond(
+            f"✅ {len(messages)} Quote{'s' if len(messages) > 1 else ''} gepostet!",
             ephemeral=True
         )
 

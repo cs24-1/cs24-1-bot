@@ -3,15 +3,15 @@ import random
 import discord
 from discord import ApplicationContext, Color, Embed
 from discord.utils import utcnow
-from thefuzz import fuzz  # type: ignore
-
 from models.database.quoteData import Quote, QuoteMessage
 from models.database.userData import User
+from models.quotes.quoteModels import PartialMessage
+from thefuzz import fuzz  # type: ignore
 from utils.constants import Constants
 
 
 def build_quote_embed(
-    messages: list[discord.Message],
+    messages: list[PartialMessage],
     author_name: str | None = None
 ) -> Embed:
     """
@@ -31,18 +31,44 @@ def build_quote_embed(
     Returns:
         discord.Embed: The constructed embed.
     """
-    embed = Embed(color=Color.blurple())
+    embed = Embed(title="💬 Neues Zitat", color=Color.blurple())
+
     for msg in messages:
-        content = msg.content[:1024] if msg.content else "[- kein Text -]"
+        # Add content as a field value with quotes, then link
         embed.add_field(
-            name=f"~ {msg.author.display_name}",
-            value=f'"{content}"\n[Originalnachricht]({msg.jump_url})',
+            name="",
+            value=_build_quote_embed_message(msg),
             inline=False
         )
+
+        # Add author as next field
+        embed.add_field(
+            name=f"~ {msg.author_name}",
+            value=f"{_build_quote_embed_link(msg)}",
+            inline=False
+        )
+
     if author_name:
         embed.set_footer(text=f"Eingereicht von {author_name}")
     embed.timestamp = utcnow()
     return embed
+
+
+def _build_quote_embed_message(message: PartialMessage) -> str:
+    content = message.content if message.content else "[- kein Text -]"
+
+    link_text = _build_quote_embed_link(message)
+    max_content_length = 1024 - len(link_text) - 4  # quotes + newline + link
+    if len(content) > max_content_length:
+        content = content[:max_content_length - 3] + "..."
+
+    return f"\u201C{content}\u201D\n"
+
+
+def _build_quote_embed_link(message: PartialMessage) -> str:
+    if message.jump_url:
+        return f"[Originalnachricht]({message.jump_url})"
+    return ""
 
 
 async def store_quote_in_db(
@@ -59,11 +85,10 @@ async def store_quote_in_db(
         comment (str | None): An optional comment to add.
     """
     reporter, _ = await User.get_or_create(
-        id=str(ctx.author.id), defaults={
+        id=int(ctx.author.id), defaults={
             "global_name": ctx.author.name, "display_name": ctx.author.display_name})
 
-    date_reported = msg.created_at if (msg :=
-                                       ctx.message) else discord.utils.utcnow()
+    date_reported = msg.created_at if (msg := ctx.message) else utcnow()
 
     quote = await Quote.create(
         reporter=reporter,
@@ -73,7 +98,7 @@ async def store_quote_in_db(
 
     for message in messages:
         author, _ = await User.get_or_create(
-            id=str(message.author.id), defaults={
+            id=int(message.author.id), defaults={
                 "global_name": message.author.name, "display_name": message.author.display_name})
         await QuoteMessage.create(
             content=message.content,
@@ -85,7 +110,7 @@ async def store_quote_in_db(
 
 async def send_embed(
     ctx: ApplicationContext,
-    messages: list[discord.Message],
+    messages: list[PartialMessage],
     comment: str | None
 ):
     """
@@ -93,7 +118,7 @@ async def send_embed(
 
     Args:
         ctx (ApplicationContext): The context of the app.
-        messages (list[discord.Message]): The messages to quote.
+        messages (list[PartialMessage]): The messages to quote.
         comment (str | None): An optional comment to add.
     """
     quote_channel: discord.TextChannel | None = ctx.guild.get_channel(
