@@ -3,15 +3,15 @@ import random
 import discord
 from discord import ApplicationContext, Color, Embed
 from discord.utils import utcnow
-from thefuzz import fuzz  # type: ignore
-
 from models.database.quoteData import Quote, QuoteMessage
 from models.database.userData import User
+from models.quotes.quoteModels import PartialMessage
+from thefuzz import fuzz  # type: ignore
 from utils.constants import Constants
 
 
 def build_quote_embed(
-    messages: list[discord.Message],
+    messages: list[PartialMessage],
     author_name: str | None = None
 ) -> Embed:
     """
@@ -34,26 +34,17 @@ def build_quote_embed(
     embed = Embed(title="💬 Neues Zitat", color=Color.blurple())
 
     for msg in messages:
-        content = msg.content if msg.content else "[- kein Text -]"
-        # Field value has 1024 char limit
-        link_text = f"[Originalnachricht]({msg.jump_url})"
-        max_content_length = 1024 - len(
-            link_text
-        ) - 4  # quotes + newline + link
-        if len(content) > max_content_length:
-            content = content[:max_content_length - 3] + "..."
-
         # Add content as a field value with quotes, then link
         embed.add_field(
-            name="\u200b",  # Zero-width space for empty name
-            value=f"\u201C{content}\u201D\n",
+            name="",  # Zero-width space for empty name
+            value=_build_quote_embed_message(msg),
             inline=False
         )
 
         # Add author as next field
         embed.add_field(
-            name=f"~ {msg.author.display_name}",
-            value=f"\u200b{link_text}",  # Zero-width space for empty value
+            name=f"~ {msg.author_name}",
+            value=f"{_build_quote_embed_link(msg)}",
             inline=False
         )
 
@@ -61,6 +52,23 @@ def build_quote_embed(
         embed.set_footer(text=f"Eingereicht von {author_name}")
     embed.timestamp = utcnow()
     return embed
+
+
+def _build_quote_embed_message(message: PartialMessage) -> str:
+    content = message.content if message.content else "[- kein Text -]"
+
+    link_text = _build_quote_embed_link(message)
+    max_content_length = 1024 - len(link_text) - 4  # quotes + newline + link
+    if len(content) > max_content_length:
+        content = content[:max_content_length - 3] + "..."
+
+    return f"\u201C{content}\u201D\n"
+
+
+def _build_quote_embed_link(message: PartialMessage) -> str:
+    if message.jump_url:
+        return f"[Originalnachricht]({message.jump_url})"
+    return ""
 
 
 async def store_quote_in_db(
@@ -102,7 +110,7 @@ async def store_quote_in_db(
 
 async def send_embed(
     ctx: ApplicationContext,
-    messages: list[discord.Message],
+    messages: list[PartialMessage],
     comment: str | None
 ):
     """
@@ -127,52 +135,6 @@ async def send_embed(
         await quote_channel.send(content=f"💬 {comment}", embed=embed)
     else:
         await quote_channel.send(embed=embed)
-
-
-async def build_custom_quote_embed(
-    content: str,
-    person: str,
-    created_by: discord.abc.User
-) -> discord.Embed:
-    """
-    Creates a Discord embed for a custom quote, visually consistent with message-based quotes.
-
-    Args:
-        content (str): The text content of the quote.
-        person (str): The name of the person being quoted.
-        created_by (discord.abc.User): The user who created this custom quote.
-
-    Returns:
-        discord.Embed: The constructed embed for the custom quote.
-    """
-    embed = discord.Embed(title="💬 Neues Zitat", color=discord.Color.blurple())
-
-    # Truncate content to fit within field value limit (1024 chars)
-    # Account for the quotes around content
-    max_content_length = 1024 - 2  # 2 for the quotes
-    if len(content) > max_content_length:
-        truncated_content = content[:max_content_length - 3] + "..."
-    else:
-        truncated_content = content
-
-    # Add content as a field value with quotes
-    embed.add_field(
-        name="\u200b",  # Zero-width space for empty name
-        value=f"\u201C{truncated_content}\u201D",
-        inline=False
-    )
-
-    # Add the person being quoted as next field
-    embed.add_field(
-        name=f"~ {person}",
-        value="\u200b",  # Zero-width space for empty value
-        inline=False
-    )
-
-    # Footer shows who submitted it
-    embed.set_footer(text=f"Eingereicht von {created_by.display_name}")
-    embed.timestamp = utcnow()
-    return embed
 
 
 async def get_random_quote() -> Quote:

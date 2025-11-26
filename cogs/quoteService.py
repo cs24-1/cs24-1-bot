@@ -4,9 +4,10 @@ import discord
 from cachetools import TTLCache
 from discord import ApplicationContext
 from discord.ext import commands
+from models.quotes.quoteModels import PartialMessage
+from utils.constants import Constants
 
 from utils import quoteUtils
-from utils.constants import Constants
 
 
 class QuoteService(commands.Cog):
@@ -210,10 +211,15 @@ class QuoteService(commands.Cog):
             await ctx.respond("❌ Quote-Channel nicht gefunden.", ephemeral=True)
             return
 
-        embed = await quoteUtils.build_custom_quote_embed(
-            content,
-            person,
-            ctx.user
+        partial_message = PartialMessage(
+            content=content,
+            author_name=person,
+            jump_url=None
+        )
+
+        embed = quoteUtils.build_quote_embed(
+            [partial_message],
+            ctx.author.display_name
         )
         await quote_channel.send(embed=embed)
         await ctx.respond(
@@ -229,7 +235,11 @@ class QuoteService(commands.Cog):
     ):
         await quoteUtils.store_quote_in_db(ctx, messages, comment)
 
-        await quoteUtils.send_embed(ctx, messages, comment)
+        partialMessages = [
+            PartialMessage.from_discord_message(msg) for msg in messages
+        ]
+
+        await quoteUtils.send_embed(ctx, partialMessages, comment)
 
         await ctx.respond(
             f"✅ {len(messages)} Quote{'s' if len(messages) > 1 else ''} gepostet!",
