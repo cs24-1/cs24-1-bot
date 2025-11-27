@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from tortoise import Model, fields
+from tortoise import fields
 
 from models.database.baseModel import BaseModel
 from utils.constants import Constants
@@ -19,6 +19,10 @@ class User(BaseModel):
         max_length=255,
         description="The display name of the user on the Server"
     )  # Maybe outdated because it is not updated onevery message
+    is_external = fields.BooleanField(
+        default=False,
+        description="Whether this user is an external (non-Discord) user"
+    )
     ai_metadata: fields.OneToOneRelation["AIMetadata"]
 
     async def remaining_ai_requests(self):

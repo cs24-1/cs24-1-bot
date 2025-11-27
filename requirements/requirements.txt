@@ -16,3 +16,4 @@ httpx==0.27.2
 cachetools~=6.2.1
 types-cachetools~=6.2.0.20251022
 holidays~=0.84
+snowflake-id~=1.0.2

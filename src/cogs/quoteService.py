@@ -163,11 +163,18 @@ class QuoteService(commands.Cog):
         type=discord.SlashCommandOptionType.string,
         required=True
     )
+    @discord.option(
+        "kommentar",
+        description="Ein optionaler Kommentar zum Zitat.",
+        type=discord.SlashCommandOptionType.string,
+        required=False
+    )
     async def custom_quote(
         self,
         ctx: ApplicationContext,
         content: str,
-        person: str
+        person: str,
+        comment: str | None = None
     ):
         """
         Creates a custom quote without linking to a Discord message and posts
@@ -175,19 +182,29 @@ class QuoteService(commands.Cog):
 
         This command allows users to specify the content and the person to
         whom the quote is attributed. The quote is posted as an embed in the
-        designated quote channel. If the quote channel is not found, an error
-        message is sent to the user.
+        designated quote channel and saved to the database with a negative
+        snowflake ID for the external author. If the quote channel is not
+        found, an error message is sent to the user.
 
         Parameters:
             ctx (ApplicationContext): The context of the command invocation.
             content (str): The content of the quote.
             person (str): The person to whom the quote is attributed.
+            comment (str | None): An optional comment for the quote.
         """
         self.logger.info(
             "Custom quote created by %s: '%s' - %s",
             ctx.author,
             content,
             person
+        )
+
+        # Store in database
+        await quoteUtils.store_external_quote_in_db(
+            ctx,
+            content,
+            person,
+            comment
         )
 
         # Send embed to quote channel
@@ -209,7 +226,12 @@ class QuoteService(commands.Cog):
             [partial_message],
             ctx.author.display_name
         )
-        await quote_channel.send(embed=embed)
+
+        if comment:
+            await quote_channel.send(content=f"💬 {comment}", embed=embed)
+        else:
+            await quote_channel.send(embed=embed)
+
         await ctx.respond(
             "✅ Zitat wurde im Quote-Channel gepostet!",
             ephemeral=True
