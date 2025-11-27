@@ -10,21 +10,19 @@ from utils.externalUserUtils import is_external_user
 class TestIsExternalUser:
     """Test cases for is_external_user function."""
 
-    @pytest.mark.asyncio
-    async def test_returns_true_for_external_user(self):
+    def test_returns_true_for_external_user(self):
         """Test that users with is_external=True are identified as external."""
         mock_user = MagicMock()
         mock_user.is_external = True
 
-        assert await is_external_user(mock_user) is True
+        assert is_external_user(mock_user) is True
 
-    @pytest.mark.asyncio
-    async def test_returns_false_for_internal_user(self):
+    def test_returns_false_for_internal_user(self):
         """Test that users with is_external=False are not external."""
         mock_user = MagicMock()
         mock_user.is_external = False
 
-        assert await is_external_user(mock_user) is False
+        assert is_external_user(mock_user) is False
 
 
 class TestGetOrCreateExternalUser:

@@ -67,7 +67,7 @@ The project uses YAPF with these settings (from `pyproject.toml`).
 
 ### Imports
 
-Organize imports in three groups:
+Organize imports losely in three groups (primarily follow isort's standard):
 
 1. Standard library imports
 2. Third-party imports
@@ -88,7 +88,7 @@ from models.database.baseModel import BaseModel
 from utils.constants import Constants
 ```
 
-Use `isort` to automatically organize imports correctly.
+**Use `isort` to automatically organize imports correctly.** The order produced by isort is the correct standard for this project.
 
 ### Variable Declarations with Type Annotations
 

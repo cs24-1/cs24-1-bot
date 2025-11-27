@@ -52,7 +52,7 @@ async def get_or_create_external_user(author_name: str) -> User:
     return user
 
 
-async def is_external_user(user: User) -> bool:
+def is_external_user(user: User) -> bool:
     """
     Check if a user is an external (non-Discord) user.
 
