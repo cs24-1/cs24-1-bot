@@ -172,9 +172,9 @@ class QuoteService(commands.Cog):
     async def custom_quote(
         self,
         ctx: ApplicationContext,
-        content: str,
+        inhalt: str,
         person: str,
-        comment: str | None = None
+        kommentar: str | None = None
     ):
         """
         Creates a custom quote without linking to a Discord message and posts
@@ -188,23 +188,23 @@ class QuoteService(commands.Cog):
 
         Parameters:
             ctx (ApplicationContext): The context of the command invocation.
-            content (str): The content of the quote.
+            inhalt (str): The content of the quote.
             person (str): The person to whom the quote is attributed.
-            comment (str | None): An optional comment for the quote.
+            kommentar (str | None): An optional comment for the quote.
         """
         self.logger.info(
             "Custom quote created by %s: '%s' - %s",
             ctx.author,
-            content,
+            inhalt,
             person
         )
 
         # Store in database
         await quoteUtils.store_external_quote_in_db(
             ctx,
-            content,
+            inhalt,
             person,
-            comment
+            kommentar
         )
 
         # Send embed to quote channel
@@ -217,7 +217,7 @@ class QuoteService(commands.Cog):
             return
 
         partial_message = PartialMessage(
-            content=content,
+            content=inhalt,
             author_name=person,
             jump_url=None
         )
@@ -227,8 +227,8 @@ class QuoteService(commands.Cog):
             ctx.author.display_name
         )
 
-        if comment:
-            await quote_channel.send(content=f"💬 {comment}", embed=embed)
+        if kommentar:
+            await quote_channel.send(content=f"💬 {kommentar}", embed=embed)
         else:
             await quote_channel.send(embed=embed)
 

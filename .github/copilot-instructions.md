@@ -21,6 +21,7 @@ For detailed information, refer to the following documentation files:
 - Exception: The README.md is in German as this is a German seminar group project
 - User-facing messages and bot commands use German language
 - Technical code elements (variable names, function names) follow English conventions
+- **Discord commands**: User-facing parts (command `description`, option descriptions, response messages) in **German**, internal documentation (function docstrings, code comments) in **English**
 
 ### Project Overview
 
