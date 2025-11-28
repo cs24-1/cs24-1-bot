@@ -67,7 +67,7 @@ The project uses YAPF with these settings (from `pyproject.toml`).
 
 ### Imports
 
-Organize imports losely in three groups (primarily follow isort's standard):
+Organize imports loosely in three groups (primarily follow isort's standard):
 
 1. Standard library imports
 2. Third-party imports
