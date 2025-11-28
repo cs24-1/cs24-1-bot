@@ -67,7 +67,7 @@ The project uses YAPF with these settings (from `pyproject.toml`).
 
 ### Imports
 
-Organize imports in three groups:
+Organize imports loosely in three groups (primarily follow isort's standard):
 
 1. Standard library imports
 2. Third-party imports
@@ -88,7 +88,7 @@ from models.database.baseModel import BaseModel
 from utils.constants import Constants
 ```
 
-Use `isort` to automatically organize imports correctly.
+**Use `isort` to automatically organize imports correctly.** The order produced by isort is the correct standard for this project.
 
 ### Variable Declarations with Type Annotations
 
@@ -273,11 +273,12 @@ Use slash commands with guild restriction:
 ```python
 @commands.slash_command(
     name="command_name",
-    description="German description of what the command does",
+    description="Deutsche Befehlsbeschreibung",
     guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
 )
 @discord.option(
     "parameter_name",
+    description="Deutsche Beschreibung dieses Parameters",
     type=discord.SlashCommandOptionType.string,
     required=True
 )
@@ -286,9 +287,9 @@ async def command_name(
     ctx: ApplicationContext,
     parameter_name: str
 ) -> None:
-    """Implementation of the command."""
-    # Command logic here
-    await ctx.respond("Response message")
+    """English docstring describing the implementation."""
+    # English comments in code
+    await ctx.respond("Deutsche Antwortnachricht")
 ```
 
 ### Event Listeners
@@ -456,6 +457,7 @@ class MyService(commands.Cog):
 - **Code**: All code (variable names, function names, comments) in **English**
 - **Documentation**: All documentation files in **English**
 - **User-facing messages**: Discord bot commands and responses in **German**
+- **Discord commands**: User-facing parts (command `description`, option descriptions, response messages) in **German**, internal documentation (function docstrings, code comments) in **English**
 - **Commit messages**: English or German
 - **Exception**: README.md is in German (German seminar group project)
 

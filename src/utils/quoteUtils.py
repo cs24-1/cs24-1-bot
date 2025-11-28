@@ -3,11 +3,13 @@ import random
 import discord
 from discord import ApplicationContext, Color, Embed
 from discord.utils import utcnow
+from thefuzz import fuzz  # type: ignore
+
 from models.database.quoteData import Quote, QuoteMessage
 from models.database.userData import User
 from models.quotes.quoteModels import PartialMessage
-from thefuzz import fuzz  # type: ignore
 from utils.constants import Constants
+from utils.externalUserUtils import get_or_create_external_user
 
 
 def build_quote_embed(
@@ -108,6 +110,52 @@ async def store_quote_in_db(
         )
 
 
+async def store_external_quote_in_db(
+    ctx: ApplicationContext,
+    content: str,
+    author_name: str,
+    comment: str | None = None
+):
+    """
+    Stores an external quote (not from Discord messages) in the database.
+
+    Creates or retrieves external user records with negative snowflake IDs
+    for the author.
+
+    Args:
+        ctx (ApplicationContext): The app context (for the reporter).
+        content (str): The content of the quote.
+        author_name (str): The name of the person being quoted.
+        comment (str | None): An optional comment to add.
+    """
+    # Get or create the reporter (real Discord user)
+    reporter, _ = await User.get_or_create(
+        id=int(ctx.author.id),
+        defaults={
+            "global_name": ctx.author.name,
+            "display_name": ctx.author.display_name
+        }
+    )
+
+    # Get or create the external author (negative ID)
+    author = await get_or_create_external_user(author_name)
+
+    date_reported = msg.created_at if (msg := ctx.message) else utcnow()
+
+    quote = await Quote.create(
+        reporter=reporter,
+        date_reported=date_reported,
+        comment=comment
+    )
+
+    await QuoteMessage.create(
+        content=content,
+        author=author,
+        date=date_reported,
+        quote=quote
+    )
+
+
 async def send_embed(
     ctx: ApplicationContext,
     messages: list[PartialMessage],
@@ -197,7 +245,7 @@ async def search_quotes(
             score,
             quote,
         ) for score,
-        quote in ranked_quotes if score > 50
+        quote in ranked_quotes if score > 55
     ]
 
     if len(filtered_quotes) == 0:
@@ -216,26 +264,45 @@ def rank_quote(
 
     If both search_term and user_name are provided the result is a weighted
     average of the two sub-scores. If only one is provided that sub-score is
-    returned. Handles missing fields and limits input length for performance.
+    returned. Calculates scores for each message/name individually and uses
+    the highest score.
     """
-    concatenated_text = quote.comment if quote.comment else ""
-    for msg in quote.messages:
-        concatenated_text += "\n" + msg.content
-    concatenated_text = concatenated_text.strip()[:2000]
-
-    concatenated_users = quote.reporter.display_name
-    for msg in quote.messages:
-        concatenated_users += "," + msg.author.display_name
-    concatenated_users = concatenated_users.strip()[:1000]
-
     text_score: int = 0
     user_score: int = 0
 
     if search_term:
-        text_score = fuzz.token_set_ratio(search_term, concatenated_text)
+        # Calculate score for comment if present
+        if quote.comment:
+            text_score = max(
+                text_score,
+                fuzz.token_set_ratio(search_term,
+                                     quote.comment[:2000])
+            )
+
+        # Calculate score for each message content
+        for msg in quote.messages:
+            if msg.content:
+                text_score = max(
+                    text_score,
+                    fuzz.token_set_ratio(search_term,
+                                         msg.content[:2000])
+                )
 
     if user_name:
-        user_score = fuzz.token_set_ratio(user_name, concatenated_users)
+        # Calculate score for reporter
+        user_score = max(
+            user_score,
+            fuzz.token_set_ratio(user_name,
+                                 quote.reporter.display_name)
+        )
+
+        # Calculate score for each message author
+        for msg in quote.messages:
+            user_score = max(
+                user_score,
+                fuzz.token_set_ratio(user_name,
+                                     msg.author.display_name)
+            )
 
     if text_score == 0:
         return user_score

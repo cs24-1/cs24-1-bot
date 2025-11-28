@@ -7,7 +7,9 @@ applyTo: "**/cogs/**/*.py"
 When creating or modifying Discord Cogs:
 
 1. **Guild restriction** - All slash commands must include `guild_ids=[Constants.SERVER_IDS.CUR_SERVER]`
-2. **German descriptions** - Command descriptions and user-facing messages in German
+2. **Language requirements**:
+   - **German**: Command `description`, option descriptions, response messages (user-facing)
+   - **English**: Function docstrings, code comments, log messages (internal)
 3. **Logging** - Use `self.logger` for all logging, include context in messages
 4. **Error handling** - Catch exceptions and provide user-friendly German error messages
 5. **Type hints** - All methods must have complete type hints including return types
