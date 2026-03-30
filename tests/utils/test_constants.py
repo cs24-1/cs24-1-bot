@@ -111,8 +111,34 @@ class TestConstants:
         assert abs(total - 1.0) < 0.01
 
     def test_system_timezone_exists(self):
-        """Test that system timezone is set."""
+        """Test that system timezone is set and is DST-aware."""
+        from zoneinfo import ZoneInfo
+
         from utils.constants import Constants
 
         assert hasattr(Constants, "SYSTIMEZONE")
         assert Constants.SYSTIMEZONE is not None
+        assert isinstance(Constants.SYSTIMEZONE, ZoneInfo)
+
+    def test_system_timezone_dst_aware(self):
+        """Test that SYSTIMEZONE handles DST transitions correctly.
+
+        Europe/Berlin is UTC+1 in winter (CET) and UTC+2 in summer (CEST).
+        A fixed-offset timezone would fail this check.
+        """
+        from datetime import datetime, timezone
+
+        from utils.constants import Constants
+
+        # Jan 15 is always CET (UTC+1)
+        winter_ts = datetime(2026, 1, 15, 12, 0, 0, tzinfo=timezone.utc)
+        # Jul 15 is always CEST (UTC+2)
+        summer_ts = datetime(2026, 7, 15, 12, 0, 0, tzinfo=timezone.utc)
+
+        winter_local = winter_ts.astimezone(Constants.SYSTIMEZONE)
+        summer_local = summer_ts.astimezone(Constants.SYSTIMEZONE)
+
+        # UTC+1 in winter -> hour 13
+        assert winter_local.hour == 13
+        # UTC+2 in summer -> hour 14
+        assert summer_local.hour == 14
