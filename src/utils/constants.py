@@ -1,5 +1,5 @@
 import os
-from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 
@@ -114,4 +114,4 @@ class Constants:
     MENSA = Mensa
     QUOTE_WEIGHTS = QuoteWeights
     # --- ADDITIONAL CONSTANTS ---
-    SYSTIMEZONE = datetime.now().astimezone().tzinfo
+    SYSTIMEZONE = ZoneInfo("Europe/Berlin")
