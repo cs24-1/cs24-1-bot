@@ -36,7 +36,7 @@ class AIService(commands.Cog):
         self.logger.info("Reset AI usage for all users")
 
     @commands.slash_command(
-        name="translate",
+        name="translate_code",
         description="Übersetze den gegebenen Code in die angegebene Sprache.",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
     )
