@@ -9,12 +9,19 @@ LOGGER = logging.getLogger(__name__)
 
 @dataclass
 class TranslationResult:
-    "translation result data class"
+    """
+    Store the result of a translation operation.
 
+    Attributes:
+        original_text: The original input text before translation.
+        translated_text: The translated output text.
+        src_lang: The detected or provided source language code.
+        targ_lang: The normalized target language code.
+    """
     original_text: str
     translated_text: str
     src_lang: str
-    targ_lang: str
+    target_lang: str
 
 
 def get_supported_languages() -> list[tuple[str, str]]:
@@ -68,7 +75,27 @@ async def translate_text(
     source_lang: str | None = None
 ) -> TranslationResult:
     """
-    Translate text using googletrans.
+        Translate text using googletrans.  
+
+    Args:  
+        text: The text to translate. Must not be empty or whitespace only.  
+        target_lang: The target language as a language code (for example  
+            ``"de"``) or full language name (for example ``"german"``).  
+        source_lang: The source language as a language code or full language  
+            name. If ``None`` or ``"auto"``, the source language is detected  
+            automatically.  
+
+    Returns:  
+        TranslationResult: A result object containing the original text, the  
+        translated text, the detected source language, and the normalized  
+        target language code.  
+
+    Raises:  
+        ValueError: If ``text`` is empty or contains only whitespace.  
+        ValueError: If ``target_lang`` is not a supported language code or  
+            language name.  
+        ValueError: If ``source_lang`` is provided and is neither ``"auto"``  
+            nor a supported language code or language name.  
     """
 
     if not text.strip():
@@ -96,5 +123,5 @@ async def translate_text(
         original_text=text,
         translated_text=translated.text,
         src_lang=detected_src,
-        targ_lang=target_code
+        target_lang=target_code
     )

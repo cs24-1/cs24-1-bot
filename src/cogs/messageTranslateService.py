@@ -4,10 +4,10 @@ import discord
 from discord.ext import commands
 
 from utils.constants import Constants
-from utils.translateUitils import (
+from utils.translateUtils import (
     TranslationResult,
     get_supported_languages,
-    translate_text
+    translate_text,
 )
 
 
@@ -138,13 +138,14 @@ class MessageTranslateService(commands.Cog):
         Create a consistent translation response embed.
         """
         embed = discord.Embed(title="🌍 Übersetzung", color=discord.Color.blue())
+
         embed.add_field(
             name=f"Original ({result.src_lang})",
             value=result.original_text[:1024] or "-",
             inline=False
         )
         embed.add_field(
-            name=f"Übersetzt ({result.targ_lang})",
+            name=f"Übersetzt ({result.target_lang})",
             value=result.translated_text[:1024] or "-",
             inline=False
         )
