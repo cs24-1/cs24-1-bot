@@ -28,6 +28,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Install runtime dependencies
+        shell: bash
+        run: |
+          python3 -m pip install --no-cache-dir -r requirements/requirements.txt
+          python3 -m pip install --no-cache-dir -r requirements/requirements-dev.txt
+
       - name: Run tests with coverage
         shell: bash
         run: |
