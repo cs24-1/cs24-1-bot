@@ -2,6 +2,7 @@ import logging
 from dataclasses import dataclass
 from typing import Any
 
+from discord import AutocompleteContext
 from googletrans import LANGUAGES, Translator
 
 LOGGER = logging.getLogger(__name__)
@@ -18,6 +19,7 @@ class TranslationResult:
         src_lang: The detected or provided source language code.
         targ_lang: The normalized target language code.
     """
+
     original_text: str
     translated_text: str
     src_lang: str
@@ -40,7 +42,7 @@ def normalize_language(language: str) -> str:
     """
     normalizes language input to a standard format
 
-    
+
     Accepts either code (de, en) or language name (german, english).
     Raises ValueError if unsupported.
     """
@@ -55,6 +57,14 @@ def normalize_language(language: str) -> str:
             return code
 
     raise ValueError(f"Sprache nicht unterstützt: {language}")
+
+
+def languages_autocomplete() -> list[str]:
+    """
+    Autocompletes available languages.
+    """
+
+    return [name for _code, name in get_supported_languages()]
 
 
 async def _translate_async(
@@ -75,27 +85,27 @@ async def translate_text(
     source_lang: str | None = None
 ) -> TranslationResult:
     """
-        Translate text using googletrans.  
+        Translate text using googletrans.
 
-    Args:  
-        text: The text to translate. Must not be empty or whitespace only.  
-        target_lang: The target language as a language code (for example  
-            ``"de"``) or full language name (for example ``"german"``).  
-        source_lang: The source language as a language code or full language  
-            name. If ``None`` or ``"auto"``, the source language is detected  
-            automatically.  
+    Args:
+        text: The text to translate. Must not be empty or whitespace only.
+        target_lang: The target language as a language code (for example
+            ``"de"``) or full language name (for example ``"german"``).
+        source_lang: The source language as a language code or full language
+            name. If ``None`` or ``"auto"``, the source language is detected
+            automatically.
 
-    Returns:  
-        TranslationResult: A result object containing the original text, the  
-        translated text, the detected source language, and the normalized  
-        target language code.  
+    Returns:
+        TranslationResult: A result object containing the original text, the
+        translated text, the detected source language, and the normalized
+        target language code.
 
-    Raises:  
-        ValueError: If ``text`` is empty or contains only whitespace.  
-        ValueError: If ``target_lang`` is not a supported language code or  
-            language name.  
-        ValueError: If ``source_lang`` is provided and is neither ``"auto"``  
-            nor a supported language code or language name.  
+    Raises:
+        ValueError: If ``text`` is empty or contains only whitespace.
+        ValueError: If ``target_lang`` is not a supported language code or
+            language name.
+        ValueError: If ``source_lang`` is provided and is neither ``"auto"``
+            nor a supported language code or language name.
     """
 
     if not text.strip():
@@ -116,12 +126,12 @@ async def translate_text(
         "Translated message from %s to %s (%d chars)",
         detected_src,
         target_code,
-        len(text)
+        len(text),
     )
 
     return TranslationResult(
         original_text=text,
         translated_text=translated.text,
         src_lang=detected_src,
-        target_lang=target_code
+        target_lang=target_code,
     )

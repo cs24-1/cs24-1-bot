@@ -2,11 +2,13 @@ import logging
 
 import discord
 from discord.ext import commands
+from discord.utils import basic_autocomplete
 
 from utils.constants import Constants
 from utils.translateUtils import (
     TranslationResult,
     get_supported_languages,
+    languages_autocomplete,
     translate_text,
 )
 
@@ -36,13 +38,14 @@ class MessageTranslateService(commands.Cog):
         "text",
         description="Der zu übersetzende Text.",
         type=discord.SlashCommandOptionType.string,
-        required=True
+        required=True,
     )
     @discord.option(
         "target_language",
         description="Zielsprache (z.B. 'deutsch' oder 'de').",
         type=discord.SlashCommandOptionType.string,
-        required=True
+        autocomplete=basic_autocomplete(languages_autocomplete()),
+        required=True,
     )
     async def translate_command(
         self,
@@ -62,7 +65,7 @@ class MessageTranslateService(commands.Cog):
             self.logger.error("Translate command failed: %s", ex)
             await ctx.respond(
                 "❌ Übersetzung fehlgeschlagen. Versuche es später erneut.",
-                ephemeral=True
+                ephemeral=True,
             )
             return
 
@@ -71,31 +74,8 @@ class MessageTranslateService(commands.Cog):
             ephemeral=True
         )
 
-    @commands.slash_command(
-        name="translate_available_languages",
-        description="Zeigt alle unterstützten Übersetzungssprachen.",
-        guild_ids=[Constants.SERVER_IDS.CUR_SERVER],
-    )
-    async def translate_languages(
-        self,
-        ctx: discord.ApplicationContext
-    ) -> None:
-        """
-        Show all supported translation languages.
-        """
-        languages = get_supported_languages()
-        language_lines = [f"{code} - {name}" for code, name in languages]
-
-        embed = discord.Embed(
-            title="🌍 Unterstützte Sprachen",
-            description="\n".join(language_lines)[:4096],
-            color=discord.Color.blurple(),
-        )
-
-        await ctx.respond(embed=embed, ephemeral=True)
-
     @discord.message_command(
-        name="Übersetzen",
+        name="Übersetzen (de)",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER]
     )
     async def translate_message_command(
@@ -121,7 +101,7 @@ class MessageTranslateService(commands.Cog):
             self.logger.error("Message translation failed: %s", ex)
             await ctx.respond(
                 "❌ Übersetzung fehlgeschlagen. Versuche es später erneut.",
-                ephemeral=True
+                ephemeral=True,
             )
             return
 
@@ -142,12 +122,12 @@ class MessageTranslateService(commands.Cog):
         embed.add_field(
             name=f"Original ({result.src_lang})",
             value=result.original_text[:1024] or "-",
-            inline=False
+            inline=False,
         )
         embed.add_field(
             name=f"Übersetzt ({result.target_lang})",
             value=result.translated_text[:1024] or "-",
-            inline=False
+            inline=False,
         )
         return embed
 
