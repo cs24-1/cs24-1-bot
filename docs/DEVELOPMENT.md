@@ -24,6 +24,22 @@ These steps are more cumbersome and not recommended.
 6. Set up the database. Follow [these instructions](DATABASE.md#manual).
 7. Start the bot by running the `main.py` file with `python3 main.py`.
 
+### Extra tips for NixOS / uv
+
+If you are so unfortunate as to use this combination of tools, consider the following scripts:
+
+```shell
+uv pip install -r requirements/requirements.txt && 
+uv pip install -r requirements/requirements-dev.txt &&
+uv pip install -r requirements/requirements-torch.txt
+# ideally, this will become redundant once put into pyproject.toml #60
+```
+
+```shell
+export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt                          
+uv run src/main.py
+```
+
 ## Development Tools
 
 The project uses various tools to ensure code quality:
