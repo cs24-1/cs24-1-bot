@@ -18,6 +18,7 @@ Ein Discord-Bot für die Seminargruppe CS24-1 mit Features wie KI-basierter Code
 - 🎨 **Meme Service**: Automatische Meme-Sammlung und Bot-Banner-Rotation
 - 🍽️ **Mensa Service**: Tägliche Mensa-Speiseplan-Updates
 - 💬 **Quote Service**: Zitat-Sammlung und -Verwaltung
+- 🌍 **Translation Service**: Übersetzung von Nachrichten oder manueller Texteingabe
 
 ## Quick Start
 
@@ -53,9 +54,6 @@ Siehe [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) für detaillierte Anweisungen.
 ├── src/              # Quellcode
 │   ├── cogs/        # Discord Command-Module (Cogs)
 │   ├── models/      # Datenmodelle
-│   │   ├── ai/     # AI-bezogene Modelle
-│   │   ├── database/ # Datenbank-Modelle (Tortoise ORM)
-│   │   └── mensa/  # Mensa-bezogene Modelle
 │   ├── utils/       # Hilfsfunktionen
 │   ├── migrations/  # Datenbank-Migrationen (aerich)
 │   └── main.py      # Bot-Einstiegspunkt
