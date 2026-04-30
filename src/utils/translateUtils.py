@@ -17,7 +17,7 @@ class TranslationResult:
         original_text: The original input text before translation.
         translated_text: The translated output text.
         src_lang: The detected or provided source language code.
-        targ_lang: The normalized target language code.
+        target_lang: The normalized target language code.
     """
 
     original_text: str
