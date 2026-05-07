@@ -29,12 +29,14 @@ class TimetableService(commands.Cog):
     @commands.Cog.listener()
     async def on_ready(self):
         """
-        Warm cache and start background refresh when bot is ready.
+        Warm cache when bot is ready.
         """
 
         # warm cache - currently, it always fetches all days anyway
-        # if campus dual should offer a proper API some day (LOL) this magic number will allow users to have 30 days pre-cached
-        _ = timetableUtils.get_timetable(30)
+        # if campus dual should offer a proper API someday (LOL) this would actually have an effect
+        _ = asyncio.create_task(
+            asyncio.to_thread(timetableUtils.get_timetable, MAX_TIMETABLE_RANGE_DAYS)
+        )
 
         if not self.send_daily_timetable.is_running():
             self.send_daily_timetable.start()

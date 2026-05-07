@@ -11,7 +11,8 @@ from utils.constants import Constants
 
 _SESSION = CachedSession(
     backend="memory",
-    stale_while_revalidate=timedelta(hours=24),
+    expire_after=timedelta(hours=24),
+    stale_while_revalidate=True,
 )
 """Cache session for campus API"""
 
@@ -88,7 +89,9 @@ def _fetch_timetable_entries(force_refresh: bool = False) -> list[TimetableEntry
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", InsecureRequestWarning)
             response = _SESSION.get(
-                url, verify=False, timeout=None, force_refresh=force_refresh
+                url, verify=False, 
+                timeout=3 * 60, # I fear the day when 3 minutes will be too short
+                force_refresh=force_refresh
             )
         if response.status_code != 200:
             return (
