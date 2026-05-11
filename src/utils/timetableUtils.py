@@ -11,7 +11,8 @@ from utils.constants import Constants
 
 _SESSION = CachedSession(
     backend="memory",
-    expire_after=45 * 60,  # 45 minutes
+    expire_after=timedelta(hours=24),
+    stale_while_revalidate=True,
 )
 """Cache session for campus API"""
 
@@ -81,18 +82,15 @@ def _format_entries(grouped_days: dict[str, list[TimetableEntry]]) -> str:
     return output.strip()
 
 
-def _fetch_timetable_entries(
-    force_refresh: bool = False
-) -> list[TimetableEntry] | str:
+def _fetch_timetable_entries(force_refresh: bool = False) -> list[TimetableEntry] | str:
     """Fetch raw timetable JSON entries or return an error message."""
     url = _campus_url()
     try:
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", InsecureRequestWarning)
             response = _SESSION.get(
-                url,
-                verify=False,
-                timeout=15,
+                url, verify=False, 
+                timeout=3 * 60, # I fear the day when 3 minutes will be too short
                 force_refresh=force_refresh
             )
         if response.status_code != 200:
@@ -108,30 +106,28 @@ def _fetch_timetable_entries(
                 "❌ Leere Antwort vom Server. "
                 "Mögliche Ursache: ungültiger CAMPUS_USER oder CAMPUS_HASH."
             )
-    except RequestException as ex:
-        return f"❌ Fehler beim Abrufen des Stundenplans: {ex}"
     except JSONDecodeError:
         return "❌ Ungültige JSON-Antwort des Servers."
+    except RequestException as ex:
+        return f"❌ Fehler beim Abrufen des Stundenplans: {ex}"
 
     return entries
 
 
 def _filter_entries_for_window(
-    entries: list[TimetableEntry],
-    start_date: datetime,
-    period_end: datetime
+    entries: list[TimetableEntry], start_date: datetime, period_end: datetime
 ) -> list[TimetableEntry]:
     """Return entries whose start timestamp lies within [start_date, period_end)."""
     return [
-        entry for entry in entries if start_date <=
-        _local_datetime_from_utc_timestamp(entry["start"]) < period_end
+        entry
+        for entry in entries
+        if start_date <= _local_datetime_from_utc_timestamp(entry["start"]) < period_end
     ]
 
 
 def _group_entries_by_date(
-    entries: list[TimetableEntry]
-) -> dict[str,
-          list[TimetableEntry]]:
+    entries: list[TimetableEntry],
+) -> dict[str, list[TimetableEntry]]:
     """Group entries by localized date string."""
     grouped: dict[str, list[TimetableEntry]] = {}
     for entry in entries:
@@ -151,8 +147,7 @@ def _empty_message(days: int) -> str:
 
 def _header(days: int) -> str:
     scope = (
-        "heute"
-        if days == 0 else "morgen" if days == 1 else f"die nächsten {days} Tage"
+        "heute" if days == 0 else "morgen" if days == 1 else f"die nächsten {days} Tage"
     )
     return f"📅 **Stundenplan für {scope}**\n\n"
 
@@ -161,10 +156,9 @@ def days_autocomplete(ctx: AutocompleteContext) -> list[str]:
     """
     Autocompletes filtered days for the timetable argument.
     """
-    default_entries = ["today",
-                       "tomorrow"
-                       ] + [str(n) for n in range(1,
-                                                  MAX_TIMETABLE_RANGE_DAYS)]
+    default_entries = ["today", "tomorrow"] + [
+        str(n) for n in range(1, MAX_TIMETABLE_RANGE_DAYS)
+    ]
 
     return [entry for entry in default_entries if entry.startswith(ctx.value)]
 
