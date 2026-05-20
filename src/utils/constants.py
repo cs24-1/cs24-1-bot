@@ -1,4 +1,5 @@
 import os
+import re
 from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
@@ -103,6 +104,13 @@ class AI:
     MAX_TRANSLATE_REQUESTS_PER_DAY = 5
 
 
+class Chainly:
+    GAME_WORD_SUFFIX = "..."
+    GAME_WORD_REGEX = re.compile(r"^\S+\.{3}$")
+    GAME_END_REGEX = re.compile(r"^\S+[^\.]\.{1}$")
+    GAME_TIMEOUT_SECS = 30 * 60
+
+
 class Constants:
     SECRETS = Secrects
     CHANNEL_IDS = ChannelIds
@@ -113,5 +121,6 @@ class Constants:
     AI = AI
     MENSA = Mensa
     QUOTE_WEIGHTS = QuoteWeights
+    CHAINLY = Chainly
     # --- ADDITIONAL CONSTANTS ---
     SYSTIMEZONE = ZoneInfo("Europe/Berlin")

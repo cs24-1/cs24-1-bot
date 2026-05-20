@@ -1,140 +1,143 @@
-import logging
-from dataclasses import dataclass
-from typing import Any
+from __future__ import annotations
 
-from discord import AutocompleteContext
-from googletrans import LANGUAGES, Translator
+import asyncio
+import logging
+import re
+from dataclasses import dataclass, field
+
+import discord
+from discord import Member, User
+
+from utils.constants import Constants
 
 LOGGER = logging.getLogger(__name__)
 
+active_games: dict[int, ChainlyGame] = {}
+
 
 @dataclass
-class TranslationResult:
-    """
-    Store the result of the chainly operation.
-
-    Attributes:
-        original_text: The original input text before translation.
-        translated_text: The translated output text.
-        src_lang: The detected or provided source language code.
-        target_lang: The normalized target language code.
-
-        words: all the words given as input, linked to users and time they were added.
-        sentence: the full sentence of the operation.
-    """
-
-    original_text: str
-    translated_text: str
-    src_lang: str
-    target_lang: str
+class ChainlyGame:
+    topic: str
+    participants: set[Member] = field(default_factory=set)
+    words: list[str] = field(default_factory=list)
 
 
-def get_supported_languages() -> list[tuple[str, str]]:
-    """
-    Return all supported languages as sorted code/name pairs.
-    """
-    return sorted(
-        [(code,
-          name) for code,
-         name in LANGUAGES.items()],
-        key=lambda item: item[0]
+def save_game() -> None:
+    pass
+
+
+async def try_start_game(bot: discord.Bot, channel_id: int, topic: str) -> str:
+    """Try to start a new game and schedule its timeout."""
+
+    if _is_game_active(channel_id):
+        game = active_games[channel_id]
+        return (
+            f"Es läuft gerade noch ein Spiel mit dem Thema: {game.topic}. "
+            "Du kannst teilnehmen oder es abbrechen."
+        )
+    # REMOVEME
+    LOGGER.info(f"{channel_id} is not in {active_games.keys()}")
+
+    game = ChainlyGame(topic=topic)
+    active_games[channel_id] = game
+    asyncio.create_task(_run_game_loop(bot, channel_id, game))
+    asyncio.create_task(_end_game_after_timeout(bot, channel_id, game))
+
+    return (
+        f"Spiel mit dem Thema '{topic}' wurde gestartet! "
+        f"(Läuft ab in {Constants.CHAINLY.GAME_TIMEOUT_SECS // 60}m)"
     )
 
 
-def normalize_language(language: str) -> str:
-    """
-    normalizes language input to a standard format
+async def _run_game_loop(bot: discord.Bot, channel_id: int, game: ChainlyGame) -> None:
+    """Process chainly messages for an active game in the background."""
+
+    while _is_current_game(channel_id, game):
+        try:
+            message: discord.Message = await bot.wait_for(
+                "message",
+                check=lambda message: _is_game_message(message, channel_id),
+            )
+        except asyncio.CancelledError:
+            return
+
+        assert type(message.author) is Member
+
+        if not _is_current_game(channel_id, game):
+            return
+
+        if _is_game_end(message):
+            # TODO: finish game
+            game.words.append(message.content)
+            await _end_game_orderly(bot, channel_id, game)
+            return
+
+        if _is_game_word(message):
+            # TODO: modify game state
+            game.participants.add(message.author)
+            game.words.append(
+                message.content.rstrip(Constants.CHAINLY.GAME_WORD_SUFFIX)
+            )
 
 
-    Accepts either code (de, en) or language name (german, english).
-    Raises ValueError if unsupported.
-    """
-
-    cleaned = language.strip().lower()
-
-    if cleaned in LANGUAGES:
-        return cleaned
-
-    for code, name in LANGUAGES.items():
-        if name.lower() == cleaned:
-            return code
-
-    raise ValueError(f"Sprache nicht unterstützt: {language}")
+def _is_game_word(message: discord.Message) -> bool:
+    return bool(re.match(Constants.CHAINLY.GAME_WORD_REGEX, message.content))
 
 
-def languages_autocomplete() -> list[str]:
-    """
-    Autocompletes available languages.
-    """
-
-    return [name for _code, name in get_supported_languages()]
+def _is_game_end(message: discord.Message) -> bool:
+    return bool(re.match(Constants.CHAINLY.GAME_END_REGEX, message.content))
 
 
-async def _translate_async(
-    text: str,
-    target_code: str,
-    source_code: str
-) -> Any:
-    """
-    Async googletrans call extracted for wrapper/testing.
-    """
-    translator = Translator()
-    return await translator.translate(text, dest=target_code, src=source_code)
+def _is_game_message(message: discord.Message, channel_id: int) -> bool:
+    return message.channel.id == channel_id and not message.author.bot
 
 
-async def translate_text(
-    text: str,
-    target_lang: str,
-    source_lang: str | None = None
-) -> TranslationResult:
-    """
-        Translate text using googletrans.
+async def _end_game_orderly(bot: discord.Bot, channel_id: int, game: ChainlyGame):
+    """End an active game after terminating message."""
 
-    Args:
-        text: The text to translate. Must not be empty or whitespace only.
-        target_lang: The target language as a language code (for example
-            ``"de"``) or full language name (for example ``"german"``).
-        source_lang: The source language as a language code or full language
-            name. If ``None`` or ``"auto"``, the source language is detected
-            automatically.
+    current_game = active_games.get(channel_id)
+    if current_game is None:
+        return
 
-    Returns:
-        TranslationResult: A result object containing the original text, the
-        translated text, the detected source language, and the normalized
-        target language code.
+    if current_game is not game:
+        return
 
-    Raises:
-        ValueError: If ``text`` is empty or contains only whitespace.
-        ValueError: If ``target_lang`` is not a supported language code or
-            language name.
-        ValueError: If ``source_lang`` is provided and is neither ``"auto"``
-            nor a supported language code or language name.
-    """
+    channel = bot.get_channel(channel_id)
+    if channel is not None:
+        _ = await channel.send(
+            f"Spiel beendet!\n- Thema: {current_game.topic}\n- teilgenommen hat: {', '.join(p.mention for p in current_game.participants)}\n\n> {' '.join(current_game.words)}"
+        )
 
-    if not text.strip():
-        raise ValueError("Der zu übersetzende Text darf nicht leer sein.")
+    _ = active_games.pop(channel_id)
 
-    target_code = normalize_language(target_lang)
 
-    if source_lang is None or source_lang.strip().lower() == "auto":
-        source_code = "auto"
-    else:
-        source_code = normalize_language(source_lang)
+async def _end_game_after_timeout(
+    bot: discord.Bot, channel_id: int, game: ChainlyGame
+) -> None:
+    """End an active game after the configured timeout."""
 
-    translated = await _translate_async(text, target_code, source_code)
+    await asyncio.sleep(Constants.CHAINLY.GAME_TIMEOUT_SECS)
 
-    detected_src = getattr(translated, "src", None) or "unknown"
+    current_game = active_games.get(channel_id)
+    if current_game is None:
+        return
 
-    LOGGER.info(
-        "Translated message from %s to %s (%d chars)",
-        detected_src,
-        target_code,
-        len(text),
-    )
+    if current_game is not game:
+        return
 
-    return TranslationResult(
-        original_text=text,
-        translated_text=translated.text,
-        src_lang=detected_src,
-        target_lang=target_code,
-    )
+    channel = bot.get_channel(channel_id)
+    if channel is not None:
+        await channel.send(
+            f"Das Spiel zum Thema '{current_game.topic}' ist abgelaufen."
+        )
+
+    active_games.pop(channel_id)
+    LOGGER.info("Ended chainly game in channel %s due to timeout", channel_id)
+
+
+def _is_current_game(channel_id: int, game: ChainlyGame) -> bool:
+    return active_games.get(channel_id) is game
+
+
+def _is_game_active(channel_id: int) -> bool:
+    return channel_id in active_games
