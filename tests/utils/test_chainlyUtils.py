@@ -8,7 +8,7 @@ from utils import chainlyUtils
 
 @pytest.fixture(autouse=True)
 def reset_active_games() -> None:
-    """Automatically clear active game state before and after each test."""
+    """Autouse fixture: clear active game state in setup and teardown."""
     chainlyUtils.active_games.clear()
     yield
     chainlyUtils.active_games.clear()
@@ -59,7 +59,7 @@ class TestMessageValidation:
     @pytest.mark.parametrize(
         "content",
         ["hallo...", "hallo", "hallo.", "hallo!"],
-        ids=["word_suffix", "plain_word", "end_suffix", "punctuation"],
+        ids=["ellipsis_suffix", "plain_word", "single_dot", "punctuation"],
     )
     def test_is_game_message_accepts_human_single_word_in_channel(
         self,
