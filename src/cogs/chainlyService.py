@@ -3,7 +3,7 @@ import logging
 import discord
 from discord.ext import commands
 
-from utils.chainlyUtils import try_start_game
+from utils.chainlyUtils import search_game, try_start_game
 from utils.constants import Constants
 
 
@@ -44,6 +44,29 @@ class ChainlyService(commands.Cog):
         await ctx.respond(
             await try_start_game(self.bot, ctx.channel_id, topic),
             ephemeral=True,
+        )
+
+    @commands.slash_command(
+        name="chainly_search",
+        description="Suche nach beendeten Spielen.",
+        guild_ids=[Constants.SERVER_IDS.CUR_SERVER],
+    )
+    @discord.option(
+        "topic",
+        description="Thema des Spiels.",
+        type=discord.SlashCommandOptionType.string,
+        required=True,
+    )
+    async def chainly_search_command(
+        self, ctx: discord.ApplicationContext, topic: str
+    ) -> None:
+        """
+        Slash command to search finished chainly games.
+        """
+
+        await ctx.respond(
+            await search_game(topic),
+            ephemeral=False,
         )
 
 

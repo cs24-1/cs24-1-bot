@@ -7,11 +7,10 @@ from dataclasses import dataclass, field
 
 import discord
 from discord import Member
+from thefuzz import fuzz
 
 from models.database.chainlyModel import ChainlyGame as ChainlyGameModel
-from models.database.chainlyModel import (
-    ChainlyParticipation,
-)
+from models.database.chainlyModel import ChainlyParticipation
 from models.database.userData import User as DatabaseUser
 from utils.constants import Constants
 
@@ -120,11 +119,12 @@ async def _end_game_orderly(
 
     channel = bot.get_channel(channel_id)
     if channel is not None:
-        _ = await channel.send(
-            f"Spiel beendet!\n- Thema: {current_game.topic}\n- "
-            f"teilgenommen hat: {', '.join(p.mention for p in current_game.participants)}\n\n> "
-            f"{' '.join(current_game.words)}"
+        game_result = _format_game_result(
+            topic=current_game.topic,
+            result=" ".join(current_game.words),
+            participants=[p.mention for p in current_game.participants],
         )
+        _ = await channel.send(f"Spiel beendet!\n{game_result}")
 
     await save_game(current_game)
     _ = active_games.pop(channel_id, None)
@@ -151,6 +151,34 @@ async def save_game(game: ChainlySession) -> ChainlyGameModel:
     return completed_game
 
 
+async def search_game(topic: str) -> str:
+    """Search for a finished game and return game-result or error message."""
+
+    games: list[tuple[int, ChainlyGameModel]] = [
+        (fuzz.token_set_ratio(topic, game.topic), game)
+        for game in await ChainlyGameModel.all()
+    ]
+
+    filtered_games: list[tuple[int, ChainlyGameModel]]
+    filtered_games = [(ratio, game) for ratio, game in games if ratio > 50]
+
+    if len(filtered_games) == 0:
+        return f"Found no chainly games for topic '{topic}'"
+
+    # extract game object of max ratio
+    result_game = max(filtered_games, key=lambda g: g[0])[1]
+    await result_game.fetch_related("participants__user")
+    participants: list[DatabaseUser] = [
+        participation.user for participation in result_game.participants
+    ]
+
+    return _format_game_result(
+        result_game.topic,
+        result_game.result,
+        participants=[user.global_name for user in participants],
+    )
+
+
 async def _end_game_after_timeout(
     bot: discord.Bot,
     channel_id: int,
@@ -175,6 +203,13 @@ async def _end_game_after_timeout(
 
     active_games.pop(channel_id, None)
     LOGGER.info("Ended chainly game in channel %s due to timeout", channel_id)
+
+
+def _format_game_result(topic: str, result: str, participants: list[str]) -> str:
+    return f"""- Thema: {topic}
+- teilgenommen hat: {', '.join(participants)} 
+
+> {result}"""
 
 
 def _is_current_game(channel_id: int, game: ChainlySession) -> bool:
