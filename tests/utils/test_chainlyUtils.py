@@ -1,4 +1,4 @@
-"""Unit tests for chainly utility functions."""
+"""Unit tests for Chainly utility functions."""
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -8,7 +8,7 @@ from utils import chainlyUtils
 
 @pytest.fixture(autouse=True)
 def reset_active_games() -> None:
-    """Clear active game state before and after each test."""
+    """Automatically clear active game state before and after each test."""
     chainlyUtils.active_games.clear()
     yield
     chainlyUtils.active_games.clear()
@@ -22,7 +22,7 @@ class TestTryStartGame:
         self,
         mock_bot: MagicMock
     ) -> None:
-        """Test that a new game is created and background tasks are started."""
+        """Test response text and scheduling when a game starts."""
         with patch(
             "utils.chainlyUtils._run_game_loop",
             new_callable=AsyncMock
