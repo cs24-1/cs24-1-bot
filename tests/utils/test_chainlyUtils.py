@@ -1,4 +1,6 @@
 """Unit tests for Chainly utility functions."""
+
+from collections.abc import Generator
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -7,11 +9,20 @@ from utils import chainlyUtils
 
 
 @pytest.fixture(autouse=True)
-def reset_active_games() -> None:
+def reset_active_games() -> Generator[None, None, None]:
     """Autouse fixture: clear active game state in setup and teardown."""
     chainlyUtils.active_games.clear()
     yield
     chainlyUtils.active_games.clear()
+
+
+def _build_message(is_bot: bool, channel_id: int, content: str) -> MagicMock:
+    """Create a lightweight message mock for validation tests."""
+    message = MagicMock()
+    message.author.bot = is_bot
+    message.channel.id = channel_id
+    message.content = content
+    return message
 
 
 class TestTryStartGame:
@@ -66,10 +77,7 @@ class TestMessageValidation:
         content: str
     ) -> None:
         """Test acceptance for valid one-word user messages."""
-        message = MagicMock()
-        message.author.bot = False
-        message.channel.id = 55
-        message.content = content
+        message = _build_message(False, 55, content)
 
         assert chainlyUtils._is_game_message(message, 55) is True
 
@@ -89,10 +97,7 @@ class TestMessageValidation:
         content: str
     ) -> None:
         """Test rejection rules for invalid messages."""
-        message = MagicMock()
-        message.author.bot = is_bot
-        message.channel.id = channel_id
-        message.content = content
+        message = _build_message(is_bot, channel_id, content)
 
         assert chainlyUtils._is_game_message(message, 10) is False
 
@@ -144,7 +149,7 @@ class TestGameEnding:
 
         mock_save_game.assert_awaited_once_with(game)
         channel.send.assert_awaited_once()
-        sent_text = channel.send.call_args.args[0]
+        sent_text = channel.send.call_args[0][0]
         assert "Spiel beendet!" in sent_text
         assert "Thema" in sent_text
         assert "<@123456789>" in sent_text
@@ -167,7 +172,7 @@ class TestGameEnding:
             await chainlyUtils._end_game_after_timeout(mock_bot, 23, game)
 
         channel.send.assert_awaited_once()
-        sent_text = channel.send.call_args.args[0]
+        sent_text = channel.send.call_args[0][0]
         assert "abgelaufen" in sent_text
         assert "TimeoutThema" in sent_text
         assert 23 not in chainlyUtils.active_games
