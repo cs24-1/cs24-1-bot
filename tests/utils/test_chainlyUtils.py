@@ -16,7 +16,11 @@ def reset_active_games() -> Generator[None, None, None]:
     chainlyUtils.active_games.clear()
 
 
-def _build_message(is_bot: bool, channel_id: int, content: str) -> MagicMock:
+def build_mock_message(
+    is_bot: bool,
+    channel_id: int,
+    content: str
+) -> MagicMock:
     """Create a lightweight message mock for validation tests."""
     message = MagicMock()
     message.author.bot = is_bot
@@ -70,14 +74,14 @@ class TestMessageValidation:
     @pytest.mark.parametrize(
         "content",
         ["hallo...", "hallo", "hallo.", "hallo!"],
-        ids=["ellipsis_suffix", "plain_word", "single_dot", "punctuation"],
+        ids=["with_ellipsis", "plain_word", "single_dot", "punctuation"],
     )
     def test_is_game_message_accepts_human_single_word_in_channel(
         self,
         content: str
     ) -> None:
         """Test one-word human messages in the correct channel are accepted."""
-        message = _build_message(False, 55, content)
+        message = build_mock_message(False, 55, content)
 
         assert chainlyUtils._is_game_message(message, 55) is True
 
@@ -97,7 +101,7 @@ class TestMessageValidation:
         content: str
     ) -> None:
         """Test rejection rules for invalid messages."""
-        message = _build_message(is_bot, channel_id, content)
+        message = build_mock_message(is_bot, channel_id, content)
 
         assert chainlyUtils._is_game_message(message, 10) is False
 
