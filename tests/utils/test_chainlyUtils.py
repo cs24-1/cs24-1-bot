@@ -56,12 +56,20 @@ class TestTryStartGame:
 class TestMessageValidation:
     """Test cases for chainly message recognition."""
 
-    def test_is_game_message_accepts_human_single_word_in_channel(self) -> None:
-        """Test acceptance for valid game messages."""
+    @pytest.mark.parametrize(
+        "content",
+        ["hallo...", "hallo", "hallo.", "hallo!"],
+        ids=["word_suffix", "plain_word", "end_suffix", "punctuation"],
+    )
+    def test_is_game_message_accepts_human_single_word_in_channel(
+        self,
+        content: str
+    ) -> None:
+        """Test acceptance for valid one-word user messages."""
         message = MagicMock()
         message.author.bot = False
         message.channel.id = 55
-        message.content = "hallo..."
+        message.content = content
 
         assert chainlyUtils._is_game_message(message, 55) is True
 
@@ -91,16 +99,21 @@ class TestMessageValidation:
     def test_is_game_word_regex(self) -> None:
         """Test matching for word tokens."""
         word_message = MagicMock()
-        word_message.content = "ende..."
+        word_message.content = "wort..."
 
         assert chainlyUtils._is_game_word(word_message) is True
 
-    def test_is_game_end_regex(self) -> None:
+    @pytest.mark.parametrize(
+        ("content", "expected"),
+        [("stop.", True), ("ende.", True), ("stop...", False)],
+        ids=["valid_stop", "valid_ende", "invalid_word_suffix"],
+    )
+    def test_is_game_end_regex(self, content: str, expected: bool) -> None:
         """Test matching for ending tokens."""
         end_message = MagicMock()
-        end_message.content = "stop."
+        end_message.content = content
 
-        assert chainlyUtils._is_game_end(end_message) is True
+        assert chainlyUtils._is_game_end(end_message) is expected
 
 
 class TestGameEnding:
