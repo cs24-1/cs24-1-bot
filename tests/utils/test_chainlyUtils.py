@@ -33,7 +33,7 @@ class TestTryStartGame:
         self,
         mock_bot: MagicMock
     ) -> None:
-        """Test response text and scheduling when a game starts."""
+        """Test start response text and one-time background task scheduling."""
         with patch(
             "utils.chainlyUtils._run_game_loop",
             new_callable=AsyncMock
@@ -76,7 +76,7 @@ class TestMessageValidation:
         self,
         content: str
     ) -> None:
-        """Test acceptance for valid one-word user messages."""
+        """Test one-word human messages in the correct channel are accepted."""
         message = _build_message(False, 55, content)
 
         assert chainlyUtils._is_game_message(message, 55) is True
