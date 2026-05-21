@@ -1,6 +1,4 @@
 """Unit tests for chainly utility functions."""
-
-from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -114,7 +112,7 @@ class TestGameEnding:
     ) -> None:
         """Test orderly game completion sends result and stores data."""
         participant = MagicMock()
-        participant.mention = "@Alice"
+        participant.mention = "<@123456789>"
         game = chainlyUtils.ChainlySession(topic="Thema")
         game.participants.add(participant)
         game.words.extend(["Ein", "Satz"])
@@ -135,7 +133,7 @@ class TestGameEnding:
         sent_text = channel.send.await_args.args[0]
         assert "Spiel beendet!" in sent_text
         assert "Thema" in sent_text
-        assert "@Alice" in sent_text
+        assert "<@123456789>" in sent_text
         assert 77 not in chainlyUtils.active_games
 
     @pytest.mark.asyncio
@@ -183,9 +181,10 @@ class TestSearchGame:
         best_game.topic = "python"
         best_game.result = "ich mag python."
         best_game.fetch_related = AsyncMock()
-        best_game.participants = [
-            SimpleNamespace(user=SimpleNamespace(global_name="Alice"))
-        ]
+        participation = MagicMock()
+        participation.user = MagicMock()
+        participation.user.global_name = "Alice"
+        best_game.participants = [participation]
 
         other_game = MagicMock()
         other_game.topic = "hockey"
