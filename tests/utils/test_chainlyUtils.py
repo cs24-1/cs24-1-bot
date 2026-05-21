@@ -7,7 +7,7 @@ from utils import chainlyUtils
 
 
 @pytest.fixture(autouse=True)
-def clear_active_games() -> None:
+def reset_active_games() -> None:
     """Clear active game state before and after each test."""
     chainlyUtils.active_games.clear()
     yield
@@ -72,6 +72,7 @@ class TestMessageValidation:
             (False, 11, "hallo..."),
             (False, 10, "zwei worte..."),
         ],
+        ids=["bot_message", "wrong_channel", "multi_word"],
     )
     def test_is_game_message_rejects_invalid_messages(
         self,
@@ -130,7 +131,7 @@ class TestGameEnding:
 
         mock_save_game.assert_awaited_once_with(game)
         channel.send.assert_awaited_once()
-        sent_text = channel.send.await_args.args[0]
+        sent_text = channel.send.call_args.args[0]
         assert "Spiel beendet!" in sent_text
         assert "Thema" in sent_text
         assert "<@123456789>" in sent_text
@@ -153,7 +154,7 @@ class TestGameEnding:
             await chainlyUtils._end_game_after_timeout(mock_bot, 23, game)
 
         channel.send.assert_awaited_once()
-        sent_text = channel.send.await_args.args[0]
+        sent_text = channel.send.call_args.args[0]
         assert "abgelaufen" in sent_text
         assert "TimeoutThema" in sent_text
         assert 23 not in chainlyUtils.active_games
