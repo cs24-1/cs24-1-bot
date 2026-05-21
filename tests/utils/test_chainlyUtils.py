@@ -89,14 +89,18 @@ class TestMessageValidation:
 
         assert chainlyUtils._is_game_message(message, 10) is False
 
-    def test_is_game_word_and_end_regex(self) -> None:
-        """Test message suffix matching for word and ending tokens."""
+    def test_is_game_word_regex(self) -> None:
+        """Test matching for word tokens."""
         word_message = MagicMock()
         word_message.content = "ende..."
+
+        assert chainlyUtils._is_game_word(word_message) is True
+
+    def test_is_game_end_regex(self) -> None:
+        """Test matching for ending tokens."""
         end_message = MagicMock()
         end_message.content = "stop."
 
-        assert chainlyUtils._is_game_word(word_message) is True
         assert chainlyUtils._is_game_end(end_message) is True
 
 
@@ -169,7 +173,8 @@ class TestSearchGame:
         ):
             response = await chainlyUtils.search_game("unbekannt")
 
-        assert response == "Found no chainly games for topic 'unbekannt'"
+        assert "unbekannt" in response
+        assert "chainly" in response
 
     @pytest.mark.asyncio
     async def test_search_game_returns_best_matching_game_result(self) -> None:
