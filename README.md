@@ -2,7 +2,7 @@
 
 *Ein wilder Bot der Seminargruppe CS24-1 erscheint…*
 
-Ein Discord-Bot für die Seminargruppe CS24-1 mit Features wie KI-basierter Code-Übersetzung, Meme-Sammlung und Mensa-Speiseplan-Updates.
+Ein Discord-Bot für die Seminargruppe CS24-1 mit spaßigen Features.
 
 ## Technologie-Stack
 
@@ -19,6 +19,7 @@ Ein Discord-Bot für die Seminargruppe CS24-1 mit Features wie KI-basierter Code
 - 🍽️ **Mensa Service**: Tägliche Mensa-Speiseplan-Updates
 - 💬 **Quote Service**: Zitat-Sammlung und -Verwaltung
 - 🌍 **Translation Service**: Übersetzung von Nachrichten oder manueller Texteingabe
+- ⛓️ **Chainly Game**: Ein simples Spiel, bei dem Mitglieder abwechselnd ein Wort mit der Endung `...` zu einem gegebenem Thema schreiben, um einen Satz zu formen. Eine Nachricht mit der Endung `.` beendet die Runde.
 
 ## Quick Start
 

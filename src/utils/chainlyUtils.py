@@ -32,8 +32,7 @@ async def try_start_game(bot: discord.Bot, channel_id: int, topic: str) -> str:
     if _is_game_active(channel_id):
         game = active_games[channel_id]
         return (
-            f"Es läuft gerade noch ein Spiel mit dem Thema: {game.topic}. "
-            "Du kannst teilnehmen oder es abbrechen."
+            f"Es läuft gerade noch ein Spiel mit dem Thema: {game.topic}."
         )
 
     game = ChainlySession(topic=topic)
