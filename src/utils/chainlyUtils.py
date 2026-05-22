@@ -97,8 +97,14 @@ def _is_game_message(message: discord.Message, channel_id: int) -> bool:
     is_human = not message.author.bot
     posted_in_game_channel = message.channel.id == channel_id
     one_word_long = len(message.content.strip().split()) == 1
+    is_valid_game_line = _is_game_line(message) or _is_game_end_line(message)
 
-    return posted_in_game_channel and is_human and one_word_long
+    return (
+        posted_in_game_channel
+        and is_human
+        and one_word_long
+        and is_valid_game_line
+    )
 
 
 async def _end_game_orderly(
@@ -115,17 +121,19 @@ async def _end_game_orderly(
     if current_game is not game:
         return
 
-    channel = bot.get_channel(channel_id)
-    if channel is not None:
-        game_result = _format_game_result(
-            topic=current_game.topic,
-            result=" ".join(current_game.words),
-            participants=[p.mention for p in current_game.participants],
-        )
-        _ = await channel.send(f"Spiel beendet!\n{game_result}")
+    try:
+        channel = bot.get_channel(channel_id)
+        if channel is not None:
+            game_result = _format_game_result(
+                topic=current_game.topic,
+                result=" ".join(current_game.words),
+                participants=[p.mention for p in current_game.participants],
+            )
+            _ = await channel.send(f"Spiel beendet!\n{game_result}")
 
-    await save_game(current_game)
-    _ = active_games.pop(channel_id, None)
+        await save_game(current_game)
+    finally:
+        _ = active_games.pop(channel_id, None)
 
 
 async def save_game(game: ChainlySession) -> ChainlyGameModel:
@@ -193,19 +201,20 @@ async def _end_game_after_timeout(
     if current_game is not game:
         return
 
-    channel = bot.get_channel(channel_id)
-    if channel is not None:
-        await channel.send(
-            f"Das Spiel zum Thema '{current_game.topic}' ist abgelaufen."
-        )
-
-    active_games.pop(channel_id, None)
-    LOGGER.info("Ended chainly game in channel %s due to timeout", channel_id)
+    try:
+        channel = bot.get_channel(channel_id)
+        if channel is not None:
+            await channel.send(
+                f"Das Spiel zum Thema '{current_game.topic}' ist abgelaufen."
+            )
+    finally:
+        active_games.pop(channel_id, None)
+        LOGGER.info("Ended chainly game in channel %s due to timeout", channel_id)
 
 
 def _format_game_result(topic: str, result: str, participants: list[str]) -> str:
     return f"""- Thema: {topic}
-- teilgenommen hat: {', '.join(participants)} 
+- Teilnehmende: {', '.join(participants)}
 
 > {result}"""
 
