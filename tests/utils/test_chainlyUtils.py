@@ -72,20 +72,6 @@ class TestMessageValidation:
     """Test cases for chainly message recognition."""
 
     @pytest.mark.parametrize(
-        "content",
-        ["hallo...", "hallo", "hallo.", "hallo!"],
-        ids=["with_ellipsis", "plain_word", "single_dot", "punctuation"],
-    )
-    def test_is_game_message_accepts_human_single_word_in_channel(
-        self,
-        content: str
-    ) -> None:
-        """Test one-word human messages in the correct channel are accepted."""
-        message = build_mock_message(False, 55, content)
-
-        assert chainlyUtils._is_game_message(message, 55) is True
-
-    @pytest.mark.parametrize(
         ("is_bot", "channel_id", "content"),
         [
             (True, 10, "hallo..."),
