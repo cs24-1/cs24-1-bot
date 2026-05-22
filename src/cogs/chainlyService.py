@@ -41,17 +41,15 @@ class ChainlyService(commands.Cog):
         Slash command to start chainly game.
         """
 
-
         try:
             _ = await ctx.respond(
                 await try_start_game(self.bot, ctx.channel_id, topic),
-                ephemeral=True,
+                ephemeral=False,
             )
         except Exception as e:
             self.logger.error(f"Error starting chainly game: {e}")
             _ = await ctx.respond(
-                "Es gab einen Fehler beim Starten des Spiels.",
-                ephemeral=True
+                "Es gab einen Fehler beim Starten des Spiels.", ephemeral=True
             )
 
     @commands.slash_command(
@@ -80,10 +78,36 @@ class ChainlyService(commands.Cog):
         except Exception as e:
             self.logger.error(f"Error searching for chainly game: {e}")
             _ = await ctx.respond(
-                "Es gab einen Fehler bei der Suche nach dem Spiel.",
-                ephemeral=True
+                "Es gab einen Fehler bei der Suche nach dem Spiel.", ephemeral=True
             )
 
+    @commands.slash_command(
+        name="chainly_help",
+        description="Erklärt die Regeln von Chainly",
+        guild_ids=[Constants.SERVER_IDS.CUR_SERVER],
+    )
+    async def chainly_help_command(self, ctx: discord.ApplicationContext) -> None:
+        """
+        Slash command to explain the chainly game rules.
+        """
+
+        message = (
+            "Chainly ist ein Wortketten‑Spiel. Starte mit `/chainly` und einem Thema.\n"
+            "Anschließend schreibt jede*r der Reihe nach genau ein Wort als eigene Nachricht, "
+            "wobei jede teilnehmende Nachricht entweder mit `...` (fortführend) oder mit `.` (abschließend) enden muss.\n"
+            "Sobald eine Nachricht mit `.` gesendet wird, endet das Spiel und das Ergebnis wird ausgegeben. "
+            f"Alternativ wird das Spiel nach {Constants.CHAINLY.GAME_TIMEOUT_SECS // 60} Minuten abgebrochen und verworfen.\n"
+            "Abgeschlossene Spiele kannst du mit `/chainly_search` finden."
+        )
+
+        try:
+            _ = await ctx.respond(message, ephemeral=False)
+        except Exception as exc:
+            self.logger.error("Error sending chainly help: %s", exc)
+            _ = await ctx.respond(
+                "Es gab einen Fehler beim Anzeigen der Hilfe.",
+                ephemeral=True,
+            )
 
 
 def setup(bot: discord.Bot) -> None:
