@@ -110,7 +110,7 @@ class TestMessageValidation:
         word_message = MagicMock()
         word_message.content = "wort..."
 
-        assert chainlyUtils._is_game_word(word_message) is True
+        assert chainlyUtils._is_game_line(word_message) is True
 
     @pytest.mark.parametrize(
         ("content", "expected"),
@@ -122,7 +122,7 @@ class TestMessageValidation:
         end_message = MagicMock()
         end_message.content = content
 
-        assert chainlyUtils._is_game_end(end_message) is expected
+        assert chainlyUtils._is_game_end_line(end_message) is expected
 
 
 class TestGameEnding:
@@ -194,8 +194,7 @@ class TestSearchGame:
         ):
             response = await chainlyUtils.search_game("unbekannt")
 
-        assert "unbekannt" in response
-        assert "chainly" in response
+        assert "Kein abgeschlossenes Spiel mit dem Thema 'unbekannt' gefunden" == response
 
     @pytest.mark.asyncio
     async def test_search_game_returns_best_matching_game_result(self) -> None:

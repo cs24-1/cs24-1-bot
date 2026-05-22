@@ -20,10 +20,8 @@ class ChainlyGame(BaseModel):
 
 class ChainlyParticipation(BaseModel):
     """
-    A class representing a users participation in a chainly game.
+    A class representing a user's participation in a chainly game.
     """
 
-    game_uuid = fields.ForeignKeyField(
-        "models.ChainlyGame", related_name="participants"
-    )
+    game = fields.ForeignKeyField("models.ChainlyGame", related_name="participants")
     user = fields.ForeignKeyField("models.User", related_name="chainly_games")

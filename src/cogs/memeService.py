@@ -104,13 +104,15 @@ class MemeService(commands.Cog):
     @tasks.loop(minutes=5)
     async def set_random_meme_banner(self):
         assert self.bot.user is not None
-        random_meme, _ = await memeUtils.get_random_meme(True)
-
         try:
+            random_meme, _ = await memeUtils.get_random_meme(True)
+
             await self.bot.user.edit(banner=random_meme)
             self.logger.info("Successfully set random meme banner")
         except discord.HTTPException as ex:
-            self.logger.error("Failed to set random meme banner %s", ex)
+            self.logger.error("Failed to set random meme banner: %s", ex)
+        except Exception as ex:
+            self.logger.warning("Failed to set random meme banner: %s", ex)
 
 
 def setup(bot: discord.Bot):

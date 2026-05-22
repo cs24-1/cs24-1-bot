@@ -19,7 +19,7 @@ Ein Discord-Bot für die Seminargruppe CS24-1 mit spaßigen Features.
 - 🍽️ **Mensa Service**: Tägliche Mensa-Speiseplan-Updates
 - 💬 **Quote Service**: Zitat-Sammlung und -Verwaltung
 - 🌍 **Translation Service**: Übersetzung von Nachrichten oder manueller Texteingabe
-- ⛓️ **Chainly Game**: Ein simples Spiel, bei dem Mitglieder abwechselnd ein Wort mit der Endung `...` zu einem gegebenem Thema schreiben, um einen Satz zu formen. Eine Nachricht mit der Endung `.` beendet die Runde.
+- ⛓️ **Chainly Game**: Ein simples Spiel, bei dem Mitglieder abwechselnd ein Wort mit der Endung `...` zu einem gegebenen Thema schreiben, um einen Satz zu formen. Eine Nachricht mit der Endung `.` beendet die Runde.
 
 ## Quick Start
 

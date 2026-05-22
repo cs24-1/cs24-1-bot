@@ -108,7 +108,7 @@ class Chainly:
     GAME_END_SUFFIX = "."
     GAME_WORD_SUFFIX = "..."
     GAME_WORD_REGEX = re.compile(r"^\S+\.{3}$")
-    GAME_END_REGEX = re.compile(r"^\S+[^\.]\.{1}$")
+    GAME_END_REGEX = re.compile(r"^\S+(?<!\.)\.$")
     GAME_TIMEOUT_SECS = 30 * 60
 
 

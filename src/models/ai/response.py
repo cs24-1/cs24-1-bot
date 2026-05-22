@@ -22,9 +22,10 @@ class CodeTranslateResponse:
         :returns: The created embed.
         """
 
+        translated_code = "\n".join(self.translated_code)
         embed = discord.Embed(
             description=
-            f"```{'\n'.join(self.translated_code)}```\n\n-# {self.humorous_comment}"
+            f"```{translated_code}```\n\n-# {self.humorous_comment}"
         )
         embed.set_footer(
             text=

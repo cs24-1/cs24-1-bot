@@ -30,7 +30,7 @@ class ChainlyService(commands.Cog):
     )
     @discord.option(
         "topic",
-        description="Das Thema für das chainly Spiel (z.B. 'Beschwerdeschreiben', 'Lebenslauf', etc.).",
+        description="Das Thema für das chainly Spiel (z.B. 'Beschwerdeschreiben', 'Lebenslauf', etc.)",
         type=discord.SlashCommandOptionType.string,
         required=True,
     )
@@ -41,14 +41,22 @@ class ChainlyService(commands.Cog):
         Slash command to start chainly game.
         """
 
-        await ctx.respond(
-            await try_start_game(self.bot, ctx.channel_id, topic),
-            ephemeral=True,
-        )
+
+        try:
+            _ = await ctx.respond(
+                await try_start_game(self.bot, ctx.channel_id, topic),
+                ephemeral=True,
+            )
+        except Exception as e:
+            self.logger.error(f"Error starting chainly game: {e}")
+            _ = await ctx.respond(
+                "Es gab einen Fehler beim Starten des Spiels.",
+                ephemeral=True
+            )
 
     @commands.slash_command(
         name="chainly_search",
-        description="Suche nach beendeten Spielen.",
+        description="Suche nach abgeschlossenen Spielen",
         guild_ids=[Constants.SERVER_IDS.CUR_SERVER],
     )
     @discord.option(
@@ -64,10 +72,18 @@ class ChainlyService(commands.Cog):
         Slash command to search finished chainly games.
         """
 
-        await ctx.respond(
-            await search_game(topic),
-            ephemeral=False,
-        )
+        try:
+            _ = await ctx.respond(
+                await search_game(topic),
+                ephemeral=False,
+            )
+        except Exception as e:
+            self.logger.error(f"Error searching for chainly game: {e}")
+            _ = await ctx.respond(
+                "Es gab einen Fehler bei der Suche nach dem Spiel.",
+                ephemeral=True
+            )
+
 
 
 def setup(bot: discord.Bot) -> None:

@@ -31,9 +31,7 @@ async def try_start_game(bot: discord.Bot, channel_id: int, topic: str) -> str:
 
     if _is_game_active(channel_id):
         game = active_games[channel_id]
-        return (
-            f"Es läuft gerade noch ein Spiel mit dem Thema: {game.topic}."
-        )
+        return f"Es läuft gerade noch ein Spiel mit dem Thema: {game.topic}."
 
     game = ChainlySession(topic=topic)
     active_games[channel_id] = game
@@ -58,7 +56,10 @@ async def _run_game_loop(
             message: discord.Message = await bot.wait_for(
                 "message",
                 check=lambda message: _is_game_message(message, channel_id),
+                timeout=5.0,  # allow exiting during inactivity
             )
+        except asyncio.TimeoutError:
+            continue
         except asyncio.CancelledError:
             return
 
@@ -68,8 +69,7 @@ async def _run_game_loop(
         if not _is_current_game(channel_id, game):
             return
 
-        if _is_game_end(message):
-            # TODO: finish game
+        if _is_game_end_line(message):
             game.participants.add(message.author)
             game.words.append(
                 message.content.removesuffix(Constants.CHAINLY.GAME_END_SUFFIX)
@@ -77,19 +77,18 @@ async def _run_game_loop(
             await _end_game_orderly(bot, channel_id, game)
             return
 
-        if _is_game_word(message):
-            # TODO: modify game state
+        if _is_game_line(message):
             game.participants.add(message.author)
             game.words.append(
                 message.content.removesuffix(Constants.CHAINLY.GAME_WORD_SUFFIX)
             )
 
 
-def _is_game_word(message: discord.Message) -> bool:
+def _is_game_line(message: discord.Message) -> bool:
     return bool(re.match(Constants.CHAINLY.GAME_WORD_REGEX, message.content))
 
 
-def _is_game_end(message: discord.Message) -> bool:
+def _is_game_end_line(message: discord.Message) -> bool:
     return bool(re.match(Constants.CHAINLY.GAME_END_REGEX, message.content))
 
 
@@ -97,7 +96,7 @@ def _is_game_message(message: discord.Message, channel_id: int) -> bool:
     """Check whether a given message should be considered part of the game."""
     is_human = not message.author.bot
     posted_in_game_channel = message.channel.id == channel_id
-    one_word_long = len(message.content.split(" ")) == 1
+    one_word_long = len(message.content.strip().split()) == 1
 
     return posted_in_game_channel and is_human and one_word_long
 
@@ -145,7 +144,7 @@ async def save_game(game: ChainlySession) -> ChainlyGameModel:
                 "display_name": participant.display_name,
             },
         )
-        await ChainlyParticipation.create(game_uuid=completed_game, user=user)
+        await ChainlyParticipation.create(game=completed_game, user=user)
 
     return completed_game
 
@@ -162,7 +161,7 @@ async def search_game(topic: str) -> str:
     filtered_games = [(ratio, game) for ratio, game in games if ratio > 50]
 
     if len(filtered_games) == 0:
-        return f"Found no chainly games for topic '{topic}'"
+        return f"Kein abgeschlossenes Spiel mit dem Thema '{topic}' gefunden"
 
     # extract game object of max ratio
     result_game = max(filtered_games, key=lambda g: g[0])[1]
