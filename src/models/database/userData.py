@@ -7,6 +7,7 @@ from utils.constants import Constants
 
 if TYPE_CHECKING:
     from models.database.aiData import AIMetadata
+    from models.database.chainlyModel import ChainlyParticipation
 
 
 class User(BaseModel):
@@ -24,6 +25,7 @@ class User(BaseModel):
         description="Whether this user is an external (non-Discord) user"
     )
     ai_metadata: fields.OneToOneRelation["AIMetadata"]
+    chainly_games: fields.ReverseRelation["ChainlyParticipation"]
 
     async def remaining_ai_requests(self):
         """
