@@ -30,7 +30,10 @@ class ChainlyService(commands.Cog):
     )
     @discord.option(
         "topic",
-        description="Das Thema für das chainly Spiel (z.B. 'Beschwerdeschreiben', 'Lebenslauf', etc.)",
+        description=(
+            "Das Thema für das chainly Spiel "
+            "(z.B. 'Beschwerdeschreiben', 'Lebenslauf', etc.)"
+        ),
         type=discord.SlashCommandOptionType.string,
         required=True,
     )
@@ -47,7 +50,11 @@ class ChainlyService(commands.Cog):
                 ephemeral=False,
             )
         except Exception as e:
-            self.logger.error(f"Error starting chainly game: {e}")
+            self.logger.error(
+                "Error starting chainly game: %s",
+                e,
+                exc_info=True,
+            )
             _ = await ctx.respond(
                 "Es gab einen Fehler beim Starten des Spiels.", ephemeral=True
             )
@@ -76,7 +83,11 @@ class ChainlyService(commands.Cog):
                 ephemeral=False,
             )
         except Exception as e:
-            self.logger.error(f"Error searching for chainly game: {e}")
+            self.logger.error(
+                "Error searching for chainly game: %s",
+                e,
+                exc_info=True,
+            )
             _ = await ctx.respond(
                 "Es gab einen Fehler bei der Suche nach dem Spiel.", ephemeral=True
             )

@@ -180,7 +180,10 @@ class TestSearchGame:
         ):
             response = await chainlyUtils.search_game("unbekannt")
 
-        assert "Kein abgeschlossenes Spiel mit dem Thema 'unbekannt' gefunden" == response
+        expected = (
+            "Kein abgeschlossenes Spiel mit dem Thema 'unbekannt' gefunden"
+        )
+        assert expected == response
 
     @pytest.mark.asyncio
     async def test_search_game_returns_best_matching_game_result(self) -> None:

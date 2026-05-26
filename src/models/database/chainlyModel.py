@@ -23,5 +23,13 @@ class ChainlyParticipation(BaseModel):
     A class representing a user's participation in a chainly game.
     """
 
-    game = fields.ForeignKeyField("models.ChainlyGame", related_name="participants")
-    user = fields.ForeignKeyField("models.User", related_name="chainly_games")
+    game: fields.ForeignKeyRelation["ChainlyGame"] = fields.ForeignKeyField(
+        "models.ChainlyGame",
+        related_name="participants",
+        description="The game session the user participated in",
+    )
+    user: fields.ForeignKeyRelation["User"] = fields.ForeignKeyField(
+        "models.User",
+        related_name="chainly_games",
+        description="The participating user",
+    )
