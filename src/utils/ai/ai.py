@@ -1,7 +1,6 @@
-import dataclasses
 import json
 
-from openai import NotFoundError, OpenAI
+from openai import OpenAI
 
 from models.ai.response import CodeTranslateResponse
 from utils.ai import system_data

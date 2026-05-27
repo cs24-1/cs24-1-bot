@@ -11,6 +11,7 @@ TORTOISE_ORM = { # type: ignore
                 "models.database.memeData",
                 "models.database.aiData",
                 "models.database.quoteData",
+                "models.database.chainlyModel",
                 "aerich.models",
             ],
             "default_connection":
