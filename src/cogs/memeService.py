@@ -112,7 +112,9 @@ class MemeService(commands.Cog):
         except discord.HTTPException as ex:
             self.logger.error("Failed to set random meme banner: %s", ex)
         except Exception as ex:
-            self.logger.warning("Failed to set random meme banner: %s", ex)
+            self.logger.warning(
+                "Failed to set random meme banner: %s", ex, exc_info=True
+            )
 
 
 def setup(bot: discord.Bot):
