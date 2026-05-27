@@ -121,7 +121,7 @@ class ChainlyService(commands.Cog):
         try:
             _ = await ctx.respond(message, ephemeral=False)
         except Exception as exc:
-            self.logger.error("Error sending chainly help: %s", exc)
+            self.logger.error("Error sending chainly help: %s", exc, exc_info=True)
             _ = await ctx.respond(
                 "Es gab einen Fehler beim Anzeigen der Hilfe.",
                 ephemeral=True,
