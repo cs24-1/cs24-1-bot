@@ -103,12 +103,19 @@ class ChainlyService(commands.Cog):
         """
 
         message = (
-            "Chainly ist ein Wortketten‑Spiel. Starte mit `/chainly` und einem Thema.\n"
-            "Anschließend schreibt jede*r der Reihe nach genau ein Wort als eigene Nachricht, "
-            "wobei jede teilnehmende Nachricht entweder mit `...` (fortführend) oder mit `.` (abschließend) enden muss.\n"
-            "Sobald eine Nachricht mit `.` gesendet wird, endet das Spiel und das Ergebnis wird ausgegeben. "
-            f"Alternativ wird das Spiel nach {Constants.CHAINLY.GAME_TIMEOUT_SECS // 60} Minuten abgebrochen und verworfen.\n"
-            "Abgeschlossene Spiele kannst du mit `/chainly_search` finden."
+            "Chainly ist ein Wortketten‑Spiel. Starte mit `/chainly` und "
+            "einem Thema.\n"
+            "Anschließend schreibt jede*r der Reihe nach genau ein Wort "
+            "als eigene Nachricht, wobei jede teilnehmende Nachricht "
+            "entweder mit `...` (fortführend) oder mit `.` "
+            "(abschließend) enden muss.\n"
+            "Sobald eine Nachricht mit `.` gesendet wird, endet das Spiel "
+            "und das Ergebnis wird ausgegeben. "
+            f"Alternativ wird das Spiel nach "
+            f"{Constants.CHAINLY.GAME_TIMEOUT_SECS // 60} Minuten "
+            "abgebrochen und verworfen.\n"
+            "Abgeschlossene Spiele kannst du mit `/chainly_search` "
+            "finden."
         )
 
         try:
